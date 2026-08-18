@@ -1,0 +1,10 @@
+{{- $dest := .Destination -}}
+{{- $src := $dest -}}
+{{- if and $dest (not (strings.HasPrefix $dest "http://")) (not (strings.HasPrefix $dest "https://")) (not (strings.HasPrefix $dest "//")) (not (strings.HasPrefix $dest "data:")) -}}
+  {{- with .Page.Resources.GetMatch (path.Base $dest) -}}
+    {{- $src = .Permalink -}}
+  {{- else -}}
+    {{- $src = $dest | absURL -}}
+  {{- end -}}
+{{- end -}}
+<img src="{{ $src | safeURL }}" alt="{{ .Text }}"{{- with .Title }} title="{{ . }}"{{ end }}>
