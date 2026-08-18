@@ -1,0 +1,12 @@
+defaults:
+  text_start: ""
+  a_href:
+    enabled: true
+    attrs:
+      href: ""
+      target: "_self"
+    text: ""
+  text_end: ""
+merge_paths:
+  - - a_href
+    - attrs

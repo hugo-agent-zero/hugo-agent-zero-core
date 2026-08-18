@@ -1,0 +1,82 @@
+{{/*
+  fn_source_adapter_resolve.html
+  Resolve source payload through source provider and apply layered merge.
+
+  Built-in source providers:
+    - headless
+    - file_local (data/src_data aliases supported for back-compat)
+    - page
+
+  Args:
+    - sysManifest (dict)
+    - context (.Page)
+    - source (dict): provider (preferred), type (legacy), level, group, inst, optional defaults/merge_paths
+    - part_folder (string, optional): component folder for provider-specific conventions
+    - override_props (dict): instance-level overrides from layout node props
+*/}}
+{{- $sysManifest := index . "sysManifest" | default dict -}}
+{{- $context := index . "context" -}}
+{{- $source := index . "source" | default dict -}}
+{{- $partFolder := index . "part_folder" | default "" -}}
+{{- $overrideProps := index . "override_props" | default dict -}}
+{{- $sourceLevel := index $source "level" | default "" -}}
+{{- $sourceProvider := index $source "provider" | default (index $source "type" | default "") -}}
+{{- $sourceTypeLegacy := index $source "type" | default "" -}}
+{{- if and (eq $sourceProvider "") (in (slice "headless" "file_local" "data" "src_data" "page") $sourceLevel) -}}
+  {{- warnf "deprecated source shape: infer provider from source.level=%q; set source.provider explicitly" $sourceLevel -}}
+  {{- $sourceProvider = $sourceLevel -}}
+{{- end -}}
+{{- if ne $sourceTypeLegacy "" -}}
+  {{- warnf "deprecated source.type=%q; use source.provider instead" $sourceTypeLegacy -}}
+{{- end -}}
+{{- if eq $sourceProvider "data" -}}
+  {{- warnf "deprecated source.provider=data; use source.provider=file_local" -}}
+{{- end -}}
+{{- if eq $sourceProvider "src_data" -}}
+  {{- warnf "deprecated source.provider=src_data; use source.provider=file_local" -}}
+{{- end -}}
+{{- $resolvedProps := dict -}}
+
+{{- if eq $sourceProvider "headless" -}}
+  {{- $headlessEntry := partial "haz/helpers/fn/fn_source_headless_entry_resolve.html" (dict
+    "sysManifest" $sysManifest
+    "source" $source
+  ) -}}
+  {{- $bundleData := partial "haz/helpers/fn/fn_source_headless_bundle_resolve.html" (dict
+    "context" $context
+    "entry" $headlessEntry
+  ) -}}
+  {{- $resolvedProps = partial "haz/helpers/fn/fn_source_props_merge.html" (dict
+    "default_props" (index $bundleData "props" | default dict)
+    "source_props" (index $headlessEntry "props" | default dict)
+    "override_props" $overrideProps
+    "merge_paths" slice
+  ) -}}
+{{- else if or (eq $sourceProvider "file_local") (eq $sourceProvider "data") (eq $sourceProvider "src_data") -}}
+  {{- $resolvedProps = partial "haz/helpers/fn/fn_source_payload_resolve.html" (dict
+    "sysManifest" $sysManifest
+    "source" (merge $source (dict "props" $overrideProps))
+    "default_props" (index $source "defaults" | default dict)
+    "merge_paths" slice
+  ) -}}
+{{- else if eq $sourceProvider "page" -}}
+  {{- $resolvedProps = partial "haz/helpers/fn/fn_source_page_resolve.html" (dict
+    "sysManifest" $sysManifest
+    "context" $context
+    "source" $source
+    "part_folder" $partFolder
+    "default_props" (index $source "defaults" | default dict)
+    "override_props" $overrideProps
+    "merge_paths" slice
+  ) -}}
+{{- else if and (index $source "level") (index $source "inst") -}}
+  {{/* Fallback for simple map-backed sources when type omitted. */}}
+  {{- $resolvedProps = partial "haz/helpers/fn/fn_source_payload_resolve.html" (dict
+    "sysManifest" $sysManifest
+    "source" (merge $source (dict "props" $overrideProps))
+    "default_props" (index $source "defaults" | default dict)
+    "merge_paths" slice
+  ) -}}
+{{- end -}}
+
+{{- return $resolvedProps -}}

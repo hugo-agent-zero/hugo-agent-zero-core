@@ -1,0 +1,81 @@
+{{- $source := index . "source" -}}
+{{- $child := index . "child" -}}
+{{- $thisObj := index . "thisObj" -}}
+{{- $sysManifest := index . "sysManifest" -}}
+{{- $context := index . "context" -}}
+{{- $thisObjProps := index $thisObj "props" -}}
+{{- $thisChildren := index $thisObj "children" -}}
+{{- $thisSource := "atoms|script_color_scheme_000" -}}
+{{- if index $thisObj "enabled" -}}
+{{- $mode := $thisObjProps.mode | default "class" -}}
+<script>
+(function(){
+  const btnId = {{ $thisObjProps.id_btn | default "haz_btn_color_scheme" | jsonify | safeJS }};
+  const mode = {{ $mode | jsonify | safeJS }};
+  const attrName = {{ $thisObjProps.attr | default "data-theme" | jsonify | safeJS }};
+  const classPrefix = {{ $thisObjProps.class_prefix | default "" | jsonify | safeJS }};
+  const darkKey = {{ $thisObjProps.dark | default "dark" | jsonify | safeJS }};
+  const lightKey = {{ $thisObjProps.light | default "light" | jsonify | safeJS }};
+  const defaultKey = {{ $thisObjProps.default_key | default "dark" | jsonify | safeJS }};
+  const storageKey = {{ $thisObjProps.storage_key | default "color_scheme" | jsonify | safeJS }};
+  const classDark = classPrefix + darkKey;
+  const classLight = classPrefix + lightKey;
+  const button = document.getElementById(btnId);
+  if (!button) return;
+  const root = document.documentElement;
+
+  function systemPrefersDark(){
+    return window.matchMedia &&
+      window.matchMedia("(prefers-color-scheme: dark)").matches;
+  }
+
+  function currentKey(){
+    if (mode === "attr") {
+      const v = root.getAttribute(attrName);
+      return v === lightKey ? lightKey : darkKey;
+    }
+    return root.classList.contains(classDark) ? darkKey : lightKey;
+  }
+
+  function applyTheme(key){
+    const isDark = key === darkKey;
+    if (mode === "attr") {
+      root.setAttribute(attrName, key);
+      root.classList.remove(classDark, classLight);
+    } else {
+      root.classList.toggle(classDark, isDark);
+      root.classList.toggle(classLight, !isDark);
+    }
+    button.setAttribute("aria-pressed", isDark ? "true" : "false");
+  }
+
+  function saveTheme(key){
+    localStorage.setItem(storageKey, key);
+  }
+
+  let themeKey = localStorage.getItem(storageKey);
+  if (themeKey !== darkKey && themeKey !== lightKey) {
+    {{- $defaultKeyResolved := $thisObjProps.default_key | default "dark" -}}
+    {{- if eq $defaultKeyResolved "system" }}
+    themeKey = systemPrefersDark() ? darkKey : lightKey;
+    {{- else }}
+    themeKey = defaultKey;
+    {{- end }}
+  }
+  applyTheme(themeKey);
+  button.addEventListener("click", function(){
+    const nextKey = currentKey() === darkKey ? lightKey : darkKey;
+    applyTheme(nextKey);
+    saveTheme(nextKey);
+  });
+})();
+</script>
+{{- else if index $thisChildren "enabled_false" "enabled" -}}
+{{- partial "haz/helpers/fn/fn_partial.html" (dict
+  "source" $thisSource
+  "child" (index $thisChildren "enabled_false" "child")
+  "thisObj" $thisObj
+  "sysManifest" $sysManifest
+  "context" $context
+) -}}
+{{ end }}

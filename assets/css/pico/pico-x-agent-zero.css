@@ -1,0 +1,175 @@
+/* HAZ / Agent Zero extensions on top of vanilla Pico.
+   Site-specific tweaks belong in child/css/pico/pico-override.css */
+
+/* Atkinson Hyperlegible — HAZ default (static/haz/fonts silo) */
+@font-face {
+  font-family: "Atkinson Hyperlegible Next";
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("/haz/fonts/Atkinson%20Hyperlegible/Next/AtkinsonHyperlegibleNext-VariableFont_wght.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Atkinson Hyperlegible Next";
+  font-style: italic;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("/haz/fonts/Atkinson%20Hyperlegible/Next/AtkinsonHyperlegibleNext-Italic-VariableFont_wght.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Atkinson Hyperlegible Mono";
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("/haz/fonts/Atkinson%20Hyperlegible/Mono/AtkinsonHyperlegibleMono-VariableFont_wght.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Atkinson Hyperlegible Mono";
+  font-style: italic;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("/haz/fonts/Atkinson%20Hyperlegible/Mono/AtkinsonHyperlegibleMono-Italic-VariableFont_wght.ttf") format("truetype");
+}
+
+:root,
+:host {
+  --pico-font-family-sans-serif: "Atkinson Hyperlegible Next", system-ui, "Segoe UI", Roboto, Oxygen, Ubuntu,
+    Cantarell, Helvetica, Arial, "Helvetica Neue", sans-serif, var(--pico-font-family-emoji);
+  --pico-font-family-monospace: "Atkinson Hyperlegible Mono", ui-monospace, SFMono-Regular, "SF Mono", Menlo,
+    Consolas, "Liberation Mono", monospace, var(--pico-font-family-emoji);
+  --pico-font-family: var(--pico-font-family-sans-serif);
+}
+
+.haz_sr_only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+.haz_text_align_left {
+  text-align: left;
+}
+.haz_text_align_center {
+  text-align: center;
+}
+.haz_text_align_right {
+  text-align: right;
+}
+
+.haz_display_flex {
+  display: flex;
+}
+
+.haz_flex_direction_column {
+  flex-direction: column;
+}
+
+.haz_margin_bottom_0 {
+  margin-bottom: 0;
+}
+
+.haz_display_block_inner_svg svg {
+  display: block;
+}
+
+/* Classless page measure: center body children without Pico .container.
+   Header spans full bleed; inner rows + main/footer use --haz_measure (child override). */
+body {
+  display: grid;
+  grid-template-columns: 1fr var(--haz_measure, min(45rem, 90%)) 1fr;
+}
+
+body > * {
+  grid-column: 2;
+}
+
+body > header {
+  grid-column: 1 / -1;
+  padding-bottom: 0.5rem;
+  position: sticky;
+  top: 0;
+  z-index: 200;
+  /* Opaque fill so scrolled content cannot show through sticky header + open nav. */
+  background-color: var(--pico-background-color);
+  background-image: none;
+}
+
+html[data-scrolled="true"] body > header {
+  padding-block: 0.5rem;
+}
+
+.haz_header_site > div {
+  width: 100%;
+  max-width: var(--haz_measure, min(45rem, 90%));
+  margin-inline: auto;
+}
+
+.haz_header_site > div:first-child {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 0;
+}
+
+html[data-scrolled="true"] .haz_header_site > div:first-child {
+  padding: 0;
+}
+
+.haz_header_site > div:nth-child(2) {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0;
+}
+
+/* Icon chrome buttons — keep lean vs Pico’s default button chrome */
+.haz_btn {
+  border: none;
+  cursor: pointer;
+  padding: 0.5rem;
+  background: transparent;
+}
+
+.haz_btn span {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.haz_btn svg {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+#haz_btn_color_scheme,
+#haz_btn_nav_main {
+  display: inline-flex;
+  gap: 0.33em;
+}
+
+#haz_btn_nav_main[aria-expanded="false"] svg.haz_svg__close_x {
+  display: none;
+}
+
+#haz_btn_nav_main[aria-expanded="true"] svg.haz_svg__hamburger {
+  display: none;
+}
+
+html[data-theme="dark"] #haz_btn_color_scheme svg.haz_svg__sun {
+  display: none;
+}
+
+html[data-theme="light"] #haz_btn_color_scheme svg.haz_svg__moon {
+  display: none;
+}

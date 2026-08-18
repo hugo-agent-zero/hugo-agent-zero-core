@@ -1,0 +1,16 @@
+{{/*
+  fn_dict_without_key.html
+  Return a shallow copy of a dict excluding one key.
+  Args:
+    - dict (dict)
+    - key (string)
+*/}}
+{{- $in := index . "dict" | default dict -}}
+{{- $dropKey := index . "key" | default "" -}}
+{{- $out := dict -}}
+{{- range $k, $v := $in -}}
+  {{- if ne $k $dropKey -}}
+    {{- $out = merge $out (dict $k $v) -}}
+  {{- end -}}
+{{- end -}}
+{{- return $out -}}

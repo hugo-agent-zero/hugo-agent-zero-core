@@ -1,0 +1,11 @@
+defaults:
+  tag: div
+  attrs: {}
+  brand_attrs: {}
+  col_other_attrs: {}
+  row_below_attrs: {}
+merge_paths:
+  - - attrs
+  - - brand_attrs
+  - - col_other_attrs
+  - - row_below_attrs

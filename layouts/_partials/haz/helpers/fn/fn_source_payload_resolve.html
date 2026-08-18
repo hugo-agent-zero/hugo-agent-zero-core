@@ -1,0 +1,68 @@
+{{/*
+  fn_source_payload_resolve.html
+  Generic source resolver with explicit merge precedence.
+  Layer order:
+    1) wrapper defaults
+    2) source payload (sysManifest level/group/inst)
+    3) node overrides (source.props)
+  Args:
+    - sysManifest (dict)
+    - source (dict): optional provider (preferred), type (legacy), level, group, inst, props
+    - default_props (dict)
+    - merge_paths (slice of path slices, optional)
+*/}}
+{{- $sysManifest := index . "sysManifest" | default dict -}}
+{{- $source := index . "source" | default dict -}}
+{{- $defaultProps := index . "default_props" | default dict -}}
+{{- $mergePaths := index . "merge_paths" | default slice -}}
+
+{{- $sourceProps := dict -}}
+{{- $sourceProviderRaw := index $source "provider" | default (index $source "type" | default "") -}}
+{{- $sourceType := $sourceProviderRaw -}}
+{{- if or (eq $sourceProviderRaw "data") (eq $sourceProviderRaw "src_data") -}}
+  {{- $sourceType = "file_local" -}}
+{{- end -}}
+{{- $level := index $source "level" | default "" -}}
+{{- $group := index $source "group" | default "" -}}
+{{- $inst := index $source "inst" | default "" -}}
+{{- if and $level $inst -}}
+  {{- if and $sourceType $group -}}
+    {{- $sourceProps = index $sysManifest "cms" $sourceType $level $group $inst | default dict -}}
+    {{- if and (eq (len $sourceProps) 0) (eq $sourceType "file_local") -}}
+      {{- $sourceProps = index $sysManifest "cms" "data" $level $group $inst | default dict -}}
+    {{- end -}}
+    {{- if and (eq (len $sourceProps) 0) (eq $sourceType "file_local") -}}
+      {{- $sourceProps = index $sysManifest "cms" "src_data" $level $group $inst | default dict -}}
+    {{- end -}}
+  {{- else if and $sourceType (not $group) -}}
+    {{- $sourceProps = index $sysManifest "cms" $sourceType $level $inst | default dict -}}
+    {{- if and (eq (len $sourceProps) 0) (eq $sourceType "file_local") -}}
+      {{- $sourceProps = index $sysManifest "cms" "data" $level $inst | default dict -}}
+    {{- end -}}
+    {{- if and (eq (len $sourceProps) 0) (eq $sourceType "file_local") -}}
+      {{- $sourceProps = index $sysManifest "cms" "src_data" $level $inst | default dict -}}
+    {{- end -}}
+  {{- else if $group -}}
+    {{- $sourceProps = index $sysManifest $level $group $inst | default (index $sysManifest "cms" $level $group $inst | default dict) -}}
+  {{- else -}}
+    {{- $sourceProps = index $sysManifest $level $inst | default (index $sysManifest "cms" $level $inst | default dict) -}}
+  {{- end -}}
+{{- end -}}
+{{- if and $sourceType (gt (len $sourceProps) 0) (isset $sourceProps "props") -}}
+  {{- $sourceProps = index $sourceProps "props" | default dict -}}
+{{- end -}}
+
+{{- $usageOverrides := index $source "props" | default dict -}}
+{{- $resolvedProps := merge $defaultProps $sourceProps $usageOverrides -}}
+
+{{- if gt (len $mergePaths) 0 -}}
+  {{- $resolvedProps = partial "haz/helpers/fn/fn_merge_fake_deep.html" (dict
+    "resolved_props" $resolvedProps
+    "default_props" $defaultProps
+    "source_props" $sourceProps
+    "override_props" $usageOverrides
+    "merge_paths" $mergePaths
+  ) -}}
+{{- end -}}
+
+{{- return $resolvedProps -}}

@@ -1,0 +1,27 @@
+{{- $source := index . "source" -}}
+{{- $child := index . "child" -}}
+{{- $thisObj := index . "thisObj" -}}
+{{- $sysManifest := index . "sysManifest" -}}
+{{- $context := index . "context" -}}
+{{- $thisObjProps := index $thisObj "props" -}}
+{{- $thisChildren := index $thisObj "children" -}}
+{{- $thisSource := "atoms|hugo_pages_list_000" -}}
+{{- if index $thisObj "enabled" -}}
+<p>
+<a href="{{ $context.RelPermalink }}">{{ $context.Title }}</a>
+{{- if gt .Date.Year 2000 }} — <time datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format "Jan 2, 2006" }}</time>{{ end -}}
+</p>
+{{- with $context.Params.summary }}<p>{{ . }}</p>
+{{- with $context.GetTerms "categories" }}
+    <p>Categories: {{ range $i, $t := . }}{{ if $i }}, {{ end -}}<a href="{{ $t.RelPermalink }}">{{ $t.LinkTitle }}</a>{{- end -}}
+    </p>
+{{- end }}
+{{- with $context.GetTerms "tags" }}
+    <p>Tags:
+      {{- range $i, $t := . }}{{ if $i }}, {{ end }}<a href="{{ $t.RelPermalink }}">{{ $t.LinkTitle }}</a>{{ end -}}
+    </p>
+{{- end }}
+{{- end }}
+{{- else if index $thisChildren "enabled_false" "enabled" -}}
+{{- partial "haz/helpers/fn/fn_partial.html" (dict "source" $thisSource "child" (index $thisChildren "enabled_false" "child") "thisObj" $thisObj "sysManifest" $sysManifest "context" $context) -}}
+{{- end -}}

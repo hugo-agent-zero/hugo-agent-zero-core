@@ -1,0 +1,31 @@
+{{- $context := index . "context" -}}
+{{- $profile := index . "profile" | default dict -}}
+{{- $props := index . "props" | default dict -}}
+{{- $show := true -}}
+{{- $requireExplicit := index $profile "require_explicit" | default true -}}
+{{- if isset $props "require_explicit" -}}
+{{- $requireExplicit = index $props "require_explicit" -}}
+{{- end -}}
+{{- if $requireExplicit -}}
+{{- $explicit := or (isset $context.Params "lastmod") (isset $context.Params "modified") -}}
+{{- if not $explicit -}}
+{{- $show = false -}}
+{{- else -}}
+{{- $mustBeAfter := lower (trim (printf "%s" (index $profile "must_be_after" | default "publishdate")) " \t\n\r") -}}
+{{- if and (isset $props "must_be_after") (ne (trim (printf "%s" (index $props "must_be_after")) " \t\n\r") "") -}}
+{{- $mustBeAfter = lower (trim (printf "%s" (index $props "must_be_after")) " \t\n\r") -}}
+{{- end -}}
+{{- $minAfterSeconds := index $profile "must_be_after_seconds" | default 0 -}}
+{{- if isset $props "must_be_after_seconds" -}}
+{{- $minAfterSeconds = index $props "must_be_after_seconds" -}}
+{{- end -}}
+{{- $lastmod := partial "haz/helpers/fn/fn_get_page_value_from_string.html" (dict "context" $context "value" "lastmod") -}}
+{{- $baseline := partial "haz/helpers/fn/fn_get_page_value_from_string.html" (dict "context" $context "value" $mustBeAfter) -}}
+{{- $show = partial "haz/helpers/fn/page/fn_page_date_compare.html" (dict
+  "a" $baseline
+  "b" $lastmod
+  "min_after_seconds" $minAfterSeconds
+) -}}
+{{- end -}}
+{{- end -}}
+{{- return $show -}}

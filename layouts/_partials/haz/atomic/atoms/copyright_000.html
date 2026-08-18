@@ -1,0 +1,37 @@
+{{- $source := index . "source" -}}
+{{- $child := index . "child" -}}
+{{- $thisObj := index . "thisObj" | default dict -}}
+{{- $sysManifest := index . "sysManifest" -}}
+{{- $context := index . "context" -}}
+{{- $thisObjProps := index $thisObj "props" | default dict -}}
+{{- $thisChildren := index $thisObj "children" | default dict -}}
+{{- $thisSource := "atoms|copyright_000" -}}
+{{- $props := index . "props" | default $thisObjProps -}}
+{{- $enabled := true -}}
+{{- if gt (len $thisObj) 0 -}}
+  {{- $enabled = index $thisObj "enabled" | default false -}}
+{{- end -}}
+{{- if $enabled -}}
+  {{- $year := index $props "year" | default now.Year -}}
+  {{- $name := trim (printf "%s" (index $props "name" | default "")) " \t\n\r" -}}
+  {{- if eq $name "" -}}
+    {{- $path := index $props "path" | default (slice "settings" "site" "copyright") -}}
+    {{- $value := partial "haz/helpers/fn/fn_get_nested.html" (dict
+      "value" $sysManifest
+      "path" $path
+    ) -}}
+    {{- $name = trim (printf "%s" $value) " \t\n\r" -}}
+  {{- end -}}
+  {{- if ne $name "" -}}
+    {{- partial "haz/helpers/fn/fn_html_comment.html" (dict "text" $thisSource) -}}
+    <p class="haz_copyright_000">&copy; {{ $year }} {{ $name }}</p>
+  {{- end -}}
+{{- else if index $thisChildren "enabled_false" "enabled" -}}
+{{- partial "haz/helpers/fn/fn_partial.html" (dict
+  "source" $thisSource
+  "child" (index $thisChildren "enabled_false" "child")
+  "thisObj" $thisObj
+  "sysManifest" $sysManifest
+  "context" $context
+) -}}
+{{- end -}}

@@ -1,0 +1,36 @@
+{{/* fn_list_000 — range collection rows, optional ul/ol from list_tag, delimiter, row_partial
+     list_tag: ul | ol → wrap; anything else / empty → bare stack
+*/}}
+{{- $collection := index . "collection" | default slice -}}
+{{- $rowPartial := trim (printf "%s" (index . "row_partial" | default "")) " \t\n\r" -}}
+{{- if and (gt (len $collection) 0) (ne $rowPartial "") -}}
+{{- $listTag := "" -}}
+{{- if isset . "list_tag" -}}
+  {{- $listTag = lower (trim (printf "%s" (index . "list_tag")) " \t\n\r") -}}
+{{- end -}}
+{{- $wrapList := or (eq $listTag "ul") (eq $listTag "ol") -}}
+{{- /* isset: empty string must win — Hugo `default` treats "" as unset */ -}}
+{{- $delimiter := ", " -}}
+{{- if isset . "delimiter" -}}
+  {{- $delimiter = index . "delimiter" -}}
+{{- end -}}
+{{- if $wrapList -}}
+  {{- if eq $listTag "ol" -}}<ol>{{ else }}<ul>{{ end -}}
+{{- end -}}
+{{- $last := sub (len $collection) 1 -}}
+{{- $useDelimiter := ne (trim (printf "%s" $delimiter) " \t\n\r") "" -}}
+{{- range $i, $row := $collection -}}
+  {{- if $wrapList -}}
+    {{- $suffix := "" -}}
+    {{- if and (lt $i $last) $useDelimiter -}}
+      {{- $suffix = $delimiter -}}
+    {{- end -}}
+    {{- partial $rowPartial (merge $row (dict "suffix" $suffix)) -}}
+  {{- else -}}
+    {{- partial $rowPartial $row -}}{{ if and (lt $i $last) $useDelimiter }}{{ $delimiter }}{{ end -}}
+  {{- end -}}
+{{- end -}}
+{{- if $wrapList -}}
+  {{- if eq $listTag "ol" -}}</ol>{{ else }}</ul>{{ end -}}
+{{- end -}}
+{{- end -}}

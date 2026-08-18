@@ -1,0 +1,55 @@
+{{- $source := index . "source" -}}
+{{- $child := index . "child" -}}
+{{- $thisObj := index . "thisObj" -}}
+{{- $sysManifest := index . "sysManifest" -}}
+{{- $context := index . "context" -}}
+{{- $thisObjProps := index $thisObj "props" -}}
+{{- $thisChildren := index $thisObj "children" -}}
+{{- $thisSource := "organisms|headers|header_000" -}}
+{{- if index $thisObj "enabled" -}}
+{{- partial "haz/helpers/fn/fn_html_comment.html" (dict "text" $thisSource) -}}
+{{- $attrsHeader := index $thisObjProps "header_attrs" -}}
+{{ partial "haz/helpers/fn/fn_tag_tag_open.html" (dict "tag" "header" "attrs" $attrsHeader) }}
+{{- $attrsWrapper := index $thisObjProps "div_wrapper_attrs" -}}
+{{ partial "haz/helpers/fn/fn_tag_tag_open.html" (dict "tag" "div" "attrs" $attrsWrapper) }}
+{{- $attrsBrand := index $thisObjProps "div_brand_wrapper_attrs" -}}
+{{ partial "haz/helpers/fn/fn_tag_tag_open.html" (dict "tag" "div" "attrs" $attrsBrand) }}
+{{- partial "haz/helpers/fn/fn_partial.html" (dict
+  "source" $thisSource
+  "child" "brand"
+  "thisObj" $thisObj
+  "sysManifest" $sysManifest
+  "context" $context
+) -}}
+</div>
+{{- $attrsControls := index $thisObjProps "div_controls_wrapper_attrs" -}}
+{{ partial "haz/helpers/fn/fn_tag_tag_open.html" (dict "tag" "div" "attrs" $attrsControls) }}
+{{- partial "haz/helpers/fn/fn_partial.html" (dict
+  "source" $thisSource
+  "child" "controls"
+  "thisObj" $thisObj
+  "sysManifest" $sysManifest
+  "context" $context
+) -}}
+</div>
+</div>
+{{- $attrsNavWrapper := index $thisObjProps "div_nav_main_wrapper_attrs" -}}
+{{ partial "haz/helpers/fn/fn_tag_tag_open.html" (dict "tag" "div" "attrs" $attrsNavWrapper) }}
+{{- partial "haz/helpers/fn/fn_partial.html" (dict
+  "source" $thisSource
+  "child" "header_nav_main"
+  "thisObj" $thisObj
+  "sysManifest" $sysManifest
+  "context" $context
+) -}}
+</div>
+</header>
+{{- else if index $thisChildren "enabled_false" "enabled" -}}
+{{- partial "haz/helpers/fn/fn_partial.html" (dict
+  "source" $thisSource
+  "child" (index $thisChildren "enabled_false" "child")
+  "thisObj" $thisObj
+  "sysManifest" $sysManifest
+  "context" $context
+) -}}
+{{ end }}

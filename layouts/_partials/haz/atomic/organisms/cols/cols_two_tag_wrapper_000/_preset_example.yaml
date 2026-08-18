@@ -1,0 +1,15 @@
+# Non-loaded starter — copy/adapt to preset_header.yaml, preset_footer.yaml, etc.
+preset:
+  # Outer landmark/shell tag (header | footer | div | …)
+  tag: div
+  # Attrs on that tag. Prefer class; add id only when something must target it (JS, aria-labelledby).
+  attrs:
+    class: haz_cols_two_tag_wrapper
+  # Column that usually holds brand / logo
+  brand_attrs:
+    class: haz_cols_two_tag_wrapper__brand
+  # Other column (header controls, footer legal nav, …)
+  col_other_attrs:
+    class: haz_cols_two_tag_wrapper__col_other
+  # Optional full-width row under the two cols (e.g. header main nav)
+  row_below_attrs: {}

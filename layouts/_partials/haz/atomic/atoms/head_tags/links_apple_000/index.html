@@ -1,0 +1,38 @@
+{{- $source := index . "source" -}}
+{{- $child := index . "child" -}}
+{{- $thisObj := index . "thisObj" | default dict -}}
+{{- $sysManifest := index . "sysManifest" -}}
+{{- $context := index . "context" -}}
+{{- $thisObjProps := index $thisObj "props" | default dict -}}
+{{- $thisChildren := index $thisObj "children" | default dict -}}
+{{- $thisSource := "atoms|head_tags|links_apple_000" -}}
+{{- $props := index . "props" | default $thisObjProps -}}
+{{- $enabled := true -}}
+{{- if gt (len $thisObj) 0 -}}
+  {{- $enabled = index $thisObj "enabled" | default false -}}
+{{- end -}}
+{{- $links := index $props "links" | default dict -}}
+{{- if $enabled -}}
+  {{- partial "haz/helpers/fn/fn_html_comment.html" (dict "text" $thisSource) -}}
+  {{- range $relKey, $rows := $links -}}
+    {{- range $rows -}}
+      {{- $href := index . "href" | default "" -}}
+      {{- if $href -}}
+        {{- $fn := "relURL" -}}
+        {{- if or (strings.HasPrefix $href "http://") (strings.HasPrefix $href "https://") (strings.HasPrefix $href "//") -}}
+          {{- $fn = "safeURL" -}}
+        {{- end -}}
+        {{- $attrs := merge . (dict "rel" $relKey) -}}
+        {{- partial "haz/helpers/fn/fn_tag_tag_open.html" (dict "tag" "link" "attrs" $attrs "fn" $fn) -}}
+      {{- end -}}
+    {{- end -}}
+  {{- end -}}
+{{- else if index $thisChildren "enabled_false" "enabled" -}}
+  {{- partial "haz/helpers/fn/fn_partial.html" (dict
+    "source" $thisSource
+    "child" (index $thisChildren "enabled_false" "child")
+    "thisObj" $thisObj
+    "sysManifest" $sysManifest
+    "context" $context
+  ) -}}
+{{- end -}}

@@ -1,0 +1,4 @@
+preset:
+  # Remove leading "_" to activate an override key.
+  _charset: utf-8
+  _viewport: width=device-width, initial-scale=1, maximum-scale=5

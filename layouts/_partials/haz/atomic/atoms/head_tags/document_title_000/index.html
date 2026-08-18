@@ -1,0 +1,44 @@
+{{- $source := index . "source" -}}
+{{- $child := index . "child" -}}
+{{- $thisObj := index . "thisObj" | default dict -}}
+{{- $sysManifest := index . "sysManifest" -}}
+{{- $context := index . "context" -}}
+{{- $thisObjProps := index $thisObj "props" | default dict -}}
+{{- $thisChildren := index $thisObj "children" | default dict -}}
+{{- $thisSource := "atoms|head_tags|document_title_000" -}}
+{{- $props := index . "props" | default $thisObjProps -}}
+{{- $enabled := true -}}
+{{- if gt (len $thisObj) 0 -}}
+  {{- $enabled = index $thisObj "enabled" | default false -}}
+{{- end -}}
+{{- $titleRaw := index $props "title" | default "" -}}
+{{- $prefix := index $props "title_prefix" | default "" -}}
+{{- $suffix := index $props "title_suffix" | default "" -}}
+{{- $delimiter := index $props "delimiter" | default " | " -}}
+{{- if $enabled -}}
+  {{- partial "haz/helpers/fn/fn_html_comment.html" (dict "text" $thisSource) -}}
+  {{- if ne $titleRaw "" -}}
+    {{- $titleValue := partial "haz/helpers/fn/fn_get_page_value_from_string.html" (dict
+      "context" $context
+      "value" $titleRaw
+    ) -}}
+    {{- if ne $titleValue "" -}}
+      {{- $parts := slice -}}
+      {{- if ne $prefix "" -}}{{- $parts = $parts | append $prefix -}}{{- end -}}
+      {{- $parts = $parts | append $titleValue -}}
+      {{- if ne $suffix "" -}}{{- $parts = $parts | append $suffix -}}{{- end -}}
+      {{- $titleFinal := delimit $parts $delimiter -}}
+      {{- if ne $titleFinal "" -}}
+        {{- partial "haz/helpers/fn/fn_tag_title.html" (dict "title" $titleFinal) -}}
+      {{- end -}}
+    {{- end -}}
+  {{- end -}}
+{{- else if index $thisChildren "enabled_false" "enabled" -}}
+  {{- partial "haz/helpers/fn/fn_partial.html" (dict
+    "source" $thisSource
+    "child" (index $thisChildren "enabled_false" "child")
+    "thisObj" $thisObj
+    "sysManifest" $sysManifest
+    "context" $context
+  ) -}}
+{{- end -}}

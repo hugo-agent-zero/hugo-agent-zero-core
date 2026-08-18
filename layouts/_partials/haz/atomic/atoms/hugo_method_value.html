@@ -1,0 +1,14 @@
+{{- $source := index . "source" -}}
+{{- $child := index . "child" -}}
+{{- $thisObj := index . "thisObj" -}}
+{{- $sysManifest := index . "sysManifest" -}}
+{{- $context := index . "context" -}}
+{{- $thisObjProps := index $thisObj "props" -}}
+{{- $thisChildren := index $thisObj "children" -}}
+{{- $thisSource := "atoms|hugo_method_value" -}}
+{{- $method := trim (printf "%s" (index $thisObjProps "method" | default "")) " \t\n\r" -}}
+{{- if and (index $thisObj "enabled") (ne $method "") -}}
+{{- partial "haz/helpers/fn/fn_get_page_value_from_string.html" (dict "context" $context "value" $method) -}}
+{{- else if index $thisChildren "enabled_false" "enabled" -}}
+{{- partial "haz/helpers/fn/fn_partial.html" (dict "source" $thisSource "child" (index $thisChildren "enabled_false" "child") "thisObj"  $thisObj "sysManifest" $sysManifest "context" $context) -}}
+{{- end -}}

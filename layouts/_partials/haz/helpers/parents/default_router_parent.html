@@ -1,0 +1,19 @@
+{{- $sysManifest := index . "sysManifest" -}}
+{{- $thisSource := index . "source" -}}
+{{- $route := index . "route" -}}
+{{- $context := index . "context" -}}
+{{- $entry := partial "haz/helpers/fn/fn_router_processor.html" (dict
+  "sysManifest" $sysManifest
+  "context" $context
+  "route_type" $route
+) -}}
+{{- if and $entry (index $entry "__hard_stop") -}}
+{{- /* hard stop: route selected an explicit disabled/missing layouts entry; no defaults fallback */ -}}
+{{- else if and $entry (gt (len $entry) 0) -}}
+{{- partial "haz/helpers/fn/fn_partial_from_entry.html" (dict
+  "source" $thisSource
+  "entry" $entry
+  "sysManifest" $sysManifest
+  "context" $context
+) -}}
+{{- end -}}

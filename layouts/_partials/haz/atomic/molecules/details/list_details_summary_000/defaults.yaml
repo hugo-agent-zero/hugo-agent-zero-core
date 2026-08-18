@@ -1,0 +1,12 @@
+# Top-level collection: page/CMS/preset replaces the list. defaults: shared row knobs (fill gaps).
+defaults:
+  list_partial: haz/helpers/fn/fn_list_000.html
+  row_partial: haz/atomic/atoms/tag_details_summary
+  list_tag: ""
+  # Shared row defaults (og:video-style). enabled false = fail-closed; rows must opt in.
+  enabled: false
+  open: false
+  attrs: {}
+collection: []
+merge_paths:
+  - - attrs

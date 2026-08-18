@@ -1,0 +1,15 @@
+preset:
+  attrs:
+    class: haz_section_header haz_section_header--faq
+  slots:
+    - tag: h2
+      attrs:
+        id: haz_faq_title
+      content: FAQ
+    - tag: h3
+      attrs: {}
+      content: Common questions
+    - tag: p
+      attrs:
+        class: haz_section_header__desc
+      content: Demo stack — faq.yaml + headless into one list. Yaml side uses props.filter (eq key); headless shows its full collection. data-haz_cms / classes come from layouts props, not the CMS files.

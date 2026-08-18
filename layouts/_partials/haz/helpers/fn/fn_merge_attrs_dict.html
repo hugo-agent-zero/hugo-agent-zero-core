@@ -1,0 +1,15 @@
+{{/*
+  fn_merge_attrs_dict.html
+  Merge two attrs dicts (manifest props.attrs shape).
+  Args: base, overlay
+  Returns: merged dict — overlay wins except class (space-concat when both set)
+*/}}
+{{- $base := index . "base" | default dict -}}
+{{- $overlay := index . "overlay" | default dict -}}
+{{- $merged := merge $base $overlay -}}
+{{- $baseClass := index $base "class" | default "" -}}
+{{- $overlayClass := index $overlay "class" | default "" -}}
+{{- if and $baseClass $overlayClass -}}
+  {{- $merged = merge $merged (dict "class" (printf "%s %s" $baseClass $overlayClass)) -}}
+{{- end -}}
+{{- return $merged -}}

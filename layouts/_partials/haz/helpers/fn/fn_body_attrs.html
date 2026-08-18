@@ -1,0 +1,18 @@
+{{/*
+  fn_body_attrs.html
+  Final <body> attrs: routes overlay + runtime path metadata.
+  Args: sysManifest, context
+  Returns: merged attrs dict
+*/}}
+{{- $sysManifest := index . "sysManifest" -}}
+{{- $context := index . "context" -}}
+{{- $routeType := partial "haz/helpers/fn/fn_get_route_type.html" (dict "context" $context) -}}
+{{- $routesDynamic := partial "haz/helpers/fn/fn_router_processor_body_attrs.html" (dict
+  "sysManifest" $sysManifest
+  "context" $context
+  "route_type" $routeType
+) -}}
+{{- $runtimeDynamic := partial "haz/helpers/fn/fn_body_attrs_dynamic.html" (dict
+  "context" $context
+) -}}
+{{- return partial "haz/helpers/fn/fn_merge_attrs_dict.html" (dict "base" $routesDynamic "overlay" $runtimeDynamic) -}}

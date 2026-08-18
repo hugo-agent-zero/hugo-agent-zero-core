@@ -1,0 +1,12 @@
+preset:
+  # Remove leading "_" to activate an override key.
+  _copyright: 2026 Hugo Agent Zero
+  _theme-name: Hugo Agent Zero
+  _format-detection: telephone=no
+  _color-scheme: light dark
+  _theme-color:
+    - content: "#111111"
+    - content: "#ffffff"
+      media: "(prefers-color-scheme: light)"
+    - content: "#0b1220"
+      media: "(prefers-color-scheme: dark)"

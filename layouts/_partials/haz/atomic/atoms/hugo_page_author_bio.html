@@ -1,0 +1,20 @@
+{{- $source := index . "source" -}}
+{{- $child := index . "child" -}}
+{{- $thisObj := index . "thisObj" -}}
+{{- $sysManifest := index . "sysManifest" -}}
+{{- $context := index . "context" -}}
+{{- $thisObjProps := index $thisObj "props" -}}
+{{- $thisChildren := index $thisObj "children" -}}
+{{- $thisSource := "atoms|hugo_page_author_bio" -}}
+{{- if index $thisObj "enabled" -}}
+{{- $resolved := partial "haz/helpers/fn/page/fn_page_author_resolve.html" (dict "sysManifest" $sysManifest "context" $context) -}}
+{{- if index $resolved "ok" -}}
+{{- $author := index $resolved "author" -}}
+{{- $bio := trim (printf "%s" (index $author "bio" | default "")) " \t\n\r" -}}
+{{- if ne $bio "" -}}
+<p class="haz_author_bio">{{ $bio }}</p>
+{{- end -}}
+{{- end -}}
+{{- else if index $thisChildren "enabled_false" "enabled" -}}
+{{- partial "haz/helpers/fn/fn_partial.html" (dict "source" $thisSource "child" (index $thisChildren "enabled_false" "child") "thisObj" $thisObj "sysManifest" $sysManifest "context" $context) -}}
+{{- end -}}

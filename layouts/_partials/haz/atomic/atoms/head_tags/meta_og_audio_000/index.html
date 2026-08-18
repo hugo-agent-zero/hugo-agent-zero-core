@@ -1,0 +1,62 @@
+{{- $source := index . "source" -}}
+{{- $child := index . "child" -}}
+{{- $thisObj := index . "thisObj" | default dict -}}
+{{- $sysManifest := index . "sysManifest" -}}
+{{- $context := index . "context" -}}
+{{- $thisObjProps := index $thisObj "props" | default dict -}}
+{{- $thisChildren := index $thisObj "children" | default dict -}}
+{{- $thisSource := "atoms|head_tags|meta_og_audio_000" -}}
+{{- $props := index . "props" | default $thisObjProps -}}
+{{- $enabled := true -}}
+{{- if gt (len $thisObj) 0 -}}
+  {{- $enabled = index $thisObj "enabled" | default false -}}
+{{- end -}}
+{{- if $enabled -}}
+  {{- partial "haz/helpers/fn/fn_html_comment.html" (dict "text" $thisSource) -}}
+  {{- $collection := index $props "collection" | default slice -}}
+  {{- $defTitle := index $props "title" | default "" -}}
+  {{- $defArtist := index $props "artist" | default "" -}}
+  {{- $defAlbum := index $props "album" | default "" -}}
+  {{- $defType := index $props "type" | default "" -}}
+  {{- if reflect.IsSlice $collection -}}
+    {{- range $collection -}}
+      {{- $row := . | default dict -}}
+      {{- if reflect.IsMap $row -}}
+        {{- $urlRaw := index $row "url" | default "" -}}
+        {{- $url := partial "haz/helpers/fn/fn_get_meta_value_rules_media.html" (dict
+          "context" $context
+          "prop" "url"
+          "defaults" (dict "url" $urlRaw)
+          "localValues" dict
+        ) -}}
+        {{- if $url -}}
+          {{- partial "haz/helpers/fn/fn_tag_meta_property.html" (dict "key" "og:audio" "content" $url) -}}
+          {{- $title := index $row "title" | default $defTitle -}}
+          {{- $artist := index $row "artist" | default $defArtist -}}
+          {{- $album := index $row "album" | default $defAlbum -}}
+          {{- $type := index $row "type" | default $defType -}}
+          {{- if $title -}}
+            {{- partial "haz/helpers/fn/fn_tag_meta_property.html" (dict "key" "og:audio:title" "content" $title) -}}
+          {{- end -}}
+          {{- if $artist -}}
+            {{- partial "haz/helpers/fn/fn_tag_meta_property.html" (dict "key" "og:audio:artist" "content" $artist) -}}
+          {{- end -}}
+          {{- if $album -}}
+            {{- partial "haz/helpers/fn/fn_tag_meta_property.html" (dict "key" "og:audio:album" "content" $album) -}}
+          {{- end -}}
+          {{- if $type -}}
+            {{- partial "haz/helpers/fn/fn_tag_meta_property.html" (dict "key" "og:audio:type" "content" $type) -}}
+          {{- end -}}
+        {{- end -}}
+      {{- end -}}
+    {{- end -}}
+  {{- end -}}
+{{- else if index $thisChildren "enabled_false" "enabled" -}}
+  {{- partial "haz/helpers/fn/fn_partial.html" (dict
+    "source" $thisSource
+    "child" (index $thisChildren "enabled_false" "child")
+    "thisObj" $thisObj
+    "sysManifest" $sysManifest
+    "context" $context
+  ) -}}
+{{- end -}}

@@ -1,0 +1,36 @@
+{{- $context := index . "context" -}}
+{{- $taxonomy := lower (trim (printf "%s" (index . "taxonomy" | default "")) " \t\n\r") -}}
+{{- if eq $taxonomy "" -}}{{- else -}}
+{{- $terms := $context.GetTerms $taxonomy -}}
+{{- $sortKey := trim (printf "%s" (index . "sort" | default "")) " \t\n\r" -}}
+{{- if ne $sortKey "" -}}
+{{- $sortOrder := lower (trim (printf "%s" (index . "sort_order" | default "asc")) " \t\n\r") -}}
+{{- if eq $sortOrder "desc" -}}
+{{- $terms = sort $terms $sortKey "desc" -}}
+{{- else -}}
+{{- $terms = sort $terms $sortKey -}}
+{{- end -}}
+{{- end -}}
+{{- if gt (len $terms) 0 -}}
+{{- $rowPartial := trim (printf "%s" (index . "row_partial" | default "haz/helpers/fn/fn_list_row_link_000")) " \t\n\r" -}}
+{{- $rel := trim (printf "%s" (index . "rel" | default "")) " \t\n\r" -}}
+{{- $collection := slice -}}
+{{- range $terms -}}
+{{- $row := dict "href" .RelPermalink "text" .LinkTitle -}}
+{{- if ne $rel "" -}}
+{{- $row = merge $row (dict "rel" $rel) -}}
+{{- end -}}
+{{- $collection = $collection | append $row -}}
+{{- end -}}
+{{- $listTag := "ul" -}}
+{{- if isset . "list_tag" -}}
+  {{- $listTag = index . "list_tag" -}}
+{{- end -}}
+{{- partial "haz/helpers/fn/fn_list_000.html" (dict
+  "collection" $collection
+  "row_partial" $rowPartial
+  "list_tag" $listTag
+  "delimiter" (index . "delimiter" | default ", ")
+) -}}
+{{- end -}}
+{{- end -}}

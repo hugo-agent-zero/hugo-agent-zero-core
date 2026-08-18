@@ -1,0 +1,17 @@
+{{/* layouts/_partials/essentials/utils/fn_tag_link_href.html */}}
+{{- $href := .href -}}
+{{- if $href -}}
+  {{- if hasPrefix $href "http" -}}
+    <link rel="stylesheet" href="{{ $href }}">
+  {{- else if hasPrefix $href "static-" -}}
+    {{- $staticPath := replace $href "static-" "" -}}
+    <link rel="stylesheet" href="{{ $staticPath | relURL }}">
+  {{- else -}}
+    {{- $res := resources.Get $href -}}
+    {{- if $res -}}
+      <link rel="stylesheet" href="{{ $res.RelPermalink }}">
+    {{- else -}}
+      {{ warnf "CSS asset not found: %s" $href }}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}

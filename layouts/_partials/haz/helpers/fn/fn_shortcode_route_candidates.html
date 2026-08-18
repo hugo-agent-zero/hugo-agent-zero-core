@@ -1,0 +1,20 @@
+{{/*
+  fn_shortcode_route_candidates.html
+  Return exact → parent wildcard route candidates for the current page.
+  Args: context
+*/}}
+{{- $context := index . "context" -}}
+{{- $path := strings.Trim $context.RelPermalink "/" -}}
+{{- $candidates := slice $path -}}
+{{- if ne $path "" -}}
+  {{- $parts := split $path "/" -}}
+  {{- $partCount := len $parts -}}
+  {{- if gt $partCount 1 -}}
+    {{- range $k := seq 1 (sub $partCount 1) -}}
+      {{- $parentLen := sub $partCount $k -}}
+      {{- $parent := delimit (first $parentLen $parts) "/" -}}
+      {{- $candidates = $candidates | append (printf "%s/*" $parent) -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
+{{- return $candidates -}}

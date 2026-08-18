@@ -1,0 +1,31 @@
+{{- $source := .source -}}
+{{- $child := .child -}}
+{{- $mpConfig := .mpConfig -}}
+{{- $thisProps := .thisProps -}}
+{{- $thisPropsArgs := .thisProps.args -}}
+{{- $context := .context -}}
+{{- $thisChildren := $thisProps.children -}}
+{{- $thisSource := "organisms|head" -}}
+{{- if $thisProps.active -}} TODO
+
+  {{- partial "haz/helpers/fn/fn_partial.html" (dict
+  "source" $source
+  "child" "head_main"
+  "level" $thisChildren.head_main.level
+  "group" $thisChildren.head_main.group
+  "inst" $thisChildren.head_main.inst
+  "mpConfig" $mpConfig
+  "context" $context
+  ) -}}
+
+{{- else if $thisProps.false.active -}}
+{{- partial "haz/helpers/fn/fn_partial.html" (dict
+"source" $source
+"child"  $thisProps.false.child
+"level" $thisProps.false.level
+"group" $thisProps.false.group
+"inst" $thisProps.false.inst
+"mpConfig" $mpConfig
+"context" $context
+  ) -}}
+{{- end -}}

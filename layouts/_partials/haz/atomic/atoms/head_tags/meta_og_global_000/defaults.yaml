@@ -1,0 +1,7 @@
+defaults:
+  og:site_name: Hugo Agent Zero
+tag_white_list:
+  - key: og:site_name
+    compare: global
+    tag: property
+merge_paths: []

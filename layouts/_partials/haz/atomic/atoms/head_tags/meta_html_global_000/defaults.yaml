@@ -1,0 +1,25 @@
+defaults:
+  copyright: 2026 Hugo Agent Zero
+  theme-name: Hugo Agent Zero
+  format-detection: telephone=no
+  color-scheme: light dark
+  theme-color:
+    - content: "#111111"
+    - content: "#ffffff"
+      media: "(prefers-color-scheme: light)"
+    - content: "#0b1220"
+      media: "(prefers-color-scheme: dark)"
+tag_white_list:
+  - key: copyright
+    compare: global
+    tag: name
+  - key: theme-name
+    compare: global
+    tag: name
+  - key: format-detection
+    compare: global
+    tag: name
+  - key: color-scheme
+    compare: global
+    tag: name
+merge_paths: []

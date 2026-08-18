@@ -1,0 +1,25 @@
+{{- $source := index . "source" -}}
+{{- $child := index . "child" -}}
+{{- $thisObj := index . "thisObj" -}}
+{{- $sysManifest := index . "sysManifest" -}}
+{{- $context := index . "context" -}}
+{{- $thisProps := index $thisObj "props" -}}
+{{- $thisChildren := index $thisObj "children" -}}
+{{- $thisSource := "atoms|tag_a_href" -}}
+{{- if index $thisObj "enabled" -}}
+{{- $attrs := index $thisProps "attrs" | default dict -}}
+{{- $hrefBase := index $attrs "href" | default "" -}}
+{{- $href := partial "haz/helpers/fn/fn_href_build.html" (dict
+  "href_base" $hrefBase
+) -}}
+{{- $attrs = merge $attrs (dict "href" $href) -}}
+{{- $text := index $thisProps "text" | default "" -}}
+{{- partial "haz/helpers/fn/fn_tag_tag_open.html" (dict "tag" "a" "attrs" $attrs) -}}
+{{- if ne $text "" -}}
+{{- $text -}}
+{{- else -}}
+{{- partial "haz/helpers/fn/fn_partial.html" (dict "source" $thisSource "child" "content" "thisObj" $thisObj "sysManifest" $sysManifest "context" .) -}}
+{{- end -}}</a>
+{{- else if index $thisChildren "enabled_false" "enabled" -}}
+{{- partial "haz/helpers/fn/fn_partial.html" (dict "source" $thisSource "child" (index $thisChildren "enabled_false" "child") "thisObj" $thisObj "sysManifest" $sysManifest "context" .) -}}
+{{- end -}}

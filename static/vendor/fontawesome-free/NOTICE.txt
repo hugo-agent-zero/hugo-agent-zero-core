@@ -1,0 +1,8 @@
+﻿Font Awesome Free — full npm package vendored for Hugo static serving.
+Version: see package.json
+Source: @fortawesome/fontawesome-free
+Path: static/vendor/fontawesome-free/
+License: LICENSE.txt (CC-BY-4.0 AND OFL-1.1 AND MIT)
+Bump: npm pack @fortawesome/fontawesome-free in a temp dir; replace this folder with package/ contents; keep this NOTICE if useful.
+Future: optional Hugo module (not core haz). Bootstrap Icons can be a sibling module later.
+Currently loaded: css/all.min.css (webfonts). SVGs available under svgs/ for later mask/inline use.

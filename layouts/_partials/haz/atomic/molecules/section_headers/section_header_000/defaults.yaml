@@ -1,0 +1,16 @@
+defaults:
+  tag: header
+  attrs:
+    class: haz_section_header
+  slots:
+    - tag: h2
+      attrs: {}
+      content: ""
+    - tag: h3
+      attrs: {}
+      content: ""
+    - tag: p
+      attrs: {}
+      content: ""
+merge_paths:
+  - - attrs

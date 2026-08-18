@@ -1,0 +1,14 @@
+{{- $sysManifest := index . "sysManifest" -}}
+{{- $context := index . "context" -}}
+{{- $authorId := trim (printf "%s" (index $context.Params "author_id" | default "")) " \t\n\r" -}}
+{{- if and (eq $authorId "") (eq $context.Kind "term") (eq $context.Data.Plural "authors") -}}
+{{- $authorId = lower (trim (printf "%s" $context.Name) " \t\n\r") -}}
+{{- end -}}
+{{- $authors := index $sysManifest "authors" | default dict -}}
+{{- $author := dict -}}
+{{- $ok := false -}}
+{{- if and (ne $authorId "") (isset $authors $authorId) -}}
+{{- $author = index $authors $authorId -}}
+{{- $ok = true -}}
+{{- end -}}
+{{- return (dict "author" $author "author_id" $authorId "ok" $ok) -}}

@@ -1,0 +1,60 @@
+{{- /*
+  tag_details_summary — native <details>/<summary>; layouts props or fn_list_000 row dict.
+
+  Keep emitted DOM lean: no generated summary class or details-panel wrapper.
+  `details` is trusted HTML, so an author who needs an inner wrapper/attrs may supply
+  them in the value and target the outer element with `details:has(> .their_class)`.
+*/ -}}
+{{- $thisSource := "atoms|tag_details_summary" -}}
+{{- $sysManifest := index . "sysManifest" -}}
+{{- $context := index . "context" -}}
+{{- $thisObj := index . "thisObj" | default dict -}}
+{{- $thisObjProps := index $thisObj "props" | default dict -}}
+{{- $thisChildren := index $thisObj "children" | default dict -}}
+{{- $props := index . "props" | default $thisObjProps -}}
+{{- if and (eq (len $props) 0) (or (isset . "summary") (isset . "details")) -}}
+  {{- $props = . -}}
+{{- end -}}
+{{- $collection := index $props "collection" | default slice -}}
+{{- if reflect.IsSlice $collection -}}
+  {{- $filter := index $props "filter" | default dict -}}
+  {{- $rows := partial "haz/helpers/fn/fn_collection_filter_run.html" (dict
+    "collection" $collection
+    "filter" $filter
+    "default_enabled" false
+    "source" $thisSource
+  ) -}}
+  {{- if gt (len $rows) 0 -}}
+    {{- $props = merge $props (index $rows 0) -}}
+  {{- end -}}
+{{- end -}}
+{{- $enabled := true -}}
+{{- if gt (len $thisObj) 0 -}}
+  {{- $enabled = index $thisObj "enabled" | default false -}}
+{{- end -}}
+{{- $summary := index $props "summary" | default "" -}}
+{{- $details := index $props "details" | default "" -}}
+{{- $open := index $props "open" | default false -}}
+{{- $attrs := index $props "attrs" | default dict -}}
+{{- if and $enabled (ne $summary "") (ne $details "") -}}
+  {{- partial "haz/helpers/fn/fn_html_comment.html" (dict "text" $thisSource) -}}
+  {{- $elAttrs := $attrs -}}
+  {{- if $open -}}
+    {{- $elAttrs = merge $elAttrs (dict "open" "open") -}}
+  {{- end -}}
+  {{- if not (isset $elAttrs "class") -}}
+    {{- $elAttrs = merge $elAttrs (dict "class" "haz_details") -}}
+  {{- end -}}
+  {{- partial "haz/helpers/fn/fn_tag_tag_open.html" (dict "tag" "details" "attrs" $elAttrs) -}}
+  <summary>{{ $summary | safeHTML }}</summary>
+  {{ $details | safeHTML }}
+  {{- printf "</details>" | safeHTML -}}
+{{- else if index $thisChildren "enabled_false" "enabled" -}}
+  {{- partial "haz/helpers/fn/fn_partial.html" (dict
+    "source" $thisSource
+    "child" (index $thisChildren "enabled_false" "child")
+    "thisObj" $thisObj
+    "sysManifest" $sysManifest
+    "context" $context
+  ) -}}
+{{- end -}}

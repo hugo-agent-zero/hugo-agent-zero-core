@@ -1,0 +1,30 @@
+{{/*
+  fn_get_nested.html
+  Resolve a value by walking a map through an ordered key path.
+
+  Args:
+    - value (map): traversal root
+    - path (slice): ordered map keys
+*/}}
+{{- $resolved := index . "value" | default dict -}}
+{{- $path := index . "path" | default slice -}}
+{{- $found := true -}}
+
+{{- range $key := $path -}}
+  {{- if $found -}}
+    {{- if not (reflect.IsMap $resolved) -}}
+      {{- $found = false -}}
+      {{- $resolved = dict -}}
+    {{- else -}}
+      {{- $keyString := printf "%v" $key -}}
+      {{- if isset $resolved $keyString -}}
+        {{- $resolved = index $resolved $keyString -}}
+      {{- else -}}
+        {{- $found = false -}}
+        {{- $resolved = dict -}}
+      {{- end -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
+
+{{- return $resolved -}}

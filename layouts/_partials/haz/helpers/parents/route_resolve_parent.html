@@ -1,0 +1,48 @@
+{{/*
+  route_resolve_parent.html
+  Shared route resolution base for router processors (child, html attrs, …).
+  Args: sysManifest, context, route_type
+  Returns: { matchedRule, routeKey, mapChildEntry, defaultEntry }
+*/}}
+{{- $routeType := index . "route_type" -}}
+{{- $sysManifest := index . "sysManifest" -}}
+{{- $context := index . "context" -}}
+{{- $routes := $sysManifest.routes -}}
+{{- $rules := index $routes "rules" -}}
+{{- $mapChild := index $routes "map_child" -}}
+{{- $path := strings.Trim $context.RelPermalink "/" -}}
+{{- $parts := split $path "/" -}}
+{{- $partCount := len $parts -}}
+{{- $candidates := slice $path -}}
+{{- if gt (sub $partCount 1) 0 -}}
+  {{- range $k := seq 1 (sub $partCount 1) -}}
+    {{- $parentLen := sub $partCount $k -}}
+    {{- $parent := delimit (first $parentLen $parts) "/" -}}
+    {{- $candidates = $candidates | append (printf "%s/*" $parent) -}}
+  {{- end -}}
+{{- end -}}
+{{- $routeKey := "" -}}
+{{- $matchedRule := dict -}}
+{{- if $rules -}}
+  {{- range $candidate := $candidates -}}
+    {{- if not $routeKey -}}
+      {{- range $rule := $rules -}}
+        {{- if and (not $routeKey) (eq (index $rule "match") $candidate) (eq (index $rule "enabled") true) -}}
+          {{- $routeKey = index $rule "key_child" -}}
+          {{- $matchedRule = $rule -}}
+        {{- end -}}
+      {{- end -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
+{{- if not $routeKey -}}
+  {{- $routeKey = $context.Section -}}
+{{- end -}}
+{{- $mapChildEntry := index $mapChild $routeKey -}}
+{{- $defaultEntry := index $routes "defaults" $routeType -}}
+{{- return (dict
+  "matchedRule" $matchedRule
+  "routeKey" $routeKey
+  "mapChildEntry" $mapChildEntry
+  "defaultEntry" $defaultEntry
+) -}}

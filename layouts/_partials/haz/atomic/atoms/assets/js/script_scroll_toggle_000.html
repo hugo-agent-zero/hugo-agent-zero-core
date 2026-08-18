@@ -1,0 +1,30 @@
+{{- $source := index . "source" -}}
+{{- $child := index . "child" -}}
+{{- $thisObj := index . "thisObj" -}}
+{{- $sysManifest := index . "sysManifest" -}}
+{{- $context := index . "context" -}}
+{{- $thisObjProps := index $thisObj "props" -}}
+{{- $thisChildren := index $thisObj "children" -}}
+{{- $thisSource := "atoms|script_scroll_toggle_000" -}}
+{{- if index $thisObj "enabled" -}}
+<script>
+const root = document.documentElement;
+const ATTR  = "{{- index $thisObjProps "data_attr" -}}";
+const TRUE  = "{{- index $thisObjProps "data_true" -}}";
+const FALSE = "{{- index $thisObjProps "data_false" -}}";
+window.addEventListener("scroll", () => {
+  root.setAttribute(
+    "data-" +ATTR,
+    window.scrollY > 0 ? TRUE : FALSE
+  );
+});
+</script>
+{{- else if index $thisChildren "enabled_false" "enabled" -}}
+{{- partial "haz/helpers/fn/fn_partial.html" (dict
+  "source" $thisSource
+  "child" (index $thisChildren "enabled_false" "child")
+  "thisObj" $thisObj
+  "sysManifest" $sysManifest
+  "context" $context
+) -}}
+{{ end }}

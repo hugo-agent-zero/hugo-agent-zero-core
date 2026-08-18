@@ -1,0 +1,14 @@
+# Hugo
+/public/
+/resources/
+.hugo_build.lock
+
+# OS / editor
+.DS_Store
+Thumbs.db
+*.swp
+*~
+
+# Env / secrets (if added later)
+.env
+.env.*

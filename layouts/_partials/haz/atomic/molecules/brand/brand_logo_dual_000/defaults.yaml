@@ -1,0 +1,10 @@
+defaults:
+  attrs:
+    href: ".Site.Home.RelPermalink"
+    target: "_self"
+    aria:
+      label: Home
+merge_paths:
+  - - attrs
+  - - attrs
+    - aria

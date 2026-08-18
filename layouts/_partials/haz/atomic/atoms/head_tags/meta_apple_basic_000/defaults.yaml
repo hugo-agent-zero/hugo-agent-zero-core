@@ -1,0 +1,8 @@
+# Values often from page FM; tag_white_list is the emit allowlist (contract).
+defaults:
+  apple-mobile-web-app-status-bar-style: ""
+tag_white_list:
+  - key: apple-mobile-web-app-status-bar-style
+    compare: basic
+    tag: name
+merge_paths: []

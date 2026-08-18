@@ -1,0 +1,9 @@
+defaults:
+  links:
+    preload:
+      - href: /haz/fonts/Atkinson%20Hyperlegible/Next/AtkinsonHyperlegibleNext-VariableFont_wght.ttf
+        as: font
+        type: font/ttf
+        crossorigin: anonymous
+merge_paths:
+  - - links

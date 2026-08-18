@@ -1,0 +1,61 @@
+{{/*
+  fn_shortcode_resolve.html
+  Resolve public shortcode key → direction → layouts entry object.
+  Args: key, sysManifest, context
+  Returns: layouts entry dict, or {__hard_stop, __reason}.
+*/}}
+{{- $key := index . "key" | default "" -}}
+{{- $sysManifest := index . "sysManifest" | default dict -}}
+{{- $context := index . "context" -}}
+{{- $shortcodes := index $sysManifest "shortcodes" | default dict -}}
+{{- $registry := index $shortcodes "registry" | default dict -}}
+{{- $result := dict -}}
+
+{{- if eq $key "" -}}
+  {{- $result = dict "__hard_stop" true "__reason" "missing_shortcode_key" -}}
+{{- else if not (isset $registry $key) -}}
+  {{- $result = dict "__hard_stop" true "__reason" "missing_registry_entry" -}}
+{{- else -}}
+  {{- $registryEntry := index $registry $key | default dict -}}
+  {{- if ne (index $registryEntry "enabled") true -}}
+    {{- $result = dict "__hard_stop" true "__reason" "disabled_registry_entry" -}}
+  {{- else -}}
+    {{- $direction := index $registryEntry "direction" | default "" -}}
+    {{- $keyProfile := index $registryEntry "key_profile" | default $key -}}
+    {{- $resolvedDirection := dict -}}
+    {{- if eq $direction "route_key" -}}
+      {{- $resolvedDirection = partial "haz/helpers/fn/fn_shortcode_resolve_route_key.html" (dict
+        "shortcodes" $shortcodes
+        "key_profile" $keyProfile
+        "context" $context
+      ) -}}
+    {{- else if eq $direction "key_route" -}}
+      {{- $resolvedDirection = partial "haz/helpers/fn/fn_shortcode_resolve_key_route.html" (dict
+        "shortcodes" $shortcodes
+        "key_profile" $keyProfile
+        "context" $context
+      ) -}}
+    {{- else -}}
+      {{- $resolvedDirection = dict "__hard_stop" true "__reason" "unsupported_shortcode_direction" -}}
+    {{- end -}}
+
+    {{- if index $resolvedDirection "__hard_stop" -}}
+      {{- $result = $resolvedDirection -}}
+    {{- else -}}
+      {{- $entryKey := index $resolvedDirection "key_layouts_entry" | default "" -}}
+      {{- $mapLayoutsEntry := index $shortcodes "map_layouts_entry" | default dict -}}
+      {{- if or (eq $entryKey "") (not (isset $mapLayoutsEntry $entryKey)) -}}
+        {{- $result = dict "__hard_stop" true "__reason" "missing_shortcode_layouts_entry" -}}
+      {{- else -}}
+        {{- $entry := index $mapLayoutsEntry $entryKey | default dict -}}
+        {{- if ne (index $entry "enabled") true -}}
+          {{- $result = dict "__hard_stop" true "__reason" "disabled_shortcode_layouts_entry" -}}
+        {{- else -}}
+          {{- $result = $entry -}}
+        {{- end -}}
+      {{- end -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
+
+{{- return $result -}}

@@ -1,0 +1,45 @@
+# Docs only — not wired as part.preset. Leading _ = parked (reference; not consumed).
+# Active keys below show sparse style: omit defaults; set only overrides + content.
+preset:
+  # --- molecule defaults.yaml ---
+  _list_partial: haz/helpers/fn/fn_list_000.html
+  _row_partial: haz/atomic/atoms/tag_details_summary
+  _list_tag: "" # "" = bare stack; "ul" | "ol" wrap. delimiter is NOT a prop (index hardcodes "").
+  _enabled: false # shared row default (fail-closed); rows must set enabled: true
+  _open: false # gap-filled onto each row that omits open
+  _attrs: {} # deep-merged under per-row attrs
+  _collection: [] # CMS/preset/layouts replace the whole collection (not merged row-by-row)
+  _filter: {} # omit = enabled-gate only (using shared enabled default)
+
+  # --- active shared overrides for this example ---
+  attrs:
+    class: haz_details
+  # filter:
+  #   prop: key
+  #   op: in
+  #   value: [example, example_open]
+  #   order: random
+  #   limit: 2
+
+  collection:
+    - key: example
+      enabled: true
+      summary: Example question?
+      details: "<p>Must opt in with enabled: true (shared default is false).</p>"
+      _open: false
+      _attrs: {}
+
+    - key: example_open
+      enabled: true
+      summary: Starts open?
+      details: "<p>Only override open when true.</p>"
+      open: true
+      attrs:
+        id: faq-example-open
+        class: haz_details haz_details--featured
+
+    - key: example_hidden
+      summary: Hidden — omits enabled (treated as false)?
+      details: "<p>No enabled key + defaults.enabled false → dropped.</p>"
+      _open: false
+      _attrs: {}

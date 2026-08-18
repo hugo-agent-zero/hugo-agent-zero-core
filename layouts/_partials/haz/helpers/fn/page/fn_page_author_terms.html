@@ -1,0 +1,35 @@
+{{- $context := index . "context" -}}
+{{- $sysManifest := index . "sysManifest" -}}
+{{- $terms := $context.GetTerms "authors" -}}
+{{- if gt (len $terms) 0 -}}
+{{- $authors := index $sysManifest "authors" | default dict -}}
+{{- $rowPartial := trim (printf "%s" (index . "row_partial" | default "haz/helpers/fn/fn_list_row_link_000")) " \t\n\r" -}}
+{{- $rel := trim (printf "%s" (index . "rel" | default "author")) " \t\n\r" -}}
+{{- $collection := slice -}}
+{{- range $terms -}}
+{{- $authorId := lower (trim (printf "%s" .Name) " \t\n\r") -}}
+{{- $name := $authorId -}}
+{{- if isset $authors $authorId -}}
+{{- $name = index (index $authors $authorId) "name" | default $authorId -}}
+{{- end -}}
+{{- $href := .RelPermalink -}}
+{{- if isset $authors $authorId -}}
+{{- $href = printf "/authors/%s/" $authorId -}}
+{{- end -}}
+{{- $row := dict "href" $href "text" $name -}}
+{{- if ne $rel "" -}}
+{{- $row = merge $row (dict "rel" $rel) -}}
+{{- end -}}
+{{- $collection = $collection | append $row -}}
+{{- end -}}
+{{- $listTag := "ul" -}}
+{{- if isset . "list_tag" -}}
+  {{- $listTag = index . "list_tag" -}}
+{{- end -}}
+{{- partial "haz/helpers/fn/fn_list_000.html" (dict
+  "collection" $collection
+  "row_partial" $rowPartial
+  "list_tag" $listTag
+  "delimiter" (index . "delimiter" | default ", ")
+) -}}
+{{- end -}}

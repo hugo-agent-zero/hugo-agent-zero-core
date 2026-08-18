@@ -1,0 +1,19 @@
+preset:
+  # Remove leading "_" on a rel bucket to activate. Same rel key replaces that
+  # defaults list (no append). Prefer local assets; avoid third-party CDNs.
+  _links:
+    _dns-prefetch:
+      - href: //cdn.example.com
+    _preconnect:
+      - href: https://images.example.com
+        crossorigin: anonymous
+    _preload:
+      - href: /haz/fonts/Atkinson%20Hyperlegible/Next/AtkinsonHyperlegibleNext-VariableFont_wght.ttf
+        as: font
+        type: font/ttf
+        crossorigin: anonymous
+      - href: /assets/css/critical.css
+        as: style
+    _prefetch:
+      - href: /about/
+        as: document

@@ -1,0 +1,12 @@
+preset:
+  # Remove leading "_" on a rel bucket to activate. Same rel key replaces that
+  # defaults list (no append).
+  _links:
+    _shortcut icon:
+      - href: /favicon_000.ico
+    _icon:
+      - href: /favicon_000.svg
+        type: image/svg+xml
+      - href: /favicon_000.png
+        type: image/png
+        sizes: 32x32

@@ -1,0 +1,92 @@
+{{/*
+  fn_partial.html
+  params:
+    - source  : string - the "name" of the source .html making the call / request
+    - child   : string - the child from the chidren (from thisObj) used to fulfill this request
+    - thisObj : object - the specific sub-object from the sysManifest used to fulfill this request
+    - sysManifest: object -the full System Manifest object
+    - context : object - Hugo's current page/context
+*/}}
+{{- $source := index . "source" -}}
+{{- $child := index . "child" -}}
+{{- $thisObj := index . "thisObj" -}}
+{{- $sysManifest := index . "sysManifest" -}}
+{{- $context := index . "context" -}}
+{{- $skipPrep := index . "skip_prep" | default false -}}
+{{- $resolvedProps := index . "resolved_props" -}}
+{{- $tagWhiteList := index . "tag_white_list" -}}
+{{- $children := index $thisObj "children" -}}
+{{- $thisObjNew := dict -}}
+{{- if and (gt (len $thisObj) 0) (isset $thisObj "part") (or (not $child) (eq $child "")) -}}
+  {{- $thisObjNew = $thisObj -}}
+{{- else -}}
+  {{- $thisChild := index $children $child -}}
+  {{- if $thisChild -}}
+    {{- $enabled := index $thisChild "enabled" -}}
+    {{- if $enabled -}}
+      {{- $level := index $thisChild "level" -}}
+      {{- $inst := index $thisChild "inst" -}}
+      {{- $group := "" -}}
+      {{- $manifestRoot := $sysManifest -}}
+      {{- if in (slice "layouts_root" "atoms" "molecules" "organisms" "multipliers") $level -}}
+        {{- $manifestRoot = index $sysManifest "layouts" | default dict -}}
+      {{- end -}}
+      {{- if and (isset $thisChild "group") (ne (index $thisChild "group" | default "") "") -}}
+        {{- $group = index $thisChild "group" -}}
+        {{- $thisObjNew = index $manifestRoot $level $group $inst -}}
+      {{- else -}}
+        {{- $thisObjNew = index $manifestRoot $level $inst -}}
+      {{- end -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
+{{- if $thisObjNew -}}
+  {{- $part := index $thisObjNew "part" | default dict -}}
+  {{- $renderFile := index $part "file" | default "" -}}
+  {{- $partFolder := index $part "folder" | default "" -}}
+  {{- $folderPath := replaceRE "/+$" "" $partFolder -}}
+  {{- if ne $folderPath "" -}}
+    {{- if eq $renderFile "" -}}
+      {{- $renderFile = "index.html" -}}
+    {{- end -}}
+    {{- $filePath := replaceRE "^/+" "" $renderFile -}}
+    {{- $renderFile = printf "%s/%s" $folderPath $filePath -}}
+  {{- end -}}
+  {{- $processFile := index $part "process" | default (index $part "prep" | default (index $part "adapter" | default "")) -}}
+  {{- if and (eq $processFile "") (ne $folderPath "") -}}
+    {{- $processCandidate := printf "%s/process.html" $folderPath -}}
+    {{- if templates.Exists (printf "_partials/%s" $processCandidate) -}}
+      {{- $processFile = $processCandidate -}}
+    {{- end -}}
+  {{- end -}}
+  {{- if and (index $thisObjNew "enabled") (ne $processFile "") (not $skipPrep) -}}
+    {{- partial $processFile (dict
+      "source" $source
+      "child" $child
+      "thisObj" $thisObjNew
+      "sysManifest" $sysManifest
+      "context" $context
+    ) -}}
+  {{- else if and (index $thisObjNew "enabled") (ne $renderFile "") -}}
+    {{- $renderDict := dict
+      "source" $source
+      "child" $child
+      "thisObj" $thisObjNew
+      "sysManifest" $sysManifest
+      "context" $context
+    -}}
+    {{- if $resolvedProps -}}
+      {{- $renderDict = merge $renderDict (dict "props" $resolvedProps) -}}
+    {{- end -}}
+    {{- if isset . "tag_white_list" -}}
+      {{- $renderDict = merge $renderDict (dict "tag_white_list" ($tagWhiteList | default slice)) -}}
+    {{- end -}}
+    {{- if index $part "cache" -}}
+      {{- partialCached $renderFile $renderDict (index $part "key") -}}
+    {{- else -}}
+      {{- partial $renderFile $renderDict -}}
+    {{- end -}}
+  {{- end -}}
+{{- else -}}
+{{/* component not found — blank for now */}}
+{{- end -}}

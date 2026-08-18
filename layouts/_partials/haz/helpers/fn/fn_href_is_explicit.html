@@ -1,0 +1,15 @@
+{{/*
+  fn_href_is_explicit.html
+  Return true when href is already explicit and should not be relURL-transformed.
+  Explicit href shapes:
+    - URI scheme (e.g. https:, http:, ftp:, mailto:, tel:)
+    - protocol-relative (//example.com)
+    - hash fragment (#section)
+    - query link (?ref=foo)
+*/}}
+{{- $href := index . "href" | default "" -}}
+{{- $hasScheme := gt (len (findRE "^[a-zA-Z][a-zA-Z0-9+.-]*:" $href)) 0 -}}
+{{- $isProtocolRelative := hasPrefix $href "//" -}}
+{{- $isHashLink := hasPrefix $href "#" -}}
+{{- $isQueryLink := hasPrefix $href "?" -}}
+{{- return (or $hasScheme $isProtocolRelative $isHashLink $isQueryLink) -}}

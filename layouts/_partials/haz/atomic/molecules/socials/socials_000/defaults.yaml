@@ -1,0 +1,20 @@
+defaults:
+  tag: nav
+  attrs:
+    class: haz_socials
+    aria:
+      label: Social
+  list_attrs:
+    class: haz_socials__menu haz_display_flex
+  item_attrs:
+    class: haz_socials__item
+  link_attrs:
+    class: haz_socials__link
+  # Shared row default (fail-closed); CMS rows must set enabled: true
+  enabled: false
+collection: []
+merge_paths:
+  - - attrs
+  - - list_attrs
+  - - item_attrs
+  - - link_attrs

@@ -1,0 +1,26 @@
+{{- $source := index . "source" -}}
+{{- $child := index . "child" -}}
+{{- $thisObj := index . "thisObj" -}}
+{{- $sysManifest := index . "sysManifest" -}}
+{{- $context := index . "context" -}}
+{{- $thisObjProps := index $thisObj "props" -}}
+{{- $thisChildren := index $thisObj "children" -}}
+{{- $thisSource := "atoms|main_000" -}}
+{{- if index $thisObj "enabled" -}}
+<h1>{{ $context.Title }}</h1>
+{{ $context.Content }}
+{{- range slice (dict "label" "Categories" "taxonomy" "categories") (dict "label" "Tags" "taxonomy" "tags") }}
+{{- $label := .label -}}
+{{- with $context.GetTerms .taxonomy }}
+<p>{{ $label }}: {{ range $i, $t := . }}{{ if $i }}, {{ end }}<a href="{{ $t.RelPermalink }}">{{ $t.LinkTitle }}</a>{{ end }}</p>
+{{- end }}
+{{- end }}
+{{- else if index $thisChildren "enabled_false" "enabled" -}}
+{{- partial "haz/helpers/fn/fn_partial.html" (dict
+  "source" $thisSource
+  "child" (index $thisChildren "enabled_false" "child")
+  "thisObj" $thisObj
+  "sysManifest" $sysManifest
+  "context" $context
+) -}}
+{{ end }}

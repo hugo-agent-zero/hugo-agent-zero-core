@@ -1,0 +1,99 @@
+{{- $source := index . "source" -}}
+{{- $child := index . "child" -}}
+{{- $thisObj := index . "thisObj" | default dict -}}
+{{- $sysManifest := index . "sysManifest" -}}
+{{- $context := index . "context" -}}
+{{- $thisObjProps := index $thisObj "props" | default dict -}}
+{{- $thisChildren := index $thisObj "children" | default dict -}}
+{{- $thisSource := "molecules|socials|socials_000" -}}
+{{- $props := index . "props" | default $thisObjProps -}}
+{{- $enabled := true -}}
+{{- if gt (len $thisObj) 0 -}}
+  {{- $enabled = index $thisObj "enabled" | default false -}}
+{{- end -}}
+{{- if $enabled -}}
+{{- partial "haz/helpers/fn/fn_html_comment.html" (dict "text" $thisSource) -}}
+{{- $tag := index $props "tag" | default "nav" -}}
+{{- $attrs := index $props "attrs" | default dict -}}
+{{- $listAttrs := index $props "list_attrs" | default dict -}}
+{{- $itemAttrs := index $props "item_attrs" | default dict -}}
+{{- $linkAttrsBase := index $props "link_attrs" | default dict -}}
+{{- $defaultEnabled := false -}}
+{{- if isset $props "enabled" -}}
+  {{- $defaultEnabled = index $props "enabled" -}}
+{{- end -}}
+{{- $rawCollection := index $props "collection" | default slice -}}
+{{- $filter := index $props "filter" | default dict -}}
+{{- $collection := partial "haz/helpers/fn/fn_collection_filter_run.html" (dict
+  "collection" $rawCollection
+  "filter" $filter
+  "default_enabled" $defaultEnabled
+  "source" $thisSource
+) -}}
+{{- partial "haz/helpers/fn/fn_tag_tag_open.html" (dict "tag" $tag "attrs" $attrs) -}}
+<ul
+  {{- range $key, $val := $listAttrs }}
+    {{- if and (ne $key "aria") (ne $key "data") }} {{ $key }}="{{ $val }}"{{ end -}}
+  {{- end -}}
+  {{- with index $listAttrs "aria" -}}
+    {{- range $aKey, $aVal := . }} aria-{{ $aKey }}="{{ $aVal }}"{{ end -}}
+  {{- end -}}
+  {{- with index $listAttrs "data" -}}
+    {{- range $dKey, $dVal := . }} data-{{ $dKey }}="{{ $dVal }}"{{ end -}}
+  {{- end -}}
+>
+{{- range $collection -}}
+    {{- $name := index . "name" | default "" -}}
+    {{- $url := index . "url" | default "" -}}
+    {{- $icon := index . "icon" | default "" -}}
+    {{- $target := index . "target" | default "" -}}
+    {{- $rel := index . "rel" | default "" -}}
+    {{- if and (eq $rel "") (eq $target "_blank") -}}
+      {{- $rel = "noopener noreferrer" -}}
+    {{- end -}}
+    {{- $linkAttrs := merge $linkAttrsBase (dict
+      "href" $url
+      "aria" (dict "label" $name)
+      "title" $name
+    ) -}}
+    {{- if ne $icon "" -}}
+      {{- $linkAttrs = merge $linkAttrs (dict "data" (dict "haz_icon" $icon)) -}}
+    {{- end -}}
+    {{- if ne $target "" -}}
+      {{- $linkAttrs = merge $linkAttrs (dict "target" $target) -}}
+    {{- end -}}
+    {{- if ne $rel "" -}}
+      {{- $linkAttrs = merge $linkAttrs (dict "rel" $rel) -}}
+    {{- end -}}
+  <li
+    {{- range $key, $val := $itemAttrs }}
+      {{- if and (ne $key "aria") (ne $key "data") }} {{ $key }}="{{ $val }}"{{ end -}}
+    {{- end -}}
+  >
+  {{- partial "haz/atomic/atoms/tag_a_href.html" (dict
+    "source" $thisSource
+    "child" ""
+    "thisObj" (dict
+      "enabled" true
+      "props" (dict
+        "attrs" $linkAttrs
+        "text" ""
+      )
+      "children" dict
+    )
+    "sysManifest" $sysManifest
+    "context" $context
+  ) -}}
+  </li>
+{{- end -}}
+</ul>
+{{- printf "</%s>" $tag | safeHTML -}}
+{{- else if index $thisChildren "enabled_false" "enabled" -}}
+{{- partial "haz/helpers/fn/fn_partial.html" (dict
+  "source" $thisSource
+  "child" (index $thisChildren "enabled_false" "child")
+  "thisObj" $thisObj
+  "sysManifest" $sysManifest
+  "context" $context
+) -}}
+{{- end -}}

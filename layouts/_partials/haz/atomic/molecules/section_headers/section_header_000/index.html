@@ -1,0 +1,48 @@
+{{- $source := index . "source" -}}
+{{- $child := index . "child" -}}
+{{- $thisObj := index . "thisObj" | default dict -}}
+{{- $sysManifest := index . "sysManifest" -}}
+{{- $context := index . "context" -}}
+{{- $thisObjProps := index $thisObj "props" | default dict -}}
+{{- $thisChildren := index $thisObj "children" | default dict -}}
+{{- $thisSource := "molecules|section_headers|section_header_000" -}}
+{{- $props := index . "props" | default $thisObjProps -}}
+{{- $enabled := true -}}
+{{- if gt (len $thisObj) 0 -}}
+  {{- $enabled = index $thisObj "enabled" | default false -}}
+{{- end -}}
+{{- if $enabled -}}
+  {{- partial "haz/helpers/fn/fn_html_comment.html" (dict "text" $thisSource) -}}
+  {{- $tag := index $props "tag" | default "header" -}}
+  {{- $attrs := index $props "attrs" | default dict -}}
+  {{- $slots := index $props "slots" | default slice -}}
+  {{- $hasContent := false -}}
+  {{- range $slots -}}
+    {{- $slotContent := trim (printf "%s" (index . "content" | default "")) " \t\n\r" -}}
+    {{- if ne $slotContent "" -}}
+      {{- $hasContent = true -}}
+    {{- end -}}
+  {{- end -}}
+  {{- if $hasContent -}}
+    {{- partial "haz/helpers/fn/fn_tag_tag_open.html" (dict "tag" $tag "attrs" $attrs) -}}
+    {{- range $slots -}}
+      {{- $slotTag := index . "tag" | default "div" -}}
+      {{- $slotAttrs := index . "attrs" | default dict -}}
+      {{- $slotContent := trim (printf "%s" (index . "content" | default "")) " \t\n\r" -}}
+      {{- if ne $slotContent "" -}}
+        {{- partial "haz/helpers/fn/fn_tag_tag_open.html" (dict "tag" $slotTag "attrs" $slotAttrs) -}}
+        {{- $slotContent | safeHTML -}}
+        {{- printf "</%s>" $slotTag | safeHTML -}}
+      {{- end -}}
+    {{- end -}}
+    {{- printf "</%s>" $tag | safeHTML -}}
+  {{- end -}}
+{{- else if index $thisChildren "enabled_false" "enabled" -}}
+  {{- partial "haz/helpers/fn/fn_partial.html" (dict
+    "source" $thisSource
+    "child" (index $thisChildren "enabled_false" "child")
+    "thisObj" $thisObj
+    "sysManifest" $sysManifest
+    "context" $context
+  ) -}}
+{{- end -}}

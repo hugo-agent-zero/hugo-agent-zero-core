@@ -1,0 +1,13 @@
+{{- $source := index . "source" -}}
+{{- $child := index . "child" -}}
+{{- $thisObj := index . "thisObj" -}}
+{{- $sysManifest := index . "sysManifest" -}}
+{{- $context := index . "context" -}}
+{{- $thisObjProps := index $thisObj "props" -}}
+{{- $thisChildren := index $thisObj "children" -}}
+{{- $thisSource := "templates|multiplier" -}}
+{{- if index $thisObj "enabled" -}}
+{{- partial "haz/helpers/fn/fn_multiplier.html" (dict "order" (index $thisObjProps "order") "source" $thisSource "thisObj" $thisObj "sysManifest" $sysManifest "context" $context) -}}
+{{- else if index $thisChildren "enabled_false" "enabled" -}}
+{{- partial "haz/helpers/fn/fn_partial.html" (dict "source" $thisSource "child" (index $thisChildren "enabled_false" "child") "thisObj" $thisObj "sysManifest" $sysManifest "context" $context) -}}
+{{- end -}}

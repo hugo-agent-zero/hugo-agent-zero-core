@@ -1,0 +1,21 @@
+{{/*
+  multiplier.html
+  Generic multiplier: order from thisObj.props.order (+ enabled_false).
+  Delegates to parents/multiplier_parent.html.
+*/}}
+{{- $source := index . "source" -}}
+{{- $child := index . "child" -}}
+{{- $thisObj := index . "thisObj" -}}
+{{- $sysManifest := index . "sysManifest" -}}
+{{- $context := index . "context" -}}
+{{- $thisObjProps := index $thisObj "props" -}}
+{{- $order := index $thisObjProps "order" -}}
+{{- partial "haz/helpers/parents/multiplier_parent.html" (dict
+  "source" $source
+  "child" $child
+  "thisObj" $thisObj
+  "sysManifest" $sysManifest
+  "context" $context
+  "order" $order
+  "templateSource" "templates|multiplier"
+) -}}

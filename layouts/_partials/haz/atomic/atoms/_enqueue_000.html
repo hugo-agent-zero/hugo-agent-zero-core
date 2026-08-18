@@ -1,0 +1,62 @@
+{{/*
+  PARKED — enqueue MVP atom (not loaded). Pair with system_manifest/_enqueue.yaml.
+  Reinstate as enqueue_000.html + layouts enqueue_head / enqueue_footer when revisiting.
+*/}}
+{{- $source := index . "source" -}}
+{{- $child := index . "child" -}}
+{{- $thisObj := index . "thisObj" | default dict -}}
+{{- $sysManifest := index . "sysManifest" -}}
+{{- $context := index . "context" -}}
+{{- $thisObjProps := index $thisObj "props" | default dict -}}
+{{- $thisChildren := index $thisObj "children" | default dict -}}
+{{- $thisSource := "atoms|_enqueue_000" -}}
+{{- $props := index . "props" | default $thisObjProps -}}
+{{- $enabled := true -}}
+{{- if gt (len $thisObj) 0 -}}
+  {{- $enabled = index $thisObj "enabled" | default false -}}
+{{- end -}}
+{{- if $enabled -}}
+{{- partial "haz/helpers/fn/fn_html_comment.html" (dict "text" $thisSource) -}}
+{{- $wantLocation := index $props "location" | default "head" -}}
+{{- $enqueue := index $sysManifest "enqueue" | default dict -}}
+{{- range $parentKey, $parent := $enqueue -}}
+  {{- if reflect.IsMap $parent -}}
+    {{- $parentEnabled := index $parent "enabled" | default true -}}
+    {{- if $parentEnabled -}}
+      {{- $basePath := strings.TrimSuffix "/" (index $parent "base_path" | default "") -}}
+      {{- $parentLocation := index $parent "location" | default "head" -}}
+      {{- $collection := index $parent "collection" | default slice -}}
+      {{- range $collection -}}
+        {{- if reflect.IsMap . -}}
+          {{- $itemLocation := index . "location" | default $parentLocation -}}
+          {{- if eq $itemLocation $wantLocation -}}
+            {{- $rel := index . "path" | default "" -}}
+            {{- $kind := index . "kind" | default "style" -}}
+            {{- $href := $rel -}}
+            {{- if and (ne $basePath "") (ne $rel "") -}}
+              {{- $href = printf "%s/%s" $basePath (strings.TrimPrefix "/" $rel) -}}
+            {{- end -}}
+            {{- if ne $href "" -}}
+              {{- if eq $kind "style" -}}
+<link rel="stylesheet" href="{{ $href | relURL }}">
+              {{- else if eq $kind "script" -}}
+<script src="{{ $href | relURL }}"></script>
+              {{- else if eq $kind "image" -}}
+<link rel="preload" as="image" href="{{ $href | relURL }}">
+              {{- end -}}
+            {{- end -}}
+          {{- end -}}
+        {{- end -}}
+      {{- end -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
+{{- else if index $thisChildren "enabled_false" "enabled" -}}
+{{- partial "haz/helpers/fn/fn_partial.html" (dict
+  "source" $thisSource
+  "child" (index $thisChildren "enabled_false" "child")
+  "thisObj" $thisObj
+  "sysManifest" $sysManifest
+  "context" $context
+) -}}
+{{- end -}}

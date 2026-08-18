@@ -1,0 +1,38 @@
+{{- $source := index . "source" -}}
+{{- $child := index . "child" -}}
+{{- $thisObj := index . "thisObj" -}}
+{{- $sysManifest := index . "sysManifest" -}}
+{{- $context := index . "context" -}}
+{{- $thisObjProps := index $thisObj "props" | default dict -}}
+{{- $thisChildren := index $thisObj "children" -}}
+{{- $thisSource := "atoms|nav_list_000" -}}
+{{- $menuName := index $thisObjProps "menu" | default "main" -}}
+{{- $navId := index $thisObjProps "id" | default (printf "haz_nav_%s" $menuName) -}}
+{{- $navClass := index $thisObjProps "class" | default (printf "haz_nav_%s" $menuName) -}}
+{{- $menuClass := index $thisObjProps "menu_class" | default (printf "haz_nav_%s__menu haz_display_flex haz_flex_direction_column" $menuName) -}}
+{{- $itemClass := index $thisObjProps "item_class" | default (printf "haz_nav_%s__item" $menuName) -}}
+{{- $linkClass := index $thisObjProps "link_class" | default (printf "haz_nav_%s__link" $menuName) -}}
+{{- if index $thisObj "enabled" -}}
+{{- $menu := index $context.Site.Menus $menuName -}}
+<nav id="{{ $navId }}" class="{{ $navClass }}">
+<ul id="{{ $navId }}__menu" role="menu" class="{{ $menuClass }}">
+{{- if and $menu (gt (len $menu) 0) -}}
+  {{- range $menu -}}
+  <li class="{{ $itemClass }}">
+    <a class="{{ $linkClass }}{{ if $context.IsMenuCurrent $menuName . }} haz_is_active{{ end }}" href="{{ .URL }}">{{ .Name }}</a>
+  </li>
+  {{- end -}}
+{{- else -}}
+  <li class="{{ $itemClass }}"><a class="{{ $linkClass }}" href="/">Home</a></li>
+{{- end -}}
+</ul>
+</nav>
+{{- else if index $thisChildren "enabled_false" "enabled" -}}
+{{- partial "haz/helpers/fn/fn_partial.html" (dict
+  "source" $thisSource
+  "child" (index $thisChildren "enabled_false" "child")
+  "thisObj" $thisObj
+  "sysManifest" $sysManifest
+  "context" $context
+) -}}
+{{ end }}

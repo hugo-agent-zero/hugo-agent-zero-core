@@ -1,0 +1,56 @@
+{{- $source := index . "source" -}}
+{{- $child := index . "child" -}}
+{{- $thisObj := index . "thisObj" -}}
+{{- $sysManifest := index . "sysManifest" -}}
+{{- $context := index . "context" -}}
+{{- $thisObjProps := index $thisObj "props" -}}
+{{- $thisChildren := index $thisObj "children" -}}
+{{- $thisSource := "atoms|hugo_page_date_dt_dd_000" -}}
+{{- if index $thisObj "enabled" -}}
+{{- $method := trim (printf "%s" (index $thisObjProps "method" | default "publishdate")) " \t\n\r" -}}
+{{- $divWrapper := true -}}
+{{- if isset $thisObjProps "div_wrapper" -}}
+{{- $divWrapper = index $thisObjProps "div_wrapper" -}}
+{{- end -}}
+{{- $resolved := partial "haz/helpers/fn/page/fn_page_date_resolve.html" (dict "sysManifest" $sysManifest "method" $method) -}}
+{{- $effectiveMethod := index $resolved "method" -}}
+{{- $profile := index $resolved "profile" -}}
+{{- if gt (len $profile) 0 -}}
+{{- $date := partial "haz/helpers/fn/fn_get_page_value_from_string.html" (dict
+  "context" $context
+  "value" $effectiveMethod
+) -}}
+{{- $show := true -}}
+{{- if eq $effectiveMethod "lastmod" -}}
+{{- $show = partial "haz/helpers/fn/page/fn_page_date_lastmod_show.html" (dict
+  "context" $context
+  "profile" $profile
+  "props" $thisObjProps
+) -}}
+{{- end -}}
+{{- if and $show (gt $date.Year 2000) -}}
+{{- $term := index $profile "term" | default "" -}}
+{{- if and (isset $thisObjProps "term") (ne (trim (printf "%s" (index $thisObjProps "term")) " \t\n\r") "") -}}
+{{- $term = index $thisObjProps "term" -}}
+{{- end -}}
+{{- $formatDisplay := index $profile "format_display" | default "January 2, 2006" -}}
+{{- if and (isset $thisObjProps "format_display") (ne (trim (printf "%s" (index $thisObjProps "format_display")) " \t\n\r") "") -}}
+{{- $formatDisplay = index $thisObjProps "format_display" -}}
+{{- end -}}
+{{- $formatDatetime := index $profile "format_datetime" | default "2006-01-02" -}}
+{{- if and (isset $thisObjProps "format_datetime") (ne (trim (printf "%s" (index $thisObjProps "format_datetime")) " \t\n\r") "") -}}
+{{- $formatDatetime = index $thisObjProps "format_datetime" -}}
+{{- end -}}
+{{- $pubdate := index $profile "pubdate" | default false -}}
+{{- if isset $thisObjProps "pubdate" -}}
+{{- $pubdate = index $thisObjProps "pubdate" -}}
+{{- end -}}
+{{- if $divWrapper -}}<div>{{ end -}}
+  <dt>{{ $term }}</dt>
+  <dd><time datetime="{{ $date.Format $formatDatetime }}"{{- if $pubdate }} pubdate{{- end }}>{{ $date.Format $formatDisplay }}</time></dd>
+{{- if $divWrapper -}}</div>{{ end -}}
+{{- end -}}
+{{- end -}}
+{{- else if index $thisChildren "enabled_false" "enabled" -}}
+{{- partial "haz/helpers/fn/fn_partial.html" (dict "source" $thisSource "child" (index $thisChildren "enabled_false" "child") "thisObj" $thisObj "sysManifest" $sysManifest "context" $context) -}}
+{{- end -}}

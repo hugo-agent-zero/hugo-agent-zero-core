@@ -1,0 +1,63 @@
+{{- $sysManifestSettings := readFile "layouts/_partials/child/data/system_manifest/settings.yaml" | transform.Unmarshal -}}
+{{- $sysManifestAuthors := readFile "layouts/_partials/child/data/system_manifest/authors.yaml" | transform.Unmarshal -}}
+{{- $cmsManifest := dict -}}
+{{- $cmsDir := "layouts/_partials/child/data/system_manifest/cms" -}}
+{{- range $entry := readDir $cmsDir -}}
+  {{- if and (not $entry.IsDir) (hasSuffix $entry.Name ".yaml") -}}
+    {{- $cmsPath := printf "%s/%s" $cmsDir $entry.Name -}}
+    {{- $cmsChunk := readFile $cmsPath | transform.Unmarshal | default dict -}}
+    {{- $cmsManifest = merge $cmsManifest $cmsChunk -}}
+  {{- end -}}
+{{- end -}}
+{{- $sysManifestCms := dict "cms" $cmsManifest -}}
+{{- $layoutsNode := dict -}}
+{{- $layoutsDir := "layouts/_partials/child/data/system_manifest/layouts" -}}
+{{- range $entry := readDir $layoutsDir -}}
+  {{- if and (not $entry.IsDir) (hasSuffix $entry.Name ".yaml") -}}
+    {{- $layoutsPath := printf "%s/%s" $layoutsDir $entry.Name -}}
+    {{- $layoutsChunk := readFile $layoutsPath | transform.Unmarshal | default dict -}}
+    {{- $layoutsNode = merge $layoutsNode $layoutsChunk -}}
+  {{- end -}}
+{{- end -}}
+{{- $sysManifestLayouts := dict
+  "layouts" (dict
+    "layouts_root" (index $layoutsNode "layouts_root" | default dict)
+    "atoms" (index $layoutsNode "atoms" | default dict)
+    "molecules" (index $layoutsNode "molecules" | default dict)
+    "organisms" (index $layoutsNode "organisms" | default dict)
+    "multipliers" (index $layoutsNode "multipliers" | default dict)
+  )
+-}}
+{{- $shortcodesNode := dict -}}
+{{- $shortcodesDir := "layouts/_partials/child/data/system_manifest/shortcodes" -}}
+{{- range $entry := readDir $shortcodesDir -}}
+  {{- if and (not $entry.IsDir) (hasSuffix $entry.Name ".yaml") -}}
+    {{- $shortcodesPath := printf "%s/%s" $shortcodesDir $entry.Name -}}
+    {{- $shortcodesChunk := readFile $shortcodesPath | transform.Unmarshal | default dict -}}
+    {{- $shortcodesNode = merge $shortcodesNode $shortcodesChunk -}}
+  {{- end -}}
+{{- end -}}
+{{- $sysManifestShortcodes := dict "shortcodes" $shortcodesNode -}}
+{{- $sysManifestRoutes := readFile "layouts/_partials/child/data/system_manifest/routes.yaml" | transform.Unmarshal -}}
+{{- $sysManifest := merge $sysManifestSettings $sysManifestAuthors $sysManifestCms $sysManifestLayouts $sysManifestShortcodes $sysManifestRoutes -}}
+{{- $hugoToml := readFile "hugo.toml" | transform.Unmarshal -}}
+{{- $hugoPage := dict
+    "Kind" .Kind
+    "Title" .Title
+    "Params" .Params
+    "IsHome" .IsHome
+    "IsSection" .IsSection
+    "IsPage" .IsPage
+    "Permalink" .Permalink
+    "RelPermalink" .RelPermalink
+    "Type" .Type
+    "File" .File
+    "Date" .Date
+    "Site" .Site
+-}}
+{{- $hugo := dict "toml" $hugoToml "page" $hugoPage -}}
+{{- $sysManifest = merge $sysManifest (dict "hugo" $hugo) -}}
+{{- if templates.Exists "_partials/child/utils/fn_filter_sys_manifest.html" -}}
+  {{- $sysManifest = partial "child/utils/fn_filter_sys_manifest.html" (dict "manifest" $sysManifest "context" .) -}}
+  {{- end -}}
+{{- return $sysManifest -}}

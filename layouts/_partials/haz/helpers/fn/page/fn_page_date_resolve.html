@@ -1,0 +1,16 @@
+{{- $sysManifest := index . "sysManifest" -}}
+{{- $methodKey := lower (trim (printf "%s" (index . "method" | default "publishdate")) " \t\n\r") -}}
+{{- $settings := index $sysManifest "settings" | default dict -}}
+{{- $datesSettings := index $settings "dates" | default dict -}}
+{{- $effectiveKey := $methodKey -}}
+{{- if not (isset $datesSettings $methodKey) -}}
+{{- $effectiveKey = lower (trim (printf "%s" (index $datesSettings "default" | default "publishdate")) " \t\n\r") -}}
+{{- if not (isset $datesSettings $effectiveKey) -}}
+{{- $effectiveKey = "publishdate" -}}
+{{- end -}}
+{{- end -}}
+{{- $profile := dict -}}
+{{- if isset $datesSettings $effectiveKey -}}
+{{- $profile = index $datesSettings $effectiveKey -}}
+{{- end -}}
+{{- return (dict "method" $effectiveKey "profile" $profile) -}}

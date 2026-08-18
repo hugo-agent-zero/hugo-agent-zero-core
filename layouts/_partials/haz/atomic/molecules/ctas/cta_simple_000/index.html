@@ -1,0 +1,53 @@
+{{- $source := index . "source" -}}
+{{- $child := index . "child" -}}
+{{- $thisObj := index . "thisObj" | default dict -}}
+{{- $sysManifest := index . "sysManifest" -}}
+{{- $context := index . "context" -}}
+{{- $thisObjProps := index $thisObj "props" | default dict -}}
+{{- $thisChildren := index $thisObj "children" | default dict -}}
+{{- $thisSource := "molecules|ctas|cta_simple_000" -}}
+{{- $props := index . "props" | default $thisObjProps -}}
+{{- $enabled := true -}}
+{{- if gt (len $thisObj) 0 -}}
+  {{- $enabled = index $thisObj "enabled" | default false -}}
+{{- end -}}
+{{- $textStart := index $props "text_start" | default "" -}}
+{{- $textEnd := index $props "text_end" | default "" -}}
+{{- $aHref := index $props "a_href" | default dict -}}
+{{- $aHrefEnabled := index $aHref "enabled" | default false -}}
+{{- $aHrefAttrs := index $aHref "attrs" | default dict -}}
+{{- $href := index $aHrefAttrs "href" | default "" -}}
+{{- $target := index $aHrefAttrs "target" | default "_self" -}}
+{{- $aHrefText := index $aHref "text" | default "" -}}
+{{- $hasTextStart := ne $textStart "" -}}
+{{- $hasTextEnd := ne $textEnd "" -}}
+{{- $hasLinkText := ne $aHrefText "" -}}
+{{- if $enabled -}}
+  {{- if $hasTextStart -}}
+    {{- $textStart -}}
+  {{- end -}}
+  {{- if and $aHrefEnabled $hasLinkText -}}
+  {{- partial "haz/atomic/atoms/tag_a_href.html" (dict
+    "source" $thisSource
+    "child" ""
+    "thisObj" (dict
+      "enabled" true
+      "props" (dict
+        "attrs" (dict
+          "href" $href
+          "target" $target
+        )
+        "text" $aHrefText
+      )
+      "children" dict
+    )
+    "sysManifest" $sysManifest
+    "context" $context
+  ) -}}
+  {{- end -}}
+  {{- if $hasTextEnd -}}
+    {{- $textEnd -}}
+  {{- end -}}
+{{- else if index $thisChildren "enabled_false" "enabled" -}}
+  {{- partial "haz/helpers/fn/fn_partial.html" (dict "source" $thisSource "child" (index $thisChildren "enabled_false" "child") "thisObj" $thisObj "sysManifest" $sysManifest "context" $context) -}}
+{{- end -}}

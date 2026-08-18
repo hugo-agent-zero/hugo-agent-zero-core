@@ -1,0 +1,57 @@
+{{- $source := index . "source" -}}
+{{- $child := index . "child" -}}
+{{- $thisObj := index . "thisObj" | default dict -}}
+{{- $sysManifest := index . "sysManifest" -}}
+{{- $context := index . "context" -}}
+{{- $thisObjProps := index $thisObj "props" | default dict -}}
+{{- $thisChildren := index $thisObj "children" | default dict -}}
+{{- $thisSource := "atoms|head_tags|meta_og_video_000" -}}
+{{- $props := index . "props" | default $thisObjProps -}}
+{{- $enabled := true -}}
+{{- if gt (len $thisObj) 0 -}}
+  {{- $enabled = index $thisObj "enabled" | default false -}}
+{{- end -}}
+{{- if $enabled -}}
+  {{- partial "haz/helpers/fn/fn_html_comment.html" (dict "text" $thisSource) -}}
+  {{- $collection := index $props "collection" | default slice -}}
+  {{- $defHeight := index $props "height" | default "" -}}
+  {{- $defWidth := index $props "width" | default "" -}}
+  {{- $defType := index $props "type" | default "" -}}
+  {{- if reflect.IsSlice $collection -}}
+    {{- range $collection -}}
+      {{- $row := . | default dict -}}
+      {{- if reflect.IsMap $row -}}
+        {{- $urlRaw := index $row "url" | default "" -}}
+        {{- $url := partial "haz/helpers/fn/fn_get_meta_value_rules_media.html" (dict
+          "context" $context
+          "prop" "url"
+          "defaults" (dict "url" $urlRaw)
+          "localValues" dict
+        ) -}}
+        {{- if $url -}}
+          {{- partial "haz/helpers/fn/fn_tag_meta_property.html" (dict "key" "og:video" "content" $url) -}}
+          {{- $height := index $row "height" | default $defHeight -}}
+          {{- $width := index $row "width" | default $defWidth -}}
+          {{- $type := index $row "type" | default $defType -}}
+          {{- if $height -}}
+            {{- partial "haz/helpers/fn/fn_tag_meta_property.html" (dict "key" "og:video:height" "content" $height) -}}
+          {{- end -}}
+          {{- if $width -}}
+            {{- partial "haz/helpers/fn/fn_tag_meta_property.html" (dict "key" "og:video:width" "content" $width) -}}
+          {{- end -}}
+          {{- if $type -}}
+            {{- partial "haz/helpers/fn/fn_tag_meta_property.html" (dict "key" "og:video:type" "content" $type) -}}
+          {{- end -}}
+        {{- end -}}
+      {{- end -}}
+    {{- end -}}
+  {{- end -}}
+{{- else if index $thisChildren "enabled_false" "enabled" -}}
+  {{- partial "haz/helpers/fn/fn_partial.html" (dict
+    "source" $thisSource
+    "child" (index $thisChildren "enabled_false" "child")
+    "thisObj" $thisObj
+    "sysManifest" $sysManifest
+    "context" $context
+  ) -}}
+{{- end -}}

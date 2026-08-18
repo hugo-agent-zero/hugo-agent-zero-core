@@ -1,0 +1,50 @@
+{{/*
+  fn_get_meta_value_rules_media.html
+  Resolve a media meta value (image/audio/video) from merged props.
+
+  Order for a non-empty filename:
+    1. http(s): / // → use as-is
+    2. leading / → absURL (static / site root, e.g. /defaults/meta_tag_default_image.png)
+    3. context.Resources.GetMatch (page bundle)
+    4. site.Home.Resources.GetMatch (legacy back-compat)
+  localValues.prop = false clears the value.
+*/}}
+{{- $context := index . "context" -}}
+{{- $prop := index . "prop" -}}
+{{- $defaults := index . "defaults" | default dict -}}
+{{- $localValues := index . "localValues" | default dict -}}
+{{- $returnValue := "" -}}
+
+{{- if isset $defaults $prop -}}
+  {{- $fileName := index $defaults $prop -}}
+  {{- if isset $localValues $prop -}}
+    {{- if eq (index $localValues $prop) false -}}
+      {{- $fileName = "" -}}
+    {{- else -}}
+      {{- $fileName = index $localValues $prop -}}
+    {{- end -}}
+  {{- end -}}
+
+  {{- if $fileName -}}
+    {{- if or (strings.HasPrefix $fileName "https://") (strings.HasPrefix $fileName "http://") (strings.HasPrefix $fileName "//") -}}
+      {{- $returnValue = $fileName -}}
+    {{- else if hasPrefix $fileName "/" -}}
+      {{- $returnValue = $fileName | absURL -}}
+    {{- else -}}
+      {{- $r := false -}}
+      {{- with $context -}}
+        {{- $r = .Resources.GetMatch $fileName -}}
+      {{- end -}}
+      {{- if not $r -}}
+        {{- with site.Home -}}
+          {{- $r = .Resources.GetMatch $fileName -}}
+        {{- end -}}
+      {{- end -}}
+      {{- with $r -}}
+        {{- $returnValue = .Permalink -}}
+      {{- end -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
+
+{{- return $returnValue -}}

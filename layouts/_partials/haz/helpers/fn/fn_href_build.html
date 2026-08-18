@@ -1,0 +1,17 @@
+{{/*
+  fn_href_build.html
+  Build final href from href only.
+  Rules:
+    - If resulting href is non-empty and not explicit (scheme/protocol/hash/query), apply relURL.
+*/}}
+{{- $hrefBase := index . "href_base" | default "" -}}
+{{- $href := $hrefBase -}}
+{{- if eq $href "" -}}
+{{- $href = relURL "/" -}}
+{{- else -}}
+{{- $isExplicit := partial "haz/helpers/fn/fn_href_is_explicit.html" (dict "href" $href) -}}
+{{- if not $isExplicit -}}
+{{- $href = relURL $href -}}
+{{- end -}}
+{{- end -}}
+{{- return $href -}}

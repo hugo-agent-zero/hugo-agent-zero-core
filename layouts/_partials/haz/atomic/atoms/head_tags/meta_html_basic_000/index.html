@@ -1,0 +1,44 @@
+{{- $source := index . "source" -}}
+{{- $child := index . "child" -}}
+{{- $thisObj := index . "thisObj" | default dict -}}
+{{- $sysManifest := index . "sysManifest" -}}
+{{- $context := index . "context" -}}
+{{- $thisObjProps := index $thisObj "props" | default dict -}}
+{{- $thisChildren := index $thisObj "children" | default dict -}}
+{{- $thisSource := "atoms|head_tags|meta_html_basic_000" -}}
+{{- $props := index . "props" | default $thisObjProps -}}
+{{- $enabled := true -}}
+{{- if gt (len $thisObj) 0 -}}
+  {{- $enabled = index $thisObj "enabled" | default false -}}
+{{- end -}}
+{{- if $enabled -}}
+  {{- partial "haz/helpers/fn/fn_html_comment.html" (dict "text" $thisSource) -}}
+  {{- if gt (len $props) 0 -}}
+    {{- $tagList := index . "tag_white_list" | default slice -}}
+    {{- partial "haz/helpers/fn/fn_head_tags_taglist.html" (dict
+      "context" $context
+      "defaults" $props
+      "localValues" dict
+      "tagList" $tagList
+    ) -}}
+    {{- if isset $props "canonical" -}}
+      {{- $temp := partial "haz/helpers/fn/fn_get_meta_value_rules.html" (dict
+        "context" $context
+        "prop" "canonical"
+        "defaults" $props
+        "localValues" dict
+      ) -}}
+      {{- if $temp -}}
+        {{- partial "haz/helpers/fn/fn_tag_meta_canonical.html" (dict "href" $temp) -}}
+      {{- end -}}
+    {{- end -}}
+  {{- end -}}
+{{- else if index $thisChildren "enabled_false" "enabled" -}}
+  {{- partial "haz/helpers/fn/fn_partial.html" (dict
+    "source" $thisSource
+    "child" (index $thisChildren "enabled_false" "child")
+    "thisObj" $thisObj
+    "sysManifest" $sysManifest
+    "context" $context
+  ) -}}
+{{- end -}}

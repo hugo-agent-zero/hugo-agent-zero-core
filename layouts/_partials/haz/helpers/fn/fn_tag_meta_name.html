@@ -1,0 +1,6 @@
+{{- $key := index . "key" -}}
+{{- $content := index . "content" -}}
+{{- $media := index . "media" | default "" -}}
+{{- if and (eq (printf "%T" $key) "string") (eq (printf "%T" $content) "string") (ne $key "") (ne $content "") -}}
+<meta name="{{ $key }}"{{ if and (eq (printf "%T" $media) "string") (ne $media "") }} media="{{ htmlEscape $media }}"{{ end }} content="{{ htmlEscape $content }}">
+{{- end -}}

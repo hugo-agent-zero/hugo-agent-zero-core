@@ -1,0 +1,8 @@
+preset:
+  # Dual brand molecule — layouts children: on_load, on_scroll, scroll_js.
+  # Remove leading "_" to activate an override key.
+  _attrs:
+    _href: ".Site.Home.RelPermalink"
+    _target: "_self"
+    _aria:
+      _label: Home

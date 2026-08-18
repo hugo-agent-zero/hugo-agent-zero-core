@@ -1,0 +1,126 @@
+header nav a, header nav a:visited {
+    border-color: transparent;
+}
+header nav a:visited:hover {
+    border-color: var(--accent);
+}
+
+.haz_sr_only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border-width: 0;
+}
+.haz_text_align_left {
+  text-align: left;
+}
+.haz_text_align_center {
+  text-align: center;
+}
+.haz_text_align_right {
+  text-align: right;
+}
+.display-block{
+  display: block;
+}
+.haz_display_flex{
+  display: flex;
+}
+.haz_flex_direction_row {
+  flex-direction: row;
+}
+.haz_flex_direction_column {
+  flex-direction: column;
+}
+.haz_flex_direction_column_row {
+  flex-direction: column;
+}
+@media (min-width: var(--mobile-breakpoint-min)) {
+  .haz_flex_direction_column_row {
+    flex-direction: row;
+  }
+}
+.haz_flex_direction_row_column {
+  flex-direction: row;
+}
+@media (min-width: var(--mobile-breakpoint-min)) {
+  .haz_flex_direction_row_column {
+    flex-direction: column;
+  }
+}
+
+.haz_margin_bottom_0{
+  margin-bottom: 0;
+}
+
+.haz_display_block_inner_svg svg{
+  display: block;
+}
+
+html.color-scheme-light .theme-switcher label {
+  background-color: white;
+}
+
+html:not(.color-scheme-light) .theme-switcher label {
+  background-color: black;
+}
+
+body > header{
+  padding-bottom: .5rem
+}
+
+.header-site > div:first-child {
+  display: flex;
+  justify-content: space-between; /* left / center / right spacing */
+  align-items: center;
+  padding: 0.75rem;
+  padding-bottom: 0;
+}
+.header-site > div:nth-child(2) {
+  display: flex;
+  justify-content: center; /* left / center / right spacing */
+  align-items: center;
+  padding: 0.75rem;
+}
+.haz_btn{
+  border: none;
+  cursor: pointer;
+  padding: 0.5rem;
+}
+.haz_btn span{
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem; /* space between icon(s) and text */
+}
+
+.haz_btn svg {
+  width: 1.5rem; /* consistent sizing */
+  height: 1.5rem;
+}
+#haz_btn_color_scheme,
+#haz_btn_nav_main{
+  display: inline-flex;
+  gap: 0.33em;
+}
+#haz_btn_nav_main[aria-expanded="false"] svg.haz_svg__close_x{
+  display: none;
+}
+#haz_btn_nav_main[aria-expanded="true"] svg.haz_svg__hamburger {
+  display: none;
+}
+
+html.color-scheme-dark #haz_btn_color_scheme svg.haz_svg__sun{
+  display: none;
+}
+html.color-scheme-light #haz_btn_color_scheme svg.haz_svg__moon {
+  display: none;
+}
+
+

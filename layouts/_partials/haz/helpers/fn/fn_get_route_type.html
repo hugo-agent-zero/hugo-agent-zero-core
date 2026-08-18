@@ -1,0 +1,26 @@
+{{/*
+  fn_get_route_type.html
+  Hugo page context → routes.yaml defaults key.
+  Mirrors Hugo layout intent: .Layout (FM) when set, else Kind fallback.
+  See https://gohugo.io/methods/page/layout/
+  Args: context
+  Returns: string (home | single | section | taxonomy | term | …)
+*/}}
+{{- $context := index . "context" -}}
+{{- $routeType := $context.Layout -}}
+{{- if not $routeType -}}
+  {{- $routeType = $context.Kind -}}
+  {{- if eq $routeType "page" -}}
+    {{- $routeType = "single" -}}
+  {{- end -}}
+{{- end -}}
+{{- if templates.Exists "_partials/child/utils/fn_filter_get_route_type.html" -}}
+  {{- $routeTypeOverride := partial "child/utils/fn_filter_get_route_type.html" (dict
+    "route_type" $routeType
+    "context" $context
+  ) -}}
+  {{- if $routeTypeOverride -}}
+    {{- $routeType = $routeTypeOverride -}}
+  {{- end -}}
+{{- end -}}
+{{- return $routeType -}}

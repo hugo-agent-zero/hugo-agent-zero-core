@@ -1,0 +1,24 @@
+{{- $source := index . "source" -}}
+{{- $thisObj := index . "thisObj" -}}
+{{- $sysManifest := index . "sysManifest" -}}
+{{- $context := index . "context" -}}
+{{- $resolved := partial "haz/helpers/fn/fn_folder_resolve_props.html" . -}}
+{{- $resolvedProps := index $resolved "resolved_props" | default dict -}}
+{{- $attrs := index $resolvedProps "attrs" | default dict -}}
+{{- $hrefRaw := index $attrs "href" | default "" -}}
+{{- $hrefResolved := partial "haz/helpers/fn/fn_get_page_value_from_string.html" (dict
+  "context" $context
+  "value" $hrefRaw
+) -}}
+{{- $href := partial "haz/helpers/fn/fn_href_build.html" (dict "href_base" $hrefResolved) -}}
+{{- $attrs = merge $attrs (dict "href" $href) -}}
+{{- $resolvedProps = merge $resolvedProps (dict "attrs" $attrs) -}}
+{{- partial "haz/helpers/fn/fn_partial.html" (dict
+  "source" $source
+  "child" ""
+  "thisObj" $thisObj
+  "sysManifest" $sysManifest
+  "context" $context
+  "skip_prep" true
+  "resolved_props" $resolvedProps
+) -}}

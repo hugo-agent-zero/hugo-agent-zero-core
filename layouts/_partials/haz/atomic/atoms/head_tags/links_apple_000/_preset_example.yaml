@@ -1,0 +1,13 @@
+preset:
+  # Remove leading "_" on a rel bucket to activate. Same rel key replaces that
+  # defaults list (no append).
+  _links:
+    _apple-touch-icon:
+      - href: /apple-touch-icon.png
+        type: image/png
+      - href: /touch-icon-ipad.png
+        sizes: 72x72
+      - href: /touch-icon-iphone4.png
+        sizes: 114x114
+    _apple-touch-startup-image:
+      - href: /startup.png

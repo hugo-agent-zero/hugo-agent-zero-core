@@ -1,0 +1,31 @@
+{{/*
+  multiplier_parent.html
+  Shared enabled / enabled_false + fn_multiplier orchestration.
+  Args:
+    - source, child, thisObj, sysManifest, context  (from fn_partial caller)
+    - order          : slice of child keys to render (required when enabled)
+    - templateSource : trace string (e.g. "templates|multiplier_2")
+*/}}
+{{- $thisObj := index . "thisObj" -}}
+{{- $sysManifest := index . "sysManifest" -}}
+{{- $context := index . "context" -}}
+{{- $order := index . "order" -}}
+{{- $thisSource := index . "templateSource" | default "parents|multiplier_parent" -}}
+{{- $thisChildren := index $thisObj "children" -}}
+{{- if index $thisObj "enabled" -}}
+{{- partial "haz/helpers/fn/fn_multiplier.html" (dict
+  "order" $order
+  "source" $thisSource
+  "thisObj" $thisObj
+  "sysManifest" $sysManifest
+  "context" $context
+) -}}
+{{- else if index $thisChildren "enabled_false" "enabled" -}}
+{{- partial "haz/helpers/fn/fn_partial.html" (dict
+  "source" $thisSource
+  "child" (index $thisChildren "enabled_false" "child")
+  "thisObj" $thisObj
+  "sysManifest" $sysManifest
+  "context" $context
+) -}}
+{{- end -}}

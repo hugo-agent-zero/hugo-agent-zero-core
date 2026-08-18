@@ -1,0 +1,6 @@
+defaults:
+  title: ".Title"
+  title_prefix: ""
+  title_suffix: ""
+  delimiter: " | "
+merge_paths: []

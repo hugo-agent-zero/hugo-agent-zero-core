@@ -1,0 +1,8 @@
+defaults:
+  charset: utf-8
+  viewport: width=device-width, initial-scale=1, maximum-scale=5
+tag_white_list:
+  - key: viewport
+    compare: global
+    tag: name
+merge_paths: []

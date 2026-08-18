@@ -1,0 +1,63 @@
+{{/*
+  fn_router_processor_body_attrs.html
+  Dynamic <body> attrs overlay — same path resolution as child router.
+  First tier with a successful map_body_attrs hit wins; map miss falls through.
+  Args: sysManifest, context, route_type
+  Returns: attrs dict (empty when no dynamic tier resolves)
+*/}}
+{{- $sysManifest := index . "sysManifest" -}}
+{{- $context := index . "context" -}}
+{{- $routeType := index . "route_type" -}}
+{{- $routes := $sysManifest.routes -}}
+{{- $mapBodyAttrs := index $routes "map_body_attrs" -}}
+{{- $resolved := partial "haz/helpers/parents/route_resolve_parent.html" (dict
+  "sysManifest" $sysManifest
+  "context" $context
+  "route_type" $routeType
+) -}}
+{{- $matchedRule := index $resolved "matchedRule" -}}
+{{- $mapChildEntry := index $resolved "mapChildEntry" -}}
+{{- $defaultEntry := index $resolved "defaultEntry" -}}
+{{- $attrs := dict -}}
+{{- $lookup := "" -}}
+{{- $branch := dict -}}
+{{- if index $matchedRule "key_body_attrs" -}}
+  {{- $lookup = index $matchedRule "key_body_attrs" -}}
+  {{- $entry := index $mapBodyAttrs $lookup -}}
+  {{- if and $entry (eq (index $entry "enabled") true) (index $entry "attrs") -}}
+    {{- $attrs = index $entry "attrs" -}}
+  {{- end -}}
+{{- end -}}
+{{- if and (eq (len $attrs) 0) $mapChildEntry -}}
+  {{- if eq (index $mapChildEntry "enabled") true -}}
+    {{- $branch = index $mapChildEntry "enabled_true" -}}
+  {{- else -}}
+    {{- $branch = index $mapChildEntry "enabled_false" -}}
+  {{- end -}}
+  {{- if $branch -}}
+    {{- $lookup = index $branch "key_body_attrs" -}}
+  {{- end -}}
+  {{- if $lookup -}}
+    {{- $entry := index $mapBodyAttrs $lookup -}}
+    {{- if and $entry (eq (index $entry "enabled") true) (index $entry "attrs") -}}
+      {{- $attrs = index $entry "attrs" -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
+{{- if and (eq (len $attrs) 0) $defaultEntry -}}
+  {{- if eq (index $defaultEntry "enabled") true -}}
+    {{- $branch = index $defaultEntry "enabled_true" -}}
+  {{- else -}}
+    {{- $branch = index $defaultEntry "enabled_false" -}}
+  {{- end -}}
+  {{- if $branch -}}
+    {{- $lookup = index $branch "key_body_attrs" -}}
+  {{- end -}}
+  {{- if $lookup -}}
+    {{- $entry := index $mapBodyAttrs $lookup -}}
+    {{- if and $entry (eq (index $entry "enabled") true) (index $entry "attrs") -}}
+      {{- $attrs = index $entry "attrs" -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
+{{- return $attrs -}}

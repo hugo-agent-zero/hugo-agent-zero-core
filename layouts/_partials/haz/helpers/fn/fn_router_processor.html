@@ -1,0 +1,64 @@
+{{- $routeType := index . "route_type" -}}
+{{- $sysManifest := index . "sysManifest" -}}
+{{- $context := index . "context" -}}
+{{- $routes := $sysManifest.routes -}}
+{{- $mapLayoutsEntry := index $routes "map_layouts_entry" -}}
+{{- $resolved := partial "haz/helpers/parents/route_resolve_parent.html" (dict
+  "sysManifest" $sysManifest
+  "context" $context
+  "route_type" $routeType
+) -}}
+{{- $matchedRule := index $resolved "matchedRule" -}}
+{{- $mapEntry := index $resolved "mapChildEntry" -}}
+{{- $result := dict -}}
+{{- $entryKey := "" -}}
+{{- $selectionTier := "" -}}
+{{- $branch := dict -}}
+{{- if index $matchedRule "key_layouts_entry" -}}
+  {{- $entryKey = index $matchedRule "key_layouts_entry" -}}
+  {{- $selectionTier = "rule" -}}
+{{- end -}}
+{{- if and (not $entryKey) $mapEntry -}}
+  {{- if eq (index $mapEntry "enabled") true -}}
+    {{- $branch = index $mapEntry "enabled_true" -}}
+  {{- else -}}
+    {{- $branch = index $mapEntry "enabled_false" -}}
+  {{- end -}}
+  {{- if $branch -}}
+    {{- $entryKey = index $branch "key_layouts_entry" -}}
+  {{- end -}}
+  {{- $selectionTier = "map_child" -}}
+{{- end -}}
+{{- if and (not $entryKey) (eq $selectionTier "map_child") -}}
+  {{- $result = dict "__hard_stop" true "__reason" "map_child_no_branch_key" -}}
+{{- end -}}
+{{- if and (not $entryKey) (eq (len $result) 0) -}}
+  {{- $defaults := index $resolved "defaultEntry" -}}
+  {{- if $defaults -}}
+    {{- if eq (index $defaults "enabled") true -}}
+      {{- $branch = index $defaults "enabled_true" -}}
+    {{- else -}}
+      {{- $branch = index $defaults "enabled_false" -}}
+    {{- end -}}
+    {{- if $branch -}}
+      {{- $entryKey = index $branch "key_layouts_entry" -}}
+    {{- end -}}
+    {{- $selectionTier = "defaults" -}}
+    {{- if not $entryKey -}}
+      {{- $result = dict "__hard_stop" true "__reason" "defaults_no_branch_key" -}}
+    {{- end -}}
+  {{- else -}}
+    {{- $result = dict "__hard_stop" true "__reason" "missing_defaults_entry" -}}
+  {{- end -}}
+{{- end -}}
+{{- if and $entryKey (eq (len $result) 0) -}}
+  {{- $entry := index $mapLayoutsEntry $entryKey -}}
+  {{- if not $entry -}}
+    {{- $result = dict "__hard_stop" true "__reason" "missing_layouts_entry" -}}
+  {{- else if and (isset $entry "enabled") (eq (index $entry "enabled") false) -}}
+    {{- $result = dict "__hard_stop" true "__reason" "disabled_layouts_entry" -}}
+  {{- else -}}
+    {{- $result = $entry -}}
+  {{- end -}}
+{{- end -}}
+{{- return $result -}}

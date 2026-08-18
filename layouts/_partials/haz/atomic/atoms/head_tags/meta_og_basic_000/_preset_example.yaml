@@ -1,0 +1,9 @@
+preset:
+  # Remove leading "_" to activate an override key.
+  _og:title: og title
+  _og:type: website
+  _og:url: ".Permalink"
+  _og:image: /defaults/meta_tag_default_image.png
+  _og:description: og description
+  _title_prefix: ""
+  _title_suffix: ""

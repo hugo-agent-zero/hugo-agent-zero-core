@@ -1,0 +1,10 @@
+preset:
+  tag: footer
+  attrs:
+    id: haz_footer_site
+    class: haz_footer_site
+  brand_attrs:
+    class: haz_footer_site__brand
+  col_other_attrs:
+    class: haz_footer_site__col_other
+  row_below_attrs: {}

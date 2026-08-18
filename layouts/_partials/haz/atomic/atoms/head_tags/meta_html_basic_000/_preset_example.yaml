@@ -1,0 +1,6 @@
+preset:
+  # Remove leading "_" to activate an override key.
+  _description: ""
+  _author: Author Meta (default)
+  _robots: noindex,nofollow
+  _canonical: ".Permalink"

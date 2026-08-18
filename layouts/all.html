@@ -1,0 +1,11 @@
+{{ define "main" }}
+{{- $sysManifest := partial "haz/helpers/fn/fn_get_sys_manifest.html" . -}}
+{{- $context := . -}}
+{{- $route := partial "haz/helpers/fn/fn_get_route_type.html" (dict "context" $context) -}}
+{{- partial "haz/helpers/parents/default_router_parent.html" (dict
+  "source" "layout|all"
+  "route" $route
+  "sysManifest" $sysManifest
+  "context" $context
+) -}}
+{{- end }}

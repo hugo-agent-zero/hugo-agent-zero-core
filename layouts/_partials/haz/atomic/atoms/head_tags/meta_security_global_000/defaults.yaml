@@ -1,0 +1,4 @@
+defaults:
+  referrer: strict-origin-when-cross-origin
+  Content-Security-Policy: "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:; connect-src 'self'; frame-src 'self'; media-src 'self'; object-src 'self'; child-src 'self'; form-action 'self'; base-uri 'self'; frame-ancestors 'self'; sandbox allow-same-origin allow-scripts allow-forms allow-popups allow-modals allow-presentation; worker-src 'self'; prefetch-src 'self'; block-all-mixed-content; upgrade-insecure-requests;"
+merge_paths: []

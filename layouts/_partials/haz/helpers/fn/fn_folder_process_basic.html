@@ -1,0 +1,28 @@
+{{/*
+  fn_folder_process_basic.html
+  Default folder-Atomic merge recipe:
+    defaults → preset → source adapter → layouts overrides → render (skip_prep).
+
+  Called from an Atomic's process.html with the same dict fn_partial passes in.
+  Name _basic leaves room for other merge recipes later.
+
+  For a thin post-step before render, call fn_folder_resolve_props instead,
+  then fn_partial with skip_prep (see brand_logo_dual_000 / cta_simple_000).
+*/}}
+{{- $source := index . "source" -}}
+{{- $thisObj := index . "thisObj" | default dict -}}
+{{- $sysManifest := index . "sysManifest" -}}
+{{- $context := index . "context" -}}
+{{- $resolved := partial "haz/helpers/fn/fn_folder_resolve_props.html" . -}}
+{{- $resolvedProps := index $resolved "resolved_props" | default dict -}}
+{{- $contractTagWhiteList := index $resolved "tag_white_list" | default slice -}}
+{{- partial "haz/helpers/fn/fn_partial.html" (dict
+  "source" $source
+  "child" ""
+  "thisObj" $thisObj
+  "sysManifest" $sysManifest
+  "context" $context
+  "skip_prep" true
+  "resolved_props" $resolvedProps
+  "tag_white_list" $contractTagWhiteList
+) -}}

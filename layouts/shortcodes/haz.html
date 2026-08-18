@@ -1,0 +1,36 @@
+{{/*
+  haz shortcode
+  Usage:
+    {{< haz key="demo" >}}
+    {{< haz key="demo" enabled=true >}}
+
+  Args:
+    key      string, required
+    enabled  bool, optional; omitted or literal true enables.
+             Any present non-bool or false value disables.
+*/}}
+{{- $enabled := true -}}
+{{- if isset .Params "enabled" -}}
+  {{- $enabledValue := .Get "enabled" -}}
+  {{- $enabled = false -}}
+  {{- if eq (printf "%T" $enabledValue) "bool" -}}
+    {{- $enabled = $enabledValue -}}
+  {{- end -}}
+{{- end -}}
+
+{{- if $enabled -}}
+  {{- $key := "" -}}
+  {{- if isset .Params "key" -}}
+    {{- $keyValue := .Get "key" -}}
+    {{- if eq (printf "%T" $keyValue) "string" -}}
+      {{- $key = $keyValue -}}
+    {{- end -}}
+  {{- end -}}
+  {{- $sysManifest := partial "haz/helpers/fn/fn_get_sys_manifest.html" .Page -}}
+  {{- partial "haz/helpers/parents/shortcode_parent.html" (dict
+    "key" $key
+    "source" "shortcode|haz"
+    "sysManifest" $sysManifest
+    "context" .Page
+  ) -}}
+{{- end -}}

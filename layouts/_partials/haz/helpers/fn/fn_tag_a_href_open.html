@@ -1,0 +1,30 @@
+{{- $href := .href -}}
+{{- $fn := .fn -}}   {{/* "relURL", "absURL", "safeURL", or nil" */}}
+{{- $pairs := .pairs -}}
+{{- if eq $fn "relURL" -}}
+  {{- $href = $href | relURL -}}
+{{- else if eq $fn "absURL" -}}
+  {{- $href = $href | absURL -}}
+{{- else if eq $fn "safeURL" -}}
+  {{- $href = $href | safeURL -}}
+{{- else -}}
+  {{- if not (strings.HasPrefix $href "http") -}}
+    {{- $href = $href | relURL -}}
+  {{- end -}}
+{{- end -}}
+{{- $whiteListedKey := slice "aria-hidden" "aria-label" "rel" -}}
+<a href="{{ $href }}"
+  {{- range $key, $val := $pairs }}
+    {{- if eq $key "data" }}{{- continue }}{{- end }}
+    {{- if in $whiteListedKey $key }}
+      {{ $key | safeHTMLAttr }}="{{ $val | safeHTMLAttr }}"
+    {{- else }}
+      {{ $key }}="{{ $val }}"
+    {{- end }}
+  {{- end }}
+  {{- with $pairs.data }}
+    {{- range $dataKey, $dataVal := . }}
+      data-{{ $dataKey }}="{{ $dataVal }}"
+    {{- end }}
+  {{- end }}
+>

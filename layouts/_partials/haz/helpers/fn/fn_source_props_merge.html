@@ -1,0 +1,30 @@
+{{/*
+  fn_source_props_merge.html
+  Merge source layers with explicit precedence and optional fake deep merge.
+  Layer order:
+    1) default_props (bundle defaults)
+    2) source_props (map-level props)
+    3) override_props (instance-level overrides)
+  Args:
+    - default_props (dict)
+    - source_props (dict)
+    - override_props (dict)
+    - merge_paths (slice of path slices, optional)
+*/}}
+{{- $defaultProps := index . "default_props" | default dict -}}
+{{- $sourceProps := index . "source_props" | default dict -}}
+{{- $overrideProps := index . "override_props" | default dict -}}
+{{- $mergePaths := index . "merge_paths" | default slice -}}
+{{- $resolvedProps := merge $defaultProps $sourceProps $overrideProps -}}
+
+{{- if gt (len $mergePaths) 0 -}}
+  {{- $resolvedProps = partial "haz/helpers/fn/fn_merge_fake_deep.html" (dict
+    "resolved_props" $resolvedProps
+    "default_props" $defaultProps
+    "source_props" $sourceProps
+    "override_props" $overrideProps
+    "merge_paths" $mergePaths
+  ) -}}
+{{- end -}}
+
+{{- return $resolvedProps -}}

@@ -1,0 +1,4 @@
+{{- $href := index . "href" -}}
+{{- if and (eq (printf "%T" $href) "string") (ne $href "") -}}
+<link rel="canonical" href="{{ $href | safeURL }}">
+{{- end -}}

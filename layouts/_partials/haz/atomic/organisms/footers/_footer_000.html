@@ -1,0 +1,63 @@
+{{- $source := index . "source" -}}
+{{- $child := index . "child" -}}
+{{- $thisObj := index . "thisObj" | default dict -}}
+{{- $sysManifest := index . "sysManifest" -}}
+{{- $context := index . "context" -}}
+{{- $thisObjProps := index $thisObj "props" | default dict -}}
+{{- $thisChildren := index $thisObj "children" | default dict -}}
+{{- $thisSource := "organisms|footers|footer_000" -}}
+{{- $enabled := true -}}
+{{- if gt (len $thisObj) 0 -}}
+  {{- $enabled = index $thisObj "enabled" | default false -}}
+{{- end -}}
+{{- if $enabled -}}
+{{- partial "haz/helpers/fn/fn_html_comment.html" (dict "text" $thisSource) -}}
+{{- $attrsFooter := index $thisObjProps "footer_attrs" | default dict -}}
+{{ partial "haz/helpers/fn/fn_tag_tag_open.html" (dict "tag" "footer" "attrs" $attrsFooter) }}
+
+{{- /* Optional: brand / logo (same Atomic family as header when wired) */ -}}
+{{- $attrsBrand := index $thisObjProps "div_brand_attrs" | default dict -}}
+{{ partial "haz/helpers/fn/fn_tag_tag_open.html" (dict "tag" "div" "attrs" $attrsBrand) }}
+{{- partial "haz/helpers/fn/fn_partial.html" (dict
+  "source" $thisSource
+  "child" "brand"
+  "thisObj" $thisObj
+  "sysManifest" $sysManifest
+  "context" $context
+) -}}
+</div>
+
+{{- /* Optional: mid menus row (multiplier — one or more menus) */ -}}
+{{- $attrsMenus := index $thisObjProps "div_menus_attrs" | default dict -}}
+{{ partial "haz/helpers/fn/fn_tag_tag_open.html" (dict "tag" "div" "attrs" $attrsMenus) }}
+{{- partial "haz/helpers/fn/fn_partial.html" (dict
+  "source" $thisSource
+  "child" "menus"
+  "thisObj" $thisObj
+  "sysManifest" $sysManifest
+  "context" $context
+) -}}
+</div>
+
+{{- /* Legal / policy links — horizontal nav strip */ -}}
+{{- $attrsNavLegal := index $thisObjProps "div_nav_legal_attrs" | default dict -}}
+{{ partial "haz/helpers/fn/fn_tag_tag_open.html" (dict "tag" "div" "attrs" $attrsNavLegal) }}
+{{- partial "haz/helpers/fn/fn_partial.html" (dict
+  "source" $thisSource
+  "child" "nav_legal"
+  "thisObj" $thisObj
+  "sysManifest" $sysManifest
+  "context" $context
+) -}}
+</div>
+
+</footer>
+{{- else if index $thisChildren "enabled_false" "enabled" -}}
+{{- partial "haz/helpers/fn/fn_partial.html" (dict
+  "source" $thisSource
+  "child" (index $thisChildren "enabled_false" "child")
+  "thisObj" $thisObj
+  "sysManifest" $sysManifest
+  "context" $context
+) -}}
+{{- end -}}

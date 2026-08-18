@@ -1,0 +1,88 @@
+{{- $source := index . "source" -}}
+{{- $child := index . "child" -}}
+{{- $thisObj := index . "thisObj" -}}
+{{- $sysManifest := index . "sysManifest" -}}
+{{- $context := index . "context" -}}
+{{- $thisObjProps := index $thisObj "props" -}}
+{{- $thisChildren := index $thisObj "children" -}}
+{{- $thisSource := "atoms|hugo_page_taxonomy_dt_dd_000" -}}
+{{- if index $thisObj "enabled" -}}
+{{- $key := trim (printf "%s" (index $thisObjProps "taxonomy" | default "categories")) " \t\n\r" -}}
+{{- $settingsKey := lower $key -}}
+{{- $divWrapper := true -}}
+{{- if isset $thisObjProps "div_wrapper" -}}
+{{- $divWrapper = index $thisObjProps "div_wrapper" -}}
+{{- end -}}
+{{- $settings := index $sysManifest "settings" | default dict -}}
+{{- $profile := index (index $settings "taxonomies" | default dict) $settingsKey | default dict -}}
+{{- $getterms := lower (trim (printf "%s" (index $profile "getterms" | default $settingsKey)) " \t\n\r") -}}
+{{- if and (isset $thisObjProps "getterms") (ne (trim (printf "%s" (index $thisObjProps "getterms")) " \t\n\r") "") -}}
+{{- $getterms = lower (trim (printf "%s" (index $thisObjProps "getterms")) " \t\n\r") -}}
+{{- end -}}
+{{- $term := index $profile "term" | default "" -}}
+{{- if and (isset $thisObjProps "term") (ne (trim (printf "%s" (index $thisObjProps "term")) " \t\n\r") "") -}}
+{{- $term = index $thisObjProps "term" -}}
+{{- end -}}
+{{- $delimiter := index $profile "delimiter" | default ", " -}}
+{{- if isset $thisObjProps "delimiter" -}}
+{{- $delimiter = index $thisObjProps "delimiter" -}}
+{{- end -}}
+{{- $rowPartial := trim (printf "%s" (index $profile "row_partial" | default "haz/helpers/fn/fn_list_row_link_000")) " \t\n\r" -}}
+{{- if and (isset $thisObjProps "row_partial") (ne (trim (printf "%s" (index $thisObjProps "row_partial")) " \t\n\r") "") -}}
+{{- $rowPartial = trim (printf "%s" (index $thisObjProps "row_partial")) " \t\n\r" -}}
+{{- end -}}
+{{- $rel := trim (printf "%s" (index $profile "rel" | default "")) " \t\n\r" -}}
+{{- if and (isset $thisObjProps "rel") (ne (trim (printf "%s" (index $thisObjProps "rel")) " \t\n\r") "") -}}
+{{- $rel = trim (printf "%s" (index $thisObjProps "rel")) " \t\n\r" -}}
+{{- end -}}
+{{- $listTag := lower (trim (printf "%s" (index $profile "list_tag" | default "ul")) " \t\n\r") -}}
+{{- if isset $thisObjProps "list_tag" -}}
+{{- $listTag = lower (trim (printf "%s" (index $thisObjProps "list_tag")) " \t\n\r") -}}
+{{- end -}}
+{{- $sortKey := trim (printf "%s" (index $profile "sort" | default "")) " \t\n\r" -}}
+{{- if and (isset $thisObjProps "sort") (ne (trim (printf "%s" (index $thisObjProps "sort")) " \t\n\r") "") -}}
+{{- $sortKey = trim (printf "%s" (index $thisObjProps "sort")) " \t\n\r" -}}
+{{- end -}}
+{{- $sortOrder := lower (trim (printf "%s" (index $profile "sort_order" | default "asc")) " \t\n\r") -}}
+{{- if and (isset $thisObjProps "sort_order") (ne (trim (printf "%s" (index $thisObjProps "sort_order")) " \t\n\r") "") -}}
+{{- $sortOrder = lower (trim (printf "%s" (index $thisObjProps "sort_order")) " \t\n\r") -}}
+{{- end -}}
+{{- $emptyFallback := "" -}}
+{{- $hasEmptyFallback := false -}}
+{{- if isset $profile "empty_fallback" -}}
+{{- $emptyFallback = index $profile "empty_fallback" -}}
+{{- $hasEmptyFallback = true -}}
+{{- end -}}
+{{- if isset $thisObjProps "empty_fallback" -}}
+{{- $emptyFallback = index $thisObjProps "empty_fallback" -}}
+{{- $hasEmptyFallback = true -}}
+{{- end -}}
+{{- $terms := $context.GetTerms $getterms -}}
+{{- $show := gt (len $terms) 0 -}}
+{{- if and (not $show) $hasEmptyFallback (ne (trim (printf "%s" $emptyFallback) " \t\n\r") "") -}}
+{{- $show = true -}}
+{{- end -}}
+{{- if $show -}}
+{{- if $divWrapper -}}<div>{{ end -}}
+<dt>{{ $term }}</dt>
+<dd>
+{{- if gt (len $terms) 0 -}}
+{{- partial "haz/helpers/fn/page/fn_page_taxonomy_terms.html" (dict
+  "context" $context
+  "taxonomy" $getterms
+  "delimiter" $delimiter
+  "row_partial" $rowPartial
+  "list_tag" $listTag
+  "rel" $rel
+  "sort" $sortKey
+  "sort_order" $sortOrder
+) -}}
+{{- else -}}
+{{ $emptyFallback }}
+{{- end -}}
+</dd>
+{{- if $divWrapper -}}</div>{{ end -}}
+{{- end -}}
+{{- else if index $thisChildren "enabled_false" "enabled" -}}
+{{- partial "haz/helpers/fn/fn_partial.html" (dict "source" $thisSource "child" (index $thisChildren "enabled_false" "child") "thisObj" $thisObj "sysManifest" $sysManifest "context" $context) -}}
+{{- end -}}

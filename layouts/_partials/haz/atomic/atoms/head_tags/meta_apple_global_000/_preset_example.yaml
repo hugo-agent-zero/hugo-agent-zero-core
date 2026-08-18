@@ -1,0 +1,4 @@
+preset:
+  # Remove leading "_" to activate an override key.
+  _apple-mobile-web-app-title: TODO
+  _apple-mobile-web-app-capable: "yes"

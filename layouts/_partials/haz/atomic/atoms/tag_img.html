@@ -1,0 +1,16 @@
+{{- $source := index . "source" -}}
+{{- $child := index . "child" -}}
+{{- $thisObj := index . "thisObj" -}}
+{{- $sysManifest := index . "sysManifest" -}}
+{{- $context := index . "context" -}}
+{{- $thisProps := index $thisObj "props" -}}
+{{- $thisChildren := index $thisObj "children" -}}
+{{- $thisSource := "atoms|tag_img" -}}
+{{- if index $thisObj "enabled" -}}
+{{- $src := index $thisProps "src" -}}
+{{- $fn := index $thisProps "fn" -}}{{ $fn }}
+{{- $pairs := index $thisProps "pairs" -}}
+{{- partial "haz/helpers/fn/fn_tag_img.html" (dict "src" $src "fn" $fn "pairs" $pairs) -}}
+{{- else if index $thisChildren "enabled_false" "enabled" -}}
+{{- partial "haz/helpers/fn/fn_partial.html" (dict "source" $thisSource "child" (index $thisChildren "enabled_false" "child") "thisObj" $thisObj "sysManifest" $sysManifest "context" $context) -}}
+{{- end -}}

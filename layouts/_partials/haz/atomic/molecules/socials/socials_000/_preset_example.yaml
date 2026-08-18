@@ -1,0 +1,7 @@
+# _preset_example.yaml — REFERENCE ONLY (not loaded).
+# Copy/adapt beside this Atomic or under content/presets/... when needed.
+preset:
+  attrs:
+    class: haz_socials
+    aria:
+      label: Social

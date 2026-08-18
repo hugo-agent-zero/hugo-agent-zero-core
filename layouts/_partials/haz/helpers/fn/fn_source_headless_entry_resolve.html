@@ -1,0 +1,31 @@
+{{/*
+  fn_source_headless_entry_resolve.html
+  Resolve a cms.headless entry from source pointer.
+  Args:
+    - sysManifest (dict)
+    - source (dict): provider (preferred), type (legacy), level, group, inst
+  Returns:
+    - cms headless entry dict (folder preferred, optional props) or empty dict
+*/}}
+{{- $sysManifest := index . "sysManifest" | default dict -}}
+{{- $source := index . "source" | default dict -}}
+{{- $provider := index $source "provider" | default (index $source "type" | default (index $source "level" | default "")) -}}
+{{- $level := index $source "level" | default "" -}}
+{{- $group := index $source "group" | default "" -}}
+{{- $inst := index $source "inst" | default "" -}}
+{{- $entry := dict -}}
+
+{{- $useHeadless := or (eq $provider "") (eq $provider "headless") (eq $provider "map_headless") -}}
+{{- if and $useHeadless $level $group $inst -}}
+  {{- $entry = index $sysManifest "cms" "headless" $level $group $inst | default dict -}}
+{{- end -}}
+{{- if and (eq (len $entry) 0) $useHeadless $group $inst -}}
+  {{/* Back-compat with legacy cms.headless.<group>.<inst> shape. */}}
+  {{- $entry = index $sysManifest "cms" "headless" $group $inst | default dict -}}
+{{- end -}}
+{{- if and (eq (len $entry) 0) $useHeadless $group $inst -}}
+  {{/* Back-compat with removed map_headless namespace. */}}
+  {{- $entry = index $sysManifest "map_headless" $group $inst | default dict -}}
+{{- end -}}
+
+{{- return $entry -}}

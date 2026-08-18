@@ -1,0 +1,9 @@
+preset:
+  # Remove leading "_" to activate an override key.
+  _twitter:card: summary_large_image
+  _twitter:site: "@site_handle"
+  _twitter:creator: "@author_handle"
+  _twitter:title: ".Title"
+  _twitter:description: default description text
+  _twitter:image: /defaults/meta_tag_default_image.png
+  _twitter:image:alt: twitter image alt

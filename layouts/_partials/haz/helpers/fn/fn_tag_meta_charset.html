@@ -1,0 +1,4 @@
+{{- $charset := index . "charset" -}}
+{{- if and (eq (printf "%T" $charset) "string") (ne $charset "") -}}
+<meta charset="{{ htmlEscape $charset }}">
+{{- end -}}

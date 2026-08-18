@@ -1,0 +1,164 @@
+{{/*
+  fn_folder_resolve_props.html
+  Folder-Atomic merge only (no render):
+    defaults → preset → source adapter → layouts overrides.
+
+  Returns dict: resolved_props, tag_white_list
+  Used by fn_folder_process_basic and thin process post-steps (brand/CTA).
+*/}}
+{{- $source := index . "source" -}}
+{{- $thisObj := index . "thisObj" | default dict -}}
+{{- $sysManifest := index . "sysManifest" -}}
+{{- $context := index . "context" -}}
+{{- $thisObjProps := index $thisObj "props" | default dict -}}
+{{- $part := index $thisObj "part" | default dict -}}
+{{- $partFolder := index $part "folder" | default "" -}}
+{{- $partFile := index $part "file" | default "" -}}
+{{- $isFolderNode := ne $partFolder "" -}}
+{{- $isFileNode := and (eq $partFolder "") (ne $partFile "") -}}
+{{- $cmsNode := index $part "cms" | default dict -}}
+{{- $sourcePath := index $cmsNode "source" | default ($cmsNode | default (index $thisObj "source" | default dict)) -}}
+{{- $partPresetRef := index $part "preset" | default (index $part "config" | default "") -}}
+{{- $partFolder = replaceRE "/+$" "" $partFolder -}}
+{{- $partBaseDir := $partFolder -}}
+{{- if and (eq $partBaseDir "") (ne $partFile "") -}}
+  {{- $partBaseDir = replaceRE "/[^/]+$" "" $partFile -}}
+{{- end -}}
+{{- $defaultsPath := "" -}}
+{{- if ne $partBaseDir "" -}}
+  {{- $defaultsPath = printf "layouts/_partials/%s/defaults.yaml" $partBaseDir -}}
+{{- end -}}
+
+{{- $contractDefaults := dict -}}
+{{- $contractMergePaths := slice -}}
+{{- $contractTagWhiteList := slice -}}
+{{- if and $defaultsPath (fileExists $defaultsPath) -}}
+  {{- $defaultsData := readFile $defaultsPath | transform.Unmarshal | default dict -}}
+  {{- $contractDefaults = index $defaultsData "defaults" | default dict -}}
+  {{- $contractMergePaths = index $defaultsData "merge_paths" | default slice -}}
+  {{- $contractTagWhiteList = index $defaultsData "tag_white_list" | default slice -}}
+  {{/* Top-level items / collection: hoist into defaults for shallow merge — page/preset replaces the list, does not append. */}}
+  {{- if isset $defaultsData "items" -}}
+    {{- $contractDefaults = partial "haz/helpers/fn/fn_dict_without_key.html" (dict "dict" $contractDefaults "key" "items") -}}
+    {{- $contractDefaults = merge $contractDefaults (dict "items" (index $defaultsData "items")) -}}
+  {{- end -}}
+  {{- if isset $defaultsData "collection" -}}
+    {{- $contractDefaults = partial "haz/helpers/fn/fn_dict_without_key.html" (dict "dict" $contractDefaults "key" "collection") -}}
+    {{- $contractDefaults = merge $contractDefaults (dict "collection" (index $defaultsData "collection")) -}}
+  {{- end -}}
+{{- end -}}
+{{- $contractDefaults = partial "haz/helpers/fn/fn_dict_without_key.html" (dict "dict" $contractDefaults "key" "merge_paths") -}}
+{{- $contractDefaults = partial "haz/helpers/fn/fn_dict_without_key.html" (dict "dict" $contractDefaults "key" "tag_white_list") -}}
+
+{{- $sourceProvider := index $sourcePath "provider" | default (index $sourcePath "type" | default "") -}}
+{{- $sourceLevel := index $sourcePath "level" | default "" -}}
+{{- $sourceGroup := index $sourcePath "group" | default "" -}}
+{{- $sourceInst := index $sourcePath "inst" | default "" -}}
+{{- $cmsEntry := dict -}}
+{{- if and (ne $sourceProvider "") (ne $sourceLevel "") (ne $sourceGroup "") (ne $sourceInst "") -}}
+  {{- $cmsEntry = index $sysManifest "cms" $sourceProvider $sourceLevel $sourceGroup $sourceInst | default dict -}}
+{{- end -}}
+{{- $cmsPresetRef := index $cmsEntry "preset" | default (index $cmsEntry "config" | default "") -}}
+
+{{/* Single-preset resolution:
+     1) if part.preset (or config) exists, use it (ignore cms preset)
+     2) else if cms entry preset (or config) exists, use it
+     3) else no preset layer
+*/}}
+{{- $resolvedPresetRef := "" -}}
+{{- if ne $partPresetRef "" -}}
+  {{- $resolvedPresetRef = printf "%v" $partPresetRef -}}
+{{- else if ne $cmsPresetRef "" -}}
+  {{- $resolvedPresetRef = printf "%v" $cmsPresetRef -}}
+{{- end -}}
+
+{{- $presetPath := "" -}}
+{{- if ne $resolvedPresetRef "" -}}
+  {{- $presetRefNorm := replaceRE "^/+" "" $resolvedPresetRef -}}
+  {{- if in $presetRefNorm "/" -}}
+    {{- if or (hasPrefix $presetRefNorm "layouts/_partials/") (hasPrefix $presetRefNorm "content/") -}}
+      {{- $presetPath = $presetRefNorm -}}
+    {{- else -}}
+      {{- $presetPath = printf "layouts/_partials/%s" $presetRefNorm -}}
+    {{- end -}}
+  {{- else if and $isFolderNode (ne $partBaseDir "") -}}
+    {{- $presetCandidates := slice -}}
+    {{- if hasSuffix $resolvedPresetRef ".yaml" -}}
+      {{- $presetCandidates = $presetCandidates | append $resolvedPresetRef -}}
+      {{- if not (hasPrefix $resolvedPresetRef "preset_") -}}
+        {{- $presetCandidates = $presetCandidates | append (printf "preset_%s" $resolvedPresetRef) -}}
+      {{- end -}}
+      {{- if not (hasPrefix $resolvedPresetRef "config_") -}}
+        {{- $presetCandidates = $presetCandidates | append (printf "config_%s" $resolvedPresetRef) -}}
+      {{- end -}}
+    {{- else -}}
+      {{- $presetCandidates = $presetCandidates | append (printf "%s.yaml" $resolvedPresetRef) -}}
+      {{- if not (hasPrefix $resolvedPresetRef "preset_") -}}
+        {{- $presetCandidates = $presetCandidates | append (printf "preset_%s.yaml" $resolvedPresetRef) -}}
+      {{- end -}}
+      {{- if not (hasPrefix $resolvedPresetRef "config_") -}}
+        {{- $presetCandidates = $presetCandidates | append (printf "config_%s.yaml" $resolvedPresetRef) -}}
+      {{- end -}}
+    {{- end -}}
+    {{- range $presetCandidate := $presetCandidates -}}
+      {{- if eq $presetPath "" -}}
+        {{- $candidatePath := printf "layouts/_partials/%s/%s" $partBaseDir $presetCandidate -}}
+        {{- if fileExists $candidatePath -}}
+          {{- $presetPath = $candidatePath -}}
+        {{- end -}}
+      {{- end -}}
+    {{- end -}}
+  {{- else if $isFileNode -}}
+    {{- warnf "preset ignored for file node: part.file requires explicit preset path (got %q)" $resolvedPresetRef -}}
+  {{- end -}}
+{{- end -}}
+
+{{- $presetProps := dict -}}
+{{- if and (ne $presetPath "") (fileExists $presetPath) -}}
+  {{- $presetData := readFile $presetPath | transform.Unmarshal | default dict -}}
+  {{- $presetFromPreset := index $presetData "preset" | default dict -}}
+  {{- $presetFromConfig := index $presetData "config" | default dict -}}
+  {{- $presetFromDefaults := index $presetData "defaults" | default dict -}}
+  {{- if gt (len $presetFromPreset) 0 -}}
+    {{- $presetProps = $presetFromPreset -}}
+  {{- else if gt (len $presetFromConfig) 0 -}}
+    {{- warnf "deprecated preset file shape: use 'preset:' key instead of 'config:'" -}}
+    {{- $presetProps = $presetFromConfig -}}
+  {{- else if gt (len $presetFromDefaults) 0 -}}
+    {{- warnf "deprecated preset file shape: use 'preset:' key instead of 'defaults:'" -}}
+    {{- $presetProps = $presetFromDefaults -}}
+  {{- else -}}
+    {{- $presetProps = $presetData -}}
+  {{- end -}}
+{{- end -}}
+{{- $presetProps = partial "haz/helpers/fn/fn_dict_without_key.html" (dict "dict" $presetProps "key" "merge_paths") -}}
+{{- $presetProps = partial "haz/helpers/fn/fn_dict_without_key.html" (dict "dict" $presetProps "key" "tag_white_list") -}}
+
+{{- $baseProps := partial "haz/helpers/fn/fn_source_props_merge.html" (dict
+  "default_props" $contractDefaults
+  "source_props" $presetProps
+  "override_props" dict
+  "merge_paths" $contractMergePaths
+) -}}
+
+{{- $sourceResolvedProps := partial "haz/helpers/fn/fn_source_adapter_resolve.html" (dict
+  "sysManifest" $sysManifest
+  "context" $context
+  "source" $sourcePath
+  "part_folder" $partFolder
+  "override_props" dict
+) -}}
+{{- $sourceResolvedProps = partial "haz/helpers/fn/fn_dict_without_key.html" (dict "dict" $sourceResolvedProps "key" "merge_paths") -}}
+{{- $sourceResolvedProps = partial "haz/helpers/fn/fn_dict_without_key.html" (dict "dict" $sourceResolvedProps "key" "tag_white_list") -}}
+{{- $resolvedOverrideProps := partial "haz/helpers/fn/fn_dict_without_key.html" (dict "dict" $thisObjProps "key" "merge_paths") -}}
+{{- $resolvedOverrideProps = partial "haz/helpers/fn/fn_dict_without_key.html" (dict "dict" $resolvedOverrideProps "key" "tag_white_list") -}}
+{{- $resolvedProps := partial "haz/helpers/fn/fn_source_props_merge.html" (dict
+  "default_props" $baseProps
+  "source_props" $sourceResolvedProps
+  "override_props" $resolvedOverrideProps
+  "merge_paths" $contractMergePaths
+) -}}
+{{- $resolvedProps = partial "haz/helpers/fn/fn_dict_without_key.html" (dict "dict" $resolvedProps "key" "merge_paths") -}}
+{{- $resolvedProps = partial "haz/helpers/fn/fn_dict_without_key.html" (dict "dict" $resolvedProps "key" "tag_white_list") -}}
+
+{{- return (dict "resolved_props" $resolvedProps "tag_white_list" $contractTagWhiteList) -}}

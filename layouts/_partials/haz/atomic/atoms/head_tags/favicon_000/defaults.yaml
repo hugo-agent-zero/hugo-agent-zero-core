@@ -1,0 +1,9 @@
+defaults:
+  links:
+    shortcut icon:
+      - href: /favicon_000.ico
+    icon:
+      - href: /favicon_000.svg
+        type: image/svg+xml
+merge_paths:
+  - - links

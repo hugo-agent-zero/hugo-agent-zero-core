@@ -1,0 +1,9 @@
+{{- $src := index . "src" -}}
+{{- $fn := index . "fn" -}}
+{{- $pairs := index . "pairs" -}}
+{{- if eq $fn "relURL" -}}
+  {{- $src = $src | relURL -}}
+{{- else if eq $fn "safeURL" -}}
+  {{- $src = $src | safeURL -}}
+{{- end -}}
+<img src="{{ $src }}"{{ range $key, $val := $pairs }} {{ $key }}="{{ $val }}"{{ end }}>

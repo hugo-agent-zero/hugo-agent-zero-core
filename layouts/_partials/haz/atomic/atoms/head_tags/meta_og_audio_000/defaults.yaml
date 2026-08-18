@@ -1,0 +1,8 @@
+# Contract only — no shipped media. See _preset_example.yaml for a worked example.
+defaults:
+  title: ""
+  artist: ""
+  album: ""
+  type: ""
+collection: []
+merge_paths: []

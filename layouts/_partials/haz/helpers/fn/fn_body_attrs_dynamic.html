@@ -1,0 +1,22 @@
+{{/*
+  fn_body_attrs_dynamic.html
+  Runtime body attrs from request path metadata.
+  Args: context
+  Returns: attrs dict
+*/}}
+{{- $context := index . "context" -}}
+{{- $path := strings.Trim ($context.RelPermalink | default "") "/" -}}
+{{- $parts := slice -}}
+{{- if $path -}}
+  {{- $parts = split $path "/" -}}
+{{- end -}}
+{{- $count := len $parts -}}
+
+{{- $data := dict "path-segments" $count -}}
+{{- if $path -}}
+  {{- $data = merge $data (dict "path" $path) -}}
+  {{- range $i, $segment := $parts -}}
+    {{- $data = merge $data (dict (printf "path%d" $i) $segment) -}}
+  {{- end -}}
+{{- end -}}
+{{- return (dict "data" $data) -}}

@@ -1,0 +1,67 @@
+{{- $source := index . "source" -}}
+{{- $child := index . "child" -}}
+{{- $thisObj := index . "thisObj" | default dict -}}
+{{- $sysManifest := index . "sysManifest" -}}
+{{- $context := index . "context" -}}
+{{- $thisObjProps := index $thisObj "props" | default dict -}}
+{{- $thisChildren := index $thisObj "children" | default dict -}}
+{{- $thisSource := "molecules|details|list_details_summary_000" -}}
+{{- $props := index . "props" | default $thisObjProps -}}
+{{- $enabled := true -}}
+{{- if gt (len $thisObj) 0 -}}
+  {{- $enabled = index $thisObj "enabled" | default false -}}
+{{- end -}}
+{{- if $enabled -}}
+  {{- partial "haz/helpers/fn/fn_html_comment.html" (dict "text" $thisSource) -}}
+  {{- $listPartial := trim (printf "%s" (index $props "list_partial" | default "")) " \t\n\r" -}}
+  {{- $rowPartial := index $props "row_partial" | default "" -}}
+  {{- $listTag := "" -}}
+  {{- if isset $props "list_tag" -}}
+    {{- $listTag = index $props "list_tag" -}}
+  {{- end -}}
+  {{- /* FAQ stack: never expose delimiter to CMS/props */ -}}
+  {{- $delimiter := "" -}}
+  {{- $defaultEnabled := false -}}
+  {{- if isset $props "enabled" -}}
+    {{- $defaultEnabled = index $props "enabled" -}}
+  {{- end -}}
+  {{- $defaultOpen := index $props "open" | default false -}}
+  {{- $defaultAttrs := index $props "attrs" | default dict -}}
+  {{- $rawCollection := index $props "collection" | default slice -}}
+  {{- $filter := index $props "filter" | default dict -}}
+  {{- $resolved := partial "haz/helpers/fn/fn_collection_filter_run.html" (dict
+    "collection" $rawCollection
+    "filter" $filter
+    "default_enabled" $defaultEnabled
+    "source" $thisSource
+  ) -}}
+  {{- $collection := slice -}}
+  {{- range $resolved -}}
+    {{- $row := . -}}
+    {{- if not (isset $row "open") -}}
+      {{- $row = merge $row (dict "open" $defaultOpen) -}}
+    {{- end -}}
+    {{- if not (isset $row "attrs") -}}
+      {{- $row = merge $row (dict "attrs" $defaultAttrs) -}}
+    {{- else -}}
+      {{- $row = merge $row (dict "attrs" (merge $defaultAttrs (index $row "attrs"))) -}}
+    {{- end -}}
+    {{- $collection = $collection | append $row -}}
+  {{- end -}}
+  {{- if and (gt (len $collection) 0) (ne $listPartial "") -}}
+    {{- partial $listPartial (dict
+      "collection" $collection
+      "row_partial" $rowPartial
+      "list_tag" $listTag
+      "delimiter" $delimiter
+    ) -}}
+  {{- end -}}
+{{- else if index $thisChildren "enabled_false" "enabled" -}}
+  {{- partial "haz/helpers/fn/fn_partial.html" (dict
+    "source" $thisSource
+    "child" (index $thisChildren "enabled_false" "child")
+    "thisObj" $thisObj
+    "sysManifest" $sysManifest
+    "context" $context
+  ) -}}
+{{- end -}}

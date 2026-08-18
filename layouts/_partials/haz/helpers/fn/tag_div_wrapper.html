@@ -1,0 +1,13 @@
+{{ $childConfig := .childConfig }}
+{{ $thisProp := .thisProp }}
+{{ if $thisProp.active }}
+<div
+ {{ partial "haz/helpers/fn/fn_args_to_string.html" (dict "args" $thisProp.args "tag" "div") | safeHTMLAttr}}
+>
+{{ partial $thisProp.partials.main (dict "context" .context "childConfig" .childConfig) }}
+</div>
+{{ else }}
+  {{ if $thisProp.active_false }}
+    {{ partial $thisProp.partials.active_false (dict "context" .context "thisProp" $thisProp "childConfig" .childConfig) }}
+  {{ end }}
+{{ end }}

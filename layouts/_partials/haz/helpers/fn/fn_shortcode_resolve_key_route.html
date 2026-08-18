@@ -1,0 +1,61 @@
+{{/*
+  fn_shortcode_resolve_key_route.html
+  Resolve shortcode profile → route → key_layouts_entry.
+  Missing route continues to default; present enabled != true is a hard stop.
+  Args: shortcodes, key_profile, context
+*/}}
+{{- $shortcodes := index . "shortcodes" | default dict -}}
+{{- $keyProfile := index . "key_profile" | default "" -}}
+{{- $context := index . "context" -}}
+{{- $keyRoute := index $shortcodes "key_route" | default dict -}}
+{{- $keys := index $keyRoute "keys" | default dict -}}
+{{- $result := dict -}}
+
+{{- if not (isset $keys $keyProfile) -}}
+  {{- $result = dict "__hard_stop" true "__reason" "missing_key_route_profile" -}}
+{{- else -}}
+  {{- $profile := index $keys $keyProfile | default dict -}}
+  {{- if ne (index $profile "enabled") true -}}
+    {{- $result = dict "__hard_stop" true "__reason" "disabled_key_route_profile" -}}
+  {{- else -}}
+    {{- $rules := index $profile "rules" | default slice -}}
+    {{- $candidates := partial "haz/helpers/fn/fn_shortcode_route_candidates.html" (dict "context" $context) -}}
+    {{- $selected := false -}}
+
+    {{- range $candidate := $candidates -}}
+      {{- if not $selected -}}
+        {{- range $rule := $rules -}}
+          {{- if and (not $selected) (eq (index $rule "match" | default "") $candidate) -}}
+            {{- $selected = true -}}
+            {{- if ne (index $rule "enabled") true -}}
+              {{- $result = dict "__hard_stop" true "__reason" "disabled_key_route" -}}
+            {{- else -}}
+              {{- $entryKey := index $rule "key_layouts_entry" | default "" -}}
+              {{- if eq $entryKey "" -}}
+                {{- $result = dict "__hard_stop" true "__reason" "missing_key_route_layouts_entry" -}}
+              {{- else -}}
+                {{- $result = dict "key_layouts_entry" $entryKey -}}
+              {{- end -}}
+            {{- end -}}
+          {{- end -}}
+        {{- end -}}
+      {{- end -}}
+    {{- end -}}
+
+    {{- if not $selected -}}
+      {{- $default := index $profile "default" | default dict -}}
+      {{- if ne (index $default "enabled") true -}}
+        {{- $result = dict "__hard_stop" true "__reason" "disabled_key_route_default" -}}
+      {{- else -}}
+        {{- $entryKey := index $default "key_layouts_entry" | default "" -}}
+        {{- if eq $entryKey "" -}}
+          {{- $result = dict "__hard_stop" true "__reason" "missing_key_route_default_layouts_entry" -}}
+        {{- else -}}
+          {{- $result = dict "key_layouts_entry" $entryKey -}}
+        {{- end -}}
+      {{- end -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
+
+{{- return $result -}}

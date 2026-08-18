@@ -1,0 +1,45 @@
+{{/*
+  fn_head_tags_taglist.html
+  Shared head-tags tagList runner (ex head_tags_base).
+
+  Args:
+    - context (.Page)
+    - defaults (dict)
+    - localValues (dict, optional)
+    - tagList (slice of {key, compare, tag})
+*/}}
+{{- $context := index . "context" -}}
+{{- $defaults := index . "defaults" | default dict -}}
+{{- $localValues := index . "localValues" | default dict -}}
+{{- $tagList := index . "tagList" -}}
+{{- range $tagList -}}
+{{- $key := index . "key" -}}
+{{- $compare := index . "compare" -}}
+{{- $tag := index . "tag" -}}
+{{- $temp := "" -}}
+{{- if eq $compare "basic" -}}
+{{- $temp = partial "haz/helpers/fn/fn_get_meta_value_rules.html" (dict
+  "context" $context
+  "prop" $key
+  "defaults" $defaults
+  "localValues" $localValues
+) -}}
+{{- else if eq $compare "media" -}}
+{{- $temp = partial "haz/helpers/fn/fn_get_meta_value_rules_media.html" (dict
+  "context" $context
+  "prop" $key
+  "defaults" $defaults
+  "localValues" $localValues
+) -}}
+{{- else if eq $compare "global" -}}
+{{- $temp = index $defaults $key -}}
+{{- end -}}
+{{- if $temp -}}
+{{- if eq $tag "name" -}}
+{{- partial "haz/helpers/fn/fn_tag_meta_name.html" (dict "key" $key "content" $temp) -}}
+{{- else if eq $tag "property" -}}
+{{- partial "haz/helpers/fn/fn_tag_meta_property.html" (dict "key" $key "content" $temp) -}}
+{{- end -}}
+{{- end -}}
+
+{{- end -}}

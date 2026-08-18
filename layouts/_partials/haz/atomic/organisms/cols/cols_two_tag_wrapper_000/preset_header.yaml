@@ -1,0 +1,11 @@
+preset:
+  tag: header
+  attrs:
+    id: haz_header_site
+    class: haz_header_site
+  brand_attrs:
+    class: haz_header_site__brand
+  col_other_attrs:
+    class: haz_header_site__col_other
+  row_below_attrs:
+    id: haz_nav_main_panel

@@ -1,0 +1,41 @@
+{{- $source := index . "source" -}}
+{{- $child := index . "child" -}}
+{{- $thisObj := index . "thisObj" -}}
+{{- $sysManifest := index . "sysManifest" -}}
+{{- $context := index . "context" -}}
+{{- $thisObjProps := index $thisObj "props" -}}
+{{- $thisChildren := index $thisObj "children" -}}
+{{- $thisSource := "molecules|button_toggle_000" -}}
+{{- if index $thisObj "enabled" -}}
+{{- partial "haz/helpers/fn/fn_tag_tag_open.html" (dict "tag" "button" "attrs" $thisObjProps.attrs "context" $context ) -}}
+{{- partial "haz/helpers/fn/fn_partial.html" (dict
+  "source" $thisSource
+  "child" "icon_true"
+  "thisObj" $thisObj
+  "sysManifest" $sysManifest
+  "context" $context
+  ) -}}
+{{- partial "haz/helpers/fn/fn_partial.html" (dict
+  "source" $thisSource
+  "child" "icon_false"
+  "thisObj" $thisObj
+  "sysManifest" $sysManifest
+  "context" $context
+  ) -}}
+<span{{ if $thisObjProps.sr_only }} class="haz_sr_only"{{ end }}>{{ $thisObjProps.description }}</span></button>
+{{- partial "haz/helpers/fn/fn_partial.html" (dict
+  "source" $thisSource
+  "child" "button_js"
+  "thisObj" $thisObj
+  "sysManifest" $sysManifest
+  "context" $context
+  ) -}}
+{{- else if index $thisChildren "enabled_false" "enabled" -}}
+{{- partial "haz/helpers/fn/fn_partial.html" (dict
+  "source" $thisSource
+  "child" (index $thisChildren "enabled_false" "child")
+  "thisObj" $thisObj
+  "sysManifest" $sysManifest
+  "context" $context
+) -}}
+{{ end }}

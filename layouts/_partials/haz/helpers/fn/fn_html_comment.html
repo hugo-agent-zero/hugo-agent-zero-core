@@ -1,0 +1,4 @@
+{{ $text := index . "text" -}}
+{{- if hugo.IsDevelopment -}}
+{{- printf "<!-- %s -->" $text | safeHTML -}}
+{{- end -}}

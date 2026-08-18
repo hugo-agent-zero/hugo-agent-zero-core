@@ -1,0 +1,4 @@
+preset:
+  # Remove leading "_" to activate an override key.
+  _referrer: strict-origin-when-cross-origin
+  _Content-Security-Policy: "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:;"

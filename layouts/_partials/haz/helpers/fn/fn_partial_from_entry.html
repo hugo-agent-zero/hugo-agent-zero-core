@@ -1,0 +1,50 @@
+{{/*
+  fn_partial_from_entry.html
+  Resolve and render a manifest node from route entry object.
+  Args:
+    - entry: dict with level, optional group, inst
+    - source: tracing source
+    - sysManifest
+    - context
+*/}}
+{{- $entry := index . "entry" | default dict -}}
+{{- $source := index . "source" -}}
+{{- $sysManifest := index . "sysManifest" -}}
+{{- $context := index . "context" -}}
+{{- $level := index $entry "level" -}}
+{{- $group := index $entry "group" | default "" -}}
+{{- $inst := index $entry "inst" -}}
+{{- if and $level $inst -}}
+  {{- $thisObjNew := dict -}}
+  {{- $manifestRoot := $sysManifest -}}
+  {{- if in (slice "layouts_root" "atoms" "molecules" "organisms" "multipliers") $level -}}
+    {{- $manifestRoot = index $sysManifest "layouts" | default dict -}}
+  {{- end -}}
+  {{- if $group -}}
+    {{- $thisObjNew = index $manifestRoot $level $group $inst -}}
+  {{- else -}}
+    {{- $thisObjNew = index $manifestRoot $level $inst -}}
+  {{- end -}}
+  {{- if $thisObjNew -}}
+    {{- $part := index $thisObjNew "part" -}}
+    {{- if and (index $thisObjNew "enabled") (ne (index $part "file") "") -}}
+      {{- if index $part "cache" -}}
+        {{- partialCached (index $part "file") (dict
+          "source" $source
+          "child" "route_entry"
+          "thisObj" $thisObjNew
+          "sysManifest" $sysManifest
+          "context" $context
+        ) (index $part "key") -}}
+      {{- else -}}
+        {{- partial (index $part "file") (dict
+          "source" $source
+          "child" "route_entry"
+          "thisObj" $thisObjNew
+          "sysManifest" $sysManifest
+          "context" $context
+        ) -}}
+      {{- end -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}

@@ -1,0 +1,31 @@
+defaults:
+  twitter:card: summary_large_image
+  twitter:site: "@site_handle"
+  twitter:creator: "@author_handle"
+  twitter:title: ".Title"
+  twitter:description: default description text
+  twitter:image: /defaults/meta_tag_default_image.png
+  twitter:image:alt: twitter image alt
+tag_white_list:
+  - key: twitter:card
+    compare: basic
+    tag: name
+  - key: twitter:site
+    compare: basic
+    tag: name
+  - key: twitter:creator
+    compare: basic
+    tag: name
+  - key: twitter:title
+    compare: basic
+    tag: name
+  - key: twitter:description
+    compare: basic
+    tag: name
+  - key: twitter:image
+    compare: media
+    tag: name
+  - key: twitter:image:alt
+    compare: basic
+    tag: name
+merge_paths: []

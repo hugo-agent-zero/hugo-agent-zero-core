@@ -1,0 +1,56 @@
+{{- $source := index . "source" -}}
+{{- $child := index . "child" -}}
+{{- $thisObj := index . "thisObj" | default dict -}}
+{{- $sysManifest := index . "sysManifest" -}}
+{{- $context := index . "context" -}}
+{{- $thisObjProps := index $thisObj "props" | default dict -}}
+{{- $thisChildren := index $thisObj "children" | default dict -}}
+{{- $thisSource := "atoms|head_tags|meta_html_global_000" -}}
+{{- $props := index . "props" | default $thisObjProps -}}
+{{- $enabled := true -}}
+{{- if gt (len $thisObj) 0 -}}
+  {{- $enabled = index $thisObj "enabled" | default false -}}
+{{- end -}}
+{{- if $enabled -}}
+  {{- partial "haz/helpers/fn/fn_html_comment.html" (dict "text" $thisSource) -}}
+  {{- if gt (len $props) 0 -}}
+    {{- $tagList := index . "tag_white_list" | default slice -}}
+    {{- partial "haz/helpers/fn/fn_head_tags_taglist.html" (dict
+      "context" $context
+      "defaults" $props
+      "localValues" dict
+      "tagList" $tagList
+    ) -}}
+    {{- $themeColorKey := "theme-color" -}}
+    {{- $themeColor := index $props $themeColorKey -}}
+    {{- with $themeColor -}}
+      {{- $tcType := printf "%T" . -}}
+      {{- if eq $tcType "string" -}}
+        {{- partial "haz/helpers/fn/fn_tag_meta_name.html" (dict "key" $themeColorKey "content" .) -}}
+      {{- else if strings.HasPrefix $tcType "[]" -}}
+        {{- range . -}}
+          {{- $row := . -}}
+          {{- $content := "" -}}
+          {{- $media := "" -}}
+          {{- if eq (printf "%T" $row) "map[string]interface {}" -}}
+            {{- $content = index $row "content" | default "" -}}
+            {{- $media = index $row "media" | default "" -}}
+          {{- else -}}
+            {{- $content = printf "%v" $row -}}
+          {{- end -}}
+          {{- if and (eq (printf "%T" $content) "string") (ne $content "") -}}
+            {{- partial "haz/helpers/fn/fn_tag_meta_name.html" (dict "key" $themeColorKey "content" $content "media" $media) -}}
+          {{- end -}}
+        {{- end -}}
+      {{- end -}}
+    {{- end -}}
+  {{- end -}}
+{{- else if index $thisChildren "enabled_false" "enabled" -}}
+  {{- partial "haz/helpers/fn/fn_partial.html" (dict
+    "source" $thisSource
+    "child" (index $thisChildren "enabled_false" "child")
+    "thisObj" $thisObj
+    "sysManifest" $sysManifest
+    "context" $context
+  ) -}}
+{{- end -}}

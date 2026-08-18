@@ -1,0 +1,48 @@
+{{/*
+  cols_two_tag_wrapper_parent.html
+  Output only: landmark/tag + two cols + optional row_below.
+  Caller (organism index) owns enabled / enabled_false / html comment boilerplate.
+  Props: tag, attrs, brand_attrs, col_other_attrs, row_below_attrs
+  Children: col_brand, col_other, row_below
+*/}}
+{{- $thisObj := index . "thisObj" | default dict -}}
+{{- $sysManifest := index . "sysManifest" -}}
+{{- $context := index . "context" -}}
+{{- $props := index . "props" | default (index $thisObj "props" | default dict) -}}
+{{- $thisSource := index . "templateSource" | default "parents|cols_two_tag_wrapper_parent" -}}
+{{- $tag := index $props "tag" | default "div" -}}
+{{- $attrs := index $props "attrs" | default dict -}}
+{{- partial "haz/helpers/fn/fn_tag_tag_open.html" (dict "tag" $tag "attrs" $attrs) -}}
+<div>
+{{- $brandAttrs := index $props "brand_attrs" | default dict -}}
+{{- partial "haz/helpers/fn/fn_tag_tag_open.html" (dict "tag" "div" "attrs" $brandAttrs) -}}
+{{- partial "haz/helpers/fn/fn_partial.html" (dict
+  "source" $thisSource
+  "child" "col_brand"
+  "thisObj" $thisObj
+  "sysManifest" $sysManifest
+  "context" $context
+) -}}
+</div>
+{{- $colOtherAttrs := index $props "col_other_attrs" | default dict -}}
+{{- partial "haz/helpers/fn/fn_tag_tag_open.html" (dict "tag" "div" "attrs" $colOtherAttrs) -}}
+{{- partial "haz/helpers/fn/fn_partial.html" (dict
+  "source" $thisSource
+  "child" "col_other"
+  "thisObj" $thisObj
+  "sysManifest" $sysManifest
+  "context" $context
+) -}}
+</div>
+</div>
+{{- $rowBelowAttrs := index $props "row_below_attrs" | default dict -}}
+{{- partial "haz/helpers/fn/fn_tag_tag_open.html" (dict "tag" "div" "attrs" $rowBelowAttrs) -}}
+{{- partial "haz/helpers/fn/fn_partial.html" (dict
+  "source" $thisSource
+  "child" "row_below"
+  "thisObj" $thisObj
+  "sysManifest" $sysManifest
+  "context" $context
+) -}}
+</div>
+{{- printf "</%s>" $tag | safeHTML -}}

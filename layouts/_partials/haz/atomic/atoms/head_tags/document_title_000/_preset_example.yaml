@@ -1,0 +1,6 @@
+preset:
+  # Remove leading "_" to activate an override key.
+  _title: ".Title"
+  _title_prefix: ""
+  _title_suffix: ""
+  _delimiter: " | "

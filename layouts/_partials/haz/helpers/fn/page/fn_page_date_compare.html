@@ -1,0 +1,13 @@
+{{- $a := index . "a" -}}
+{{- $b := index . "b" -}}
+{{- $minAfterSeconds := index . "min_after_seconds" | default 0 -}}
+{{- $ok := false -}}
+{{- if lt $minAfterSeconds 0 -}}
+{{- $ok = gt $b.Year 2000 -}}
+{{- else if eq $minAfterSeconds 0 -}}
+{{- $ok = and (gt $b.Year 2000) ($b.After $a) -}}
+{{- else -}}
+{{- $minDur := duration (printf "%ds" $minAfterSeconds) -}}
+{{- $ok = and (gt $b.Year 2000) (ge ($b.Sub $a) $minDur) -}}
+{{- end -}}
+{{- return $ok -}}

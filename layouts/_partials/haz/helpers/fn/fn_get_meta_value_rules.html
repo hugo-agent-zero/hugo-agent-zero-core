@@ -1,0 +1,16 @@
+{{- $context := index . "context" -}}
+{{- $prop := index . "prop" -}}
+{{- $defaults := index . "defaults" | default dict -}}
+{{- $localValues := index . "localValues" | default dict -}}
+{{- $returnValue := "" -}}
+{{- if (isset $defaults $prop) -}}
+{{- $returnValue = index $defaults $prop -}}
+{{- if isset $localValues $prop -}}
+{{- $returnValue = index $localValues $prop -}}
+{{- end -}}
+{{- $returnValue = partial "haz/helpers/fn/fn_get_page_value_from_string.html" (dict
+  "context" $context
+  "value" $returnValue
+) -}}
+{{- end -}}
+{{- return $returnValue -}}

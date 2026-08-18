@@ -1,0 +1,25 @@
+{{- $context := index . "context" -}}
+{{- $value := trim (printf "%s" (index . "value" | default "")) " \t\n\r" -}}
+{{- $v := lower $value -}}
+{{- if eq $value ".Title" -}}
+{{- $value = $context.Title -}}
+{{- else if eq $value ".Permalink" -}}
+{{- $value = $context.Permalink -}}
+{{- else if eq $value ".RelPermalink" -}}
+{{- $value = $context.RelPermalink -}}
+{{- else if eq $value ".Content" -}}
+{{- $value = $context.Content -}}
+{{- else if or (eq $value ".Site.Home.RelPermalink") (eq $value ".Home.RelPermalink") (eq $v "home") -}}
+{{- $value = $context.Site.Home.RelPermalink -}}
+{{- else if or (eq $value ".Site.Home.Permalink") (eq $value ".Home.Permalink") -}}
+{{- $value = $context.Site.Home.Permalink -}}
+{{- else if or (eq $value ".Date") (eq $v "date") -}}
+{{- $value = $context.Date -}}
+{{- else if or (eq $value ".Lastmod") (eq $v "lastmod") -}}
+{{- $value = $context.Lastmod -}}
+{{- else if or (eq $value ".PublishDate") (eq $v "publishdate") -}}
+{{- $value = $context.PublishDate -}}
+{{- else if or (eq $value ".ExpiryDate") (eq $v "expirydate") -}}
+{{- $value = $context.ExpiryDate -}}
+{{- end -}}
+{{- return $value -}}

@@ -1,0 +1,15 @@
+{{- $source := index . "source" -}}
+{{- $child := index . "child" -}}
+{{- $thisObj := index . "thisObj" -}}
+{{- $sysManifest := index . "sysManifest" -}}
+{{- $context := index . "context" -}}
+{{- $thisObjProps := index $thisObj "props" -}}
+{{- $thisChildren := index $thisObj "children" -}}
+{{- $thisSource := "organisms|head" -}}
+{{- if $thisObj.enabled -}}
+<head>
+{{- partial "haz/helpers/fn/fn_partial.html" (dict "source" $thisSource "child" "head_main" "thisObj" $thisObj "sysManifest" $sysManifest "context" $context) -}}
+</head>
+{{- else if index $thisChildren "enabled_false" "enabled" -}}
+{{- partial "haz/helpers/fn/fn_partial.html" (dict "source" $thisSource "child"  (index $thisChildren "enabled_false" "child") "thisObj" $thisObj "sysManifest" $sysManifest "context" $context) -}}
+{{- end -}}

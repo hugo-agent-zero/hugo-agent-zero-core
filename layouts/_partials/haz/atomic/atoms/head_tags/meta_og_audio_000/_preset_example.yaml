@@ -1,0 +1,9 @@
+preset:
+  # Copy/adapt → content/presets/... and point layouts part.preset here.
+  # Field keys fill gaps on each collection row; collection replaces the site list.
+  title: ""
+  artist: ""
+  album: ""
+  type: application/mp3
+  collection:
+    - url: /defaults/meta_tag_default_audio.mp3

@@ -1,0 +1,37 @@
+{{- $sysManifest := partial "haz/helpers/fn/fn_get_sys_manifest.html" . -}}
+{{- $context := . -}}
+{{- $thisSource := "layouts|baseof" -}}
+{{- $thisObj := index $sysManifest.layouts.layouts_root $thisSource -}}
+{{- $thisChildren := index $thisObj "children" -}}
+{{- if $thisObj.enabled -}}
+<!doctype html>
+{{- partial "haz/helpers/fn/fn_partial.html" (dict "source" $thisSource "child" "html_open" "thisObj" $thisObj "sysManifest" $sysManifest "context" $context ) -}}
+{{- partial "haz/helpers/fn/fn_partial.html" (dict "source" $thisSource "child" "head" "thisObj" $thisObj "sysManifest" $sysManifest "context" $context) -}}
+{{- $bodyAttrs := partial "haz/helpers/fn/fn_body_attrs.html" (dict "sysManifest" $sysManifest "context" $context) -}}
+{{ partial "haz/helpers/fn/fn_tag_tag_open.html" (dict "tag" "body" "attrs" $bodyAttrs) }}
+{{- partial "haz/helpers/fn/fn_partial.html" (dict
+  "source" $thisSource
+  "child" "block_main_pre"
+  "thisObj" $thisObj
+  "sysManifest" $sysManifest
+  "context" $context
+) -}}
+{{ block "main" . }}{{ end }}
+{{- partial "haz/helpers/fn/fn_partial.html" (dict
+  "source" $thisSource
+  "child" "block_main_post"
+  "thisObj" $thisObj
+  "sysManifest" $sysManifest
+  "context" $context
+) -}}
+</body>
+</html>
+{{- else if index $thisChildren "enabled_false" "enabled" -}}
+{{- partial "haz/helpers/fn/fn_partial.html" (dict
+  "source" $thisSource
+  "child" (index $thisChildren "enabled_false" "child")
+  "thisObj" $thisObj
+  "sysManifest" $sysManifest
+  "context" $context
+) -}}
+{{- end -}}

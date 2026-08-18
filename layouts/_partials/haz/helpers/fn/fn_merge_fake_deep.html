@@ -1,0 +1,43 @@
+{{/*
+  fn_merge_fake_deep.html
+  Apply explicit nested merges for selected key paths.
+  Args:
+    - resolved_props (dict): already shallow-merged output
+    - default_props (dict)
+    - source_props (dict)
+    - override_props (dict)
+    - merge_paths (slice): e.g. (slice (slice "a"))
+*/}}
+{{- $resolvedProps := index . "resolved_props" | default dict -}}
+{{- $defaultProps := index . "default_props" | default dict -}}
+{{- $sourceProps := index . "source_props" | default dict -}}
+{{- $overrideProps := index . "override_props" | default dict -}}
+{{- $mergePaths := index . "merge_paths" | default slice -}}
+
+{{- range $path := $mergePaths -}}
+  {{- if eq (len $path) 1 -}}
+    {{- $k0 := index $path 0 -}}
+    {{- $mergedNested := merge
+      (index $defaultProps $k0 | default dict)
+      (index $sourceProps $k0 | default dict)
+      (index $overrideProps $k0 | default dict)
+    -}}
+    {{- $resolvedProps = merge $resolvedProps (dict $k0 $mergedNested) -}}
+  {{- else if eq (len $path) 2 -}}
+    {{- $k0 := index $path 0 -}}
+    {{- $k1 := index $path 1 -}}
+    {{- $baseL1 := index $defaultProps $k0 | default dict -}}
+    {{- $srcL1 := index $sourceProps $k0 | default dict -}}
+    {{- $overL1 := index $overrideProps $k0 | default dict -}}
+    {{- $mergedL1 := merge $baseL1 $srcL1 $overL1 -}}
+    {{- $mergedL2 := merge
+      (index $baseL1 $k1 | default dict)
+      (index $srcL1 $k1 | default dict)
+      (index $overL1 $k1 | default dict)
+    -}}
+    {{- $mergedL1 = merge $mergedL1 (dict $k1 $mergedL2) -}}
+    {{- $resolvedProps = merge $resolvedProps (dict $k0 $mergedL1) -}}
+  {{- end -}}
+{{- end -}}
+
+{{- return $resolvedProps -}}

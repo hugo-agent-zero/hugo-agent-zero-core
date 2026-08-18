@@ -1,0 +1,17 @@
+defaults:
+  description: "Agent Zero is a Hugo theme-work, with an Agent-first mindset, and an affinity for minimal build tooling."
+  author: Hugo Agent Zero
+  # Safe default: indexing is opt-in via child preset / page (must-do checklist).
+  robots: noindex,nofollow
+  canonical: ".Permalink"
+tag_white_list:
+  - key: description
+    compare: basic
+    tag: name
+  - key: robots
+    compare: basic
+    tag: name
+  - key: author
+    compare: basic
+    tag: name
+merge_paths: []

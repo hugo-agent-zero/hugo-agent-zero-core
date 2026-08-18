@@ -1,0 +1,51 @@
+{{/*
+  shortcode_parent.html
+  Resolve one shortcode key, then enter the existing layouts graph.
+  Args: key, source, sysManifest, context
+*/}}
+{{- $key := index . "key" | default "" -}}
+{{- $source := index . "source" | default "shortcode|haz" -}}
+{{- $sysManifest := index . "sysManifest" | default dict -}}
+{{- $context := index . "context" -}}
+{{- $entry := partial "haz/helpers/fn/fn_shortcode_resolve.html" (dict
+  "key" $key
+  "sysManifest" $sysManifest
+  "context" $context
+) -}}
+
+{{- if index $entry "__hard_stop" -}}
+  {{- $safeKey := replace $key "--" "" -}}
+  {{- partial "haz/helpers/fn/fn_html_comment.html" (dict
+    "text" (printf "%s unresolved key=%q reason=%s" $source $safeKey (index $entry "__reason" | default "unknown"))
+  ) -}}
+{{- else -}}
+  {{- $level := index $entry "level" | default "" -}}
+  {{- $group := index $entry "group" | default "" -}}
+  {{- $inst := index $entry "inst" | default "" -}}
+  {{- $layouts := index $sysManifest "layouts" | default dict -}}
+  {{- $levelNode := index $layouts $level | default dict -}}
+  {{- $target := dict -}}
+  {{- if and (ne $group "") (isset $levelNode $group) -}}
+    {{- $groupNode := index $levelNode $group | default dict -}}
+    {{- if isset $groupNode $inst -}}
+      {{- $target = index $groupNode $inst | default dict -}}
+    {{- end -}}
+  {{- else if and (eq $group "") (isset $levelNode $inst) -}}
+    {{- $target = index $levelNode $inst | default dict -}}
+  {{- end -}}
+
+  {{- if eq (len $target) 0 -}}
+    {{- $safeKey := replace $key "--" "" -}}
+    {{- partial "haz/helpers/fn/fn_html_comment.html" (dict
+      "text" (printf "%s unresolved key=%q reason=missing_layouts_target" $source $safeKey)
+    ) -}}
+  {{- else -}}
+    {{- partial "haz/helpers/fn/fn_partial.html" (dict
+      "source" $source
+      "child" ""
+      "thisObj" $target
+      "sysManifest" $sysManifest
+      "context" $context
+    ) -}}
+  {{- end -}}
+{{- end -}}

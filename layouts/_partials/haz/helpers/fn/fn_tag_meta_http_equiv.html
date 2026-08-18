@@ -1,0 +1,6 @@
+{{- $equiv := index . "http_equiv" -}}
+{{- $content := index . "content" -}}
+{{- if and (eq (printf "%T" $equiv) "string") (eq (printf "%T" $content) "string") (ne $equiv "") (ne $content "") -}}
+{{- /* Build attributes with printf %q so quotes in CSP are correct; safeHTMLAttr avoids html/template re-escaping that breaks 'self'. */ -}}
+<meta {{ printf "http-equiv=%q" $equiv | safeHTMLAttr }} {{ printf "content=%q" $content | safeHTMLAttr }}>
+{{- end -}}

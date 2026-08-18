@@ -1,0 +1,36 @@
+{{- $source := index . "source" -}}
+{{- $child := index . "child" -}}
+{{- $thisObj := index . "thisObj" -}}
+{{- $sysManifest := index . "sysManifest" -}}
+{{- $context := index . "context" -}}
+{{- $thisObjProps := index $thisObj "props" -}}
+{{- $thisChildren := index $thisObj "children" -}}
+{{- $thisSource := "atoms|tag_tag_wrapper" -}}
+{{- if index $thisObj "enabled" -}}
+{{- $content := partial "haz/helpers/fn/fn_partial.html" (dict "source" $thisSource "child" "content" "thisObj" $thisObj "sysManifest" $sysManifest "context" $context) -}}
+{{- $continue := true -}}
+{{- $content_required := index $thisObjProps "content_required" | default false -}}
+{{- if $content_required -}}
+{{- $content_required_trim := index $thisObjProps "content_required_trim" | default true -}}
+{{- $content_temp := $content -}}
+{{- if $content_required_trim -}}
+{{- $content_temp = trim (printf "%s" $content) " \t\n\r" -}}
+{{- end -}}
+{{- if eq (len $content_temp) 0 -}}
+{{- $continue = false -}}  
+{{- end -}}
+{{- end -}}
+{{- if $continue -}}
+{{- $trim := index $thisObjProps "trim" | default false -}}
+{{- if $trim -}}
+{{- $content = trim (printf "%s" $content) " \t\n\r" -}}
+{{- end -}}
+{{- $tag := index $thisObjProps "tag" -}}
+{{- $attrs := index $thisObjProps "attrs" -}}
+{{- partial "haz/helpers/fn/fn_tag_tag_open.html" (dict "tag" $tag "attrs" $attrs) -}}
+{{- $content | safeHTML -}}  
+{{- printf "</%s>" $tag | safeHTML -}}
+{{- end -}}
+{{- else if index $thisChildren "enabled_false" "enabled" -}}
+{{- partial "haz/helpers/fn/fn_partial.html" (dict "source" $thisSource "child" (index $thisChildren "enabled_false" "child") "thisObj"  $thisObj "sysManifest" $sysManifest "context" $context) -}}
+{{- end -}}

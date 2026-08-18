@@ -1,0 +1,96 @@
+{{/*
+  fn_collection_filter.html
+  Default collection filter impl: row enabled → match → order → limit (build-time).
+
+  Prefer fn_collection_filter_run from Atomics (filter.fn / filter.enabled dispatch).
+  Unknown filter keys (fn, enabled) are ignored here.
+
+  Args:
+    - collection (slice of maps)
+    - filter (dict, optional):
+        prop, op (eq|neq|in|nin), value
+        order: random (omit = stable)
+        limit: int (omit / negative = no cap; 0 = no rows; positive = cap)
+    - default_enabled (bool, optional): shared row default when row omits enabled
+        (og:video-style). Omit arg → false (fail-closed). Use isset — Hugo `default` treats false as empty.
+
+  Returns: slice
+*/}}
+{{- $collection := index . "collection" | default slice -}}
+{{- $filter := index . "filter" | default dict -}}
+{{- $defaultEnabled := false -}}
+{{- if isset . "default_enabled" -}}
+  {{- $defaultEnabled = index . "default_enabled" -}}
+{{- end -}}
+
+{{- $rows := slice -}}
+{{- range $collection -}}
+  {{- $rowEnabled := $defaultEnabled -}}
+  {{- if isset . "enabled" -}}
+    {{- $rowEnabled = index . "enabled" -}}
+  {{- end -}}
+  {{- if $rowEnabled -}}
+    {{- $rows = $rows | append . -}}
+  {{- end -}}
+{{- end -}}
+
+{{- $prop := trim (printf "%s" (index $filter "prop" | default "")) " \t\n\r" -}}
+{{- $op := lower (trim (printf "%s" (index $filter "op" | default "")) " \t\n\r") -}}
+{{- $value := index $filter "value" -}}
+{{- if and (ne $prop "") (ne $op "") -}}
+  {{- if in (slice "eq" "neq" "in" "nin") $op -}}
+    {{- $matched := slice -}}
+    {{- range $rows -}}
+      {{- $hasProp := isset . $prop -}}
+      {{- $fieldVal := index . $prop -}}
+      {{- $keep := false -}}
+      {{- if eq $op "eq" -}}
+        {{- if and $hasProp (eq $fieldVal $value) -}}
+          {{- $keep = true -}}
+        {{- end -}}
+      {{- else if eq $op "neq" -}}
+        {{- if or (not $hasProp) (ne $fieldVal $value) -}}
+          {{- $keep = true -}}
+        {{- end -}}
+      {{- else if eq $op "in" -}}
+        {{- if and $hasProp (in $value $fieldVal) -}}
+          {{- $keep = true -}}
+        {{- end -}}
+      {{- else if eq $op "nin" -}}
+        {{- if or (not $hasProp) (not (in $value $fieldVal)) -}}
+          {{- $keep = true -}}
+        {{- end -}}
+      {{- end -}}
+      {{- if $keep -}}
+        {{- $matched = $matched | append . -}}
+      {{- end -}}
+    {{- end -}}
+    {{- $rows = $matched -}}
+  {{- else -}}
+    {{- warnf "fn_collection_filter: unknown op %q; skipping match" $op -}}
+  {{- end -}}
+{{- end -}}
+
+{{- $order := lower (trim (printf "%s" (index $filter "order" | default "")) " \t\n\r") -}}
+{{- if eq $order "random" -}}
+  {{- $rows = shuffle $rows -}}
+{{- else if and (ne $order "") (ne $order "random") -}}
+  {{- warnf "fn_collection_filter: unknown order %q; keeping catalog order" $order -}}
+{{- end -}}
+
+{{- if isset $filter "limit" -}}
+  {{- $limit := index $filter "limit" | int -}}
+  {{- if eq $limit 0 -}}
+    {{- $rows = slice -}}
+  {{- else if gt $limit 0 -}}
+    {{- $capped := slice -}}
+    {{- range $i, $row := $rows -}}
+      {{- if lt $i $limit -}}
+        {{- $capped = $capped | append $row -}}
+      {{- end -}}
+    {{- end -}}
+    {{- $rows = $capped -}}
+  {{- end -}}
+{{- end -}}
+
+{{- return $rows -}}

@@ -1,0 +1,3 @@
+preset:
+  # Remove leading "_" to activate an override key.
+  _og:site_name: Hugo Agent Zero (site_name)

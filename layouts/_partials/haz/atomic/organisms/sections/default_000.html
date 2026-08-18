@@ -1,0 +1,26 @@
+{{- partial "haz/helpers/fn/fn_html_comment.html" (dict "text" "sections / default_000") -}}
+<h1>{{ .context.Title }}</h1>
+{{ .context.Content }}
+<ul>
+  {{ range .context.Pages }}
+  <li>
+    <p>
+      <a href="{{ .RelPermalink }}">{{ .Title }}</a>
+      {{- if gt .Date.Year 2000 }} — <time datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format "Jan 2, 2006" }}</time>{{ end -}}
+    </p>
+    {{- if eq $.context.Section "blog" }}
+      {{- with .Summary }}<p>{{ . }}</p>{{ end }}
+      {{- with .GetTerms "categories" }}
+      <p>Categories:
+        {{- range $i, $t := . }}{{ if $i }}, {{ end }}<a href="{{ $t.RelPermalink }}">{{ $t.LinkTitle }}</a>{{ end -}}
+      </p>
+      {{- end }}
+      {{- with .GetTerms "tags" }}
+      <p>Tags:
+        {{- range $i, $t := . }}{{ if $i }}, {{ end }}<a href="{{ $t.RelPermalink }}">{{ $t.LinkTitle }}</a>{{ end -}}
+      </p>
+      {{- end }}
+    {{- end }}
+  </li>
+  {{ end }}
+</ul>

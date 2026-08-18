@@ -1,0 +1,80 @@
+{{/*
+  fn_collection_filter_run.html
+  Public entry for collection filtering (Atomics call this, not the default impl directly).
+
+  Mental model: always run baseline (drop enabled:false rows). Extra filter.* args are optional.
+
+  Args:
+    - collection (slice of maps)
+    - filter (dict, optional): may include enabled, fn, prop/op/value, order, limit
+    - default_enabled (bool, optional): shared row default (fail-closed if omit)
+    - source (string): Atomic $thisSource for warn/error messages
+
+  filter.enabled — default true; false ⇒ baseline row gate only (no match/order/limit).
+  filter.fn — optional partial under _partials/; omit ⇒ haz/helpers/fn/fn_collection_filter.
+  filter.fn set but missing — IsDevelopment: warnf + empty; else errorf (fail build).
+*/}}
+{{- $collection := index . "collection" | default slice -}}
+{{- $filter := index . "filter" | default dict -}}
+{{- if not (reflect.IsMap $filter) -}}
+  {{- $filter = dict -}}
+{{- end -}}
+{{- $defaultEnabled := false -}}
+{{- if isset . "default_enabled" -}}
+  {{- $defaultEnabled = index . "default_enabled" -}}
+{{- end -}}
+{{- $source := trim (printf "%s" (index . "source" | default "")) " \t\n\r" -}}
+{{- if eq $source "" -}}
+  {{- $source = "(unknown node)" -}}
+{{- end -}}
+
+{{- $filterOn := true -}}
+{{- if isset $filter "enabled" -}}
+  {{- $filterOn = index $filter "enabled" -}}
+{{- end -}}
+
+{{- $defaultFn := "haz/helpers/fn/fn_collection_filter" -}}
+{{- $fnRaw := trim (printf "%s" (index $filter "fn" | default "")) " \t\n\r" -}}
+{{- $fnExplicit := ne $fnRaw "" -}}
+{{- $out := slice -}}
+{{- $skipImpl := false -}}
+
+{{/* filter.enabled false: baseline only — ignore custom fn and extra match/order/limit. */}}
+{{- if not $filterOn -}}
+  {{- $out = partial $defaultFn (dict
+    "collection" $collection
+    "filter" dict
+    "default_enabled" $defaultEnabled
+  ) -}}
+  {{- $skipImpl = true -}}
+{{- end -}}
+
+{{- if not $skipImpl -}}
+  {{- $fn := $defaultFn -}}
+  {{- if $fnExplicit -}}
+    {{- $fn = $fnRaw -}}
+  {{- end -}}
+  {{- $fnNorm := replaceRE "^/+" "" $fn -}}
+  {{- $fnNorm = strings.TrimPrefix "layouts/_partials/" $fnNorm -}}
+  {{- $fnNorm = strings.TrimSuffix ".html" $fnNorm -}}
+
+  {{- $existsHtml := templates.Exists (printf "_partials/%s.html" $fnNorm) -}}
+  {{- $existsBare := templates.Exists (printf "_partials/%s" $fnNorm) -}}
+  {{- if and $fnExplicit (not $existsHtml) (not $existsBare) -}}
+    {{- $msg := printf "HAZ filter: node %q — props.filter.fn %q not found; filter=%v — fix the path or remove filter.fn" $source $fnRaw $filter -}}
+    {{- if hugo.IsDevelopment -}}
+      {{- warnf "%s (dev: returning empty collection; Atomic emits nothing)" $msg -}}
+    {{- else -}}
+      {{- errorf "%s" $msg -}}
+    {{- end -}}
+    {{- $skipImpl = true -}}
+  {{- else -}}
+    {{- $out = partial $fnNorm (dict
+      "collection" $collection
+      "filter" $filter
+      "default_enabled" $defaultEnabled
+    ) -}}
+  {{- end -}}
+{{- end -}}
+
+{{- return $out -}}

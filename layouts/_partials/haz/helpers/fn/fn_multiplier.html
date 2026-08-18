@@ -1,0 +1,21 @@
+{{/* fn_multiplier.html
+   Args dictionary:
+     "order"   -> array of child names
+     "source"  -> string (like "layouts|baseof")
+     "thisObj"-> current obj from manifest
+     "sysManifest"-> global config all
+     "context" -> page context
+*/}}
+{{- $order := index . "order" -}}
+{{- $source := index . "source" -}}
+{{- $thisObj := index . "thisObj" -}}
+{{- $sysManifest := index . "sysManifest" -}}
+{{- $context := index . "context" -}}
+{{- $children := index $thisObj "children" -}}
+{{- range $order -}}
+{{- $childName := . -}}
+{{- $childCfg := index $children $childName -}}
+{{- if $childCfg -}}
+{{- partial "haz/helpers/fn/fn_partial.html" (dict "source"   $source "child"    $childName "thisObj"  $thisObj "sysManifest" $sysManifest "context"  $context) -}}
+{{- end -}}
+{{- end -}}

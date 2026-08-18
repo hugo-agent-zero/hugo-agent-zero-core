@@ -1,0 +1,20 @@
+{{/*
+  multiplier_3.html
+  Three-child multiplier wrapper. Manifest children keys: one, two, three (+ enabled_false).
+  Delegates to parents/multiplier_parent.html.
+*/}}
+{{- $source := index . "source" -}}
+{{- $child := index . "child" -}}
+{{- $thisObj := index . "thisObj" -}}
+{{- $sysManifest := index . "sysManifest" -}}
+{{- $context := index . "context" -}}
+{{- $order := slice "one" "two" "three" -}}
+{{- partial "haz/helpers/parents/multiplier_parent.html" (dict
+  "source" $source
+  "child" $child
+  "thisObj" $thisObj
+  "sysManifest" $sysManifest
+  "context" $context
+  "order" $order
+  "templateSource" "templates|multiplier_3"
+) -}}

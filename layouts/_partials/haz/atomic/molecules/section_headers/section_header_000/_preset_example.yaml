@@ -1,0 +1,13 @@
+preset:
+  _attrs:
+    class: haz_section_header
+  _slots:
+    - tag: h2
+      attrs: {}
+      content: Section title
+    - tag: h3
+      attrs: {}
+      content: Optional subtitle
+    - tag: p
+      attrs: {}
+      content: Optional description.

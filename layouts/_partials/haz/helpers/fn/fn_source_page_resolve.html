@@ -1,0 +1,85 @@
+{{/*
+  fn_source_page_resolve.html
+  Resolve source payload for provider=page.
+
+  Purpose:
+    - Resolve page-derived source props for provider=page
+    - Use an optional source.get partial override
+    - Otherwise load the component's declarative get_page.yaml
+    - Layer optional source.props + resolved page-local props
+    - Return merged props using shared source merge helper
+
+  Args:
+    - sysManifest (dict)
+    - context (.Page)
+    - source (dict): provider=page, optional get/props/defaults
+    - part_folder (string): component folder under layouts/_partials
+    - default_props (dict, optional)
+    - override_props (dict, optional)
+    - merge_paths (slice, optional)
+*/}}
+{{- $sysManifest := index . "sysManifest" | default dict -}}
+{{- $context := index . "context" -}}
+{{- $source := index . "source" | default dict -}}
+{{- $partFolder := index . "part_folder" | default "" | replaceRE "/+$" "" -}}
+{{- $defaultProps := index . "default_props" | default dict -}}
+{{- $overrideProps := index . "override_props" | default dict -}}
+{{- $mergePaths := index . "merge_paths" | default slice -}}
+
+{{- $sourceProps := index $source "props" | default dict -}}
+{{- $localProps := dict -}}
+{{- $customGet := index $source "get" | default "" -}}
+
+{{- if ne $customGet "" -}}
+  {{- $getPartial := replaceRE "^/+" "" (printf "%v" $customGet) -}}
+  {{- $getPartial = replaceRE "^layouts/_partials/" "" $getPartial -}}
+  {{- if templates.Exists (printf "_partials/%s" $getPartial) -}}
+    {{- $localProps = partial $getPartial (dict
+      "sysManifest" $sysManifest
+      "context" $context
+      "source" $source
+      "part_folder" $partFolder
+    ) | default dict -}}
+  {{- else -}}
+    {{- warnf "page getter partial not found: %q" $getPartial -}}
+  {{- end -}}
+{{- else if ne $partFolder "" -}}
+  {{- $getPath := printf "layouts/_partials/%s/get_page.yaml" $partFolder -}}
+  {{- if fileExists $getPath -}}
+    {{- $getData := readFile $getPath | transform.Unmarshal | default dict -}}
+    {{- $getConfig := index $getData "get" | default dict -}}
+    {{- $paramsConfig := index $getConfig "params" | default dict -}}
+    {{- $paramsPath := index $paramsConfig "path" | default slice -}}
+    {{- if gt (len $paramsPath) 0 -}}
+      {{- $localProps = partial "haz/helpers/fn/fn_get_nested.html" (dict
+        "value" $context.Params
+        "path" $paramsPath
+      ) | default dict -}}
+    {{- end -}}
+  {{- else -}}
+    {{- warnf "default page getter not found: %q" $getPath -}}
+  {{- end -}}
+{{- end -}}
+
+{{/* List payloads (og_video / og_audio): bare slice or false at the get path → collection. */}}
+{{- if reflect.IsSlice $localProps -}}
+  {{- $localProps = dict "collection" $localProps -}}
+{{- else if eq $localProps false -}}
+  {{- $localProps = dict "collection" slice -}}
+{{- else if not (reflect.IsMap $localProps) -}}
+  {{- if or (eq $localProps nil) (eq $localProps "") -}}
+    {{- $localProps = dict -}}
+  {{- else -}}
+    {{- warnf "page getter must return a map, slice, or false; got %T" $localProps -}}
+    {{- $localProps = dict -}}
+  {{- end -}}
+{{- end -}}
+
+{{- $resolvedProps := partial "haz/helpers/fn/fn_source_props_merge.html" (dict
+  "default_props" $defaultProps
+  "source_props" (merge $sourceProps $localProps)
+  "override_props" $overrideProps
+  "merge_paths" $mergePaths
+) -}}
+
+{{- return $resolvedProps -}}

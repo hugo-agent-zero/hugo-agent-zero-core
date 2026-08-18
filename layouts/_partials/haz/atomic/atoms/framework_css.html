@@ -1,0 +1,17 @@
+{{- $source := index . "source" -}}
+{{- $child := index . "child" -}}
+{{- $thisObj := index . "thisObj" -}}
+{{- $sysManifest := index . "sysManifest" -}}
+{{- $context := index . "context" -}}
+{{- $thisObjProps := index $thisObj "props" -}}
+{{- $thisChildren := index $thisObj "children" -}}
+{{- $thisSource := "atoms|framework_css" -}}
+{{- if index $thisObj "enabled" -}}
+{{- with index $thisObjProps "css" -}}
+ {{- range $key, $href := index $thisObjProps "css" -}}
+    {{- partial "haz/helpers/fn/fn_tag_link_rel_stylesheet.html" (dict "href" $href) -}}
+  {{- end -}}
+{{- end -}}
+{{- else if index $thisChildren "enabled_false" "enabled" -}}
+{{- partial "haz/helpers/fn/fn_partial.html" (dict "source" $thisSource "child" (index $thisChildren "enabled_false" "child") "thisObj" $thisObj "sysManifest" $sysManifest "context" $context) -}}
+{{ end }}

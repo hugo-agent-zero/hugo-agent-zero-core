@@ -1,0 +1,67 @@
+{{- $source := index . "source" -}}
+{{- $child := index . "child" -}}
+{{- $thisObj := index . "thisObj" -}}
+{{- $sysManifest := index . "sysManifest" -}}
+{{- $context := index . "context" -}}
+{{- $thisObjProps := index $thisObj "props" -}}
+{{- $thisChildren := index $thisObj "children" -}}
+{{- $thisSource := "atoms|hugo_page_author_dt_dd_000" -}}
+{{- if index $thisObj "enabled" -}}
+{{- $settings := index $sysManifest "settings" | default dict -}}
+{{- $profile := index (index $settings "taxonomies" | default dict) "authors" | default dict -}}
+{{- $divWrapper := true -}}
+{{- if isset $thisObjProps "div_wrapper" -}}
+{{- $divWrapper = index $thisObjProps "div_wrapper" -}}
+{{- end -}}
+{{- $term := index $profile "term" | default "Author" -}}
+{{- if and (isset $thisObjProps "term") (ne (trim (printf "%s" (index $thisObjProps "term")) " \t\n\r") "") -}}
+{{- $term = index $thisObjProps "term" -}}
+{{- end -}}
+{{- $delimiter := index $profile "delimiter" | default ", " -}}
+{{- if isset $thisObjProps "delimiter" -}}
+{{- $delimiter = index $thisObjProps "delimiter" -}}
+{{- end -}}
+{{- $rowPartial := trim (printf "%s" (index $profile "row_partial" | default "haz/helpers/fn/fn_list_row_link_000")) " \t\n\r" -}}
+{{- if and (isset $thisObjProps "row_partial") (ne (trim (printf "%s" (index $thisObjProps "row_partial")) " \t\n\r") "") -}}
+{{- $rowPartial = trim (printf "%s" (index $thisObjProps "row_partial")) " \t\n\r" -}}
+{{- end -}}
+{{- $rel := trim (printf "%s" (index $profile "rel" | default "author")) " \t\n\r" -}}
+{{- if and (isset $thisObjProps "rel") (ne (trim (printf "%s" (index $thisObjProps "rel")) " \t\n\r") "") -}}
+{{- $rel = trim (printf "%s" (index $thisObjProps "rel")) " \t\n\r" -}}
+{{- end -}}
+{{- $listTag := lower (trim (printf "%s" (index $profile "list_tag" | default "ul")) " \t\n\r") -}}
+{{- if isset $thisObjProps "list_tag" -}}
+{{- $listTag = lower (trim (printf "%s" (index $thisObjProps "list_tag")) " \t\n\r") -}}
+{{- end -}}
+{{- $hasAuthors := gt (len ($context.GetTerms "authors")) 0 -}}
+{{- if not $hasAuthors -}}
+{{- $resolved := partial "haz/helpers/fn/page/fn_page_author_resolve.html" (dict "sysManifest" $sysManifest "context" $context) -}}
+{{- $hasAuthors = index $resolved "ok" -}}
+{{- end -}}
+{{- if $hasAuthors -}}
+{{- if $divWrapper -}}<div>{{ end -}}
+  <dt>{{ $term }}</dt>
+  <dd>
+{{- if gt (len ($context.GetTerms "authors")) 0 -}}
+{{- partial "haz/helpers/fn/page/fn_page_author_terms.html" (dict
+  "context" $context
+  "sysManifest" $sysManifest
+  "list_tag" $listTag
+  "delimiter" $delimiter
+  "row_partial" $rowPartial
+  "rel" $rel
+) -}}
+{{- else -}}
+{{- $resolved := partial "haz/helpers/fn/page/fn_page_author_resolve.html" (dict "sysManifest" $sysManifest "context" $context) -}}
+{{- $author := index $resolved "author" -}}
+{{- $authorId := index $resolved "author_id" -}}
+{{- $name := index $author "name" | default "" -}}
+{{- $href := printf "/authors/%s/" $authorId -}}
+    <a rel="author" href="{{ $href }}">{{ $name }}</a>
+{{- end -}}
+  </dd>
+{{- if $divWrapper -}}</div>{{ end -}}
+{{- end -}}
+{{- else if index $thisChildren "enabled_false" "enabled" -}}
+{{- partial "haz/helpers/fn/fn_partial.html" (dict "source" $thisSource "child" (index $thisChildren "enabled_false" "child") "thisObj" $thisObj "sysManifest" $sysManifest "context" $context) -}}
+{{- end -}}

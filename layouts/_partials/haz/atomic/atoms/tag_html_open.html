@@ -1,0 +1,12 @@
+{{- $source := index . "source" -}}
+{{- $child := index . "child" -}}
+{{- $thisObj := index . "thisObj" -}}
+{{- $sysManifest := index . "sysManifest" -}}
+{{- $context := index . "context" -}}
+{{- $thisChildren := index $thisObj "children" -}}
+{{- $thisSource := "atoms|tag_html_open" -}}
+{{- if index $thisObj "enabled" -}}
+{{- $attrs := index $thisObj "props" "attrs" | default dict -}}
+{{ partial "haz/helpers/fn/fn_tag_tag_open.html" (dict "tag" "html" "attrs" $attrs) }}  {{- else if index $thisChildren "enabled_false" "enabled" -}}
+{{- partial "haz/helpers/fn/fn_partial.html" (dict "source" $thisSource "child"  (index $thisChildren "enabled_false" "child") "thisObj" $thisObj "sysManifest" $sysManifest "context" $context) -}}
+{{- end -}}

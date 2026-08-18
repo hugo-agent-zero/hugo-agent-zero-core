@@ -1,0 +1,34 @@
+{{- $source := index . "source" -}}
+{{- $child := index . "child" -}}
+{{- $thisObj := index . "thisObj" | default dict -}}
+{{- $sysManifest := index . "sysManifest" -}}
+{{- $context := index . "context" -}}
+{{- $thisObjProps := index $thisObj "props" | default dict -}}
+{{- $thisChildren := index $thisObj "children" | default dict -}}
+{{- $thisSource := "atoms|head_tags|meta_security_global_000" -}}
+{{- $props := index . "props" | default $thisObjProps -}}
+{{- $enabled := true -}}
+{{- if gt (len $thisObj) 0 -}}
+  {{- $enabled = index $thisObj "enabled" | default false -}}
+{{- end -}}
+{{- if $enabled -}}
+  {{- partial "haz/helpers/fn/fn_html_comment.html" (dict "text" $thisSource) -}}
+  {{- if gt (len $props) 0 -}}
+    {{- $referrer := index $props "referrer" | default "" -}}
+    {{- if $referrer -}}
+      {{- partial "haz/helpers/fn/fn_tag_meta_name.html" (dict "key" "referrer" "content" $referrer) -}}
+    {{- end -}}
+    {{- $csp := index $props "Content-Security-Policy" | default "" -}}
+    {{- if $csp -}}
+      {{- partial "haz/helpers/fn/fn_tag_meta_http_equiv.html" (dict "http_equiv" "Content-Security-Policy" "content" $csp) -}}
+    {{- end -}}
+  {{- end -}}
+{{- else if index $thisChildren "enabled_false" "enabled" -}}
+  {{- partial "haz/helpers/fn/fn_partial.html" (dict
+    "source" $thisSource
+    "child" (index $thisChildren "enabled_false" "child")
+    "thisObj" $thisObj
+    "sysManifest" $sysManifest
+    "context" $context
+  ) -}}
+{{- end -}}

@@ -1,0 +1,30 @@
+{{- $tag   := .tag -}}
+{{- $attrs := .attrs -}}
+{{- $fn    := .fn -}}
+{{- $whiteListedKeys := slice "rel" -}}
+{{- $whiteListedKeysFn := slice "href" "src" -}}
+{{- printf "<%s" $tag | safeHTML -}}
+{{- range $key, $val := $attrs }} {{ if and (ne $key "aria") (ne $key "data") }}
+{{- if and $fn (in $whiteListedKeysFn $key) -}}
+{{- if eq $fn "relURL" -}}
+ {{ $key }}="{{ $val | relURL }}"
+{{- else if eq $fn "absURL" -}}
+ {{ $key }}="{{ $val | absURL }}"
+{{- else if eq $fn "safeURL" -}}
+ {{ $key }}="{{ $val | safeURL }}"
+{{- else -}}
+ {{ $key }}="{{ $val }}"
+{{ end }}
+{{- else if in $whiteListedKeys $key -}}
+ {{ $key | safeHTMLAttr }}="{{ $val | safeHTMLAttr }}"
+{{- else -}}
+ {{- $key }}="{{ $val }}"
+{{- end -}}
+{{- end -}}
+{{- end -}}
+{{- with index $attrs "aria" }}
+{{- range $aKey, $aVal := . }} aria-{{- $aKey -}}="{{- $aVal }}" {{- end -}}
+{{- end -}}
+{{- with index $attrs "data" }}{{- range $dKey, $dVal := . }} data-{{- $dKey -}}="{{- $dVal }}" {{- end -}}
+{{- end -}}
+>

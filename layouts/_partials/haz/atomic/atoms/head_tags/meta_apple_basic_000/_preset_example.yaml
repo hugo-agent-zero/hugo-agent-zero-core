@@ -1,0 +1,3 @@
+preset:
+  # Remove leading "_" to activate. Was Bucket E (no settings payload).
+  _apple-mobile-web-app-status-bar-style: default

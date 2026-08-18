@@ -1,0 +1,31 @@
+{{- $source := index . "source" -}}
+{{- $child := index . "child" -}}
+{{- $thisObj := index . "thisObj" -}}
+{{- $sysManifest := index . "sysManifest" -}}
+{{- $context := index . "context" -}}
+{{- $thisObjProps := index $thisObj "props" -}}
+{{- $thisChildren := index $thisObj "children" -}}
+{{- $thisSource := "atoms|script_hamburger_000" -}}
+{{- if index $thisObj "enabled" -}}
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const btn = document.getElementById({{ index $thisObjProps "id_btn" | default "haz_btn_nav_main" | jsonify | safeJS }});
+    const openClass = {{ index $thisObjProps "class_open" | default "haz_state__nav_open" | jsonify | safeJS }};
+    const root = document.documentElement;
+    if (!btn || !root) return;
+    btn.addEventListener("click", () => {
+      const expanded = btn.getAttribute("aria-expanded") === "true";
+      btn.setAttribute("aria-expanded", (!expanded).toString());
+      root.classList.toggle(openClass);
+    });
+  });
+</script>
+{{- else if index $thisChildren "enabled_false" "enabled" -}}
+{{- partial "haz/helpers/fn/fn_partial.html" (dict
+  "source" $thisSource
+  "child" (index $thisChildren "enabled_false" "child")
+  "thisObj" $thisObj
+  "sysManifest" $sysManifest
+  "context" $context
+) -}}
+{{ end }}

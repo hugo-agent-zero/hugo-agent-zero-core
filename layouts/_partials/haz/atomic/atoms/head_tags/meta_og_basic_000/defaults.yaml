@@ -1,0 +1,22 @@
+defaults:
+  og:title: ".Title"
+  og:type: website
+  og:url: ".Permalink"
+  og:image: /defaults/meta_tag_default_image.png
+  og:description: og description
+  title_prefix: ""
+  title_suffix: ""
+tag_white_list:
+  - key: og:description
+    compare: basic
+    tag: property
+  - key: og:type
+    compare: basic
+    tag: property
+  - key: og:url
+    compare: basic
+    tag: property
+  - key: og:image
+    compare: media
+    tag: property
+merge_paths: []

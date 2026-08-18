@@ -1,0 +1,11 @@
+defaults:
+  apple-mobile-web-app-title: Hugo Agent Zero
+  apple-mobile-web-app-capable: "yes"
+tag_white_list:
+  - key: apple-mobile-web-app-capable
+    compare: global
+    tag: name
+  - key: apple-mobile-web-app-title
+    compare: global
+    tag: name
+merge_paths: []

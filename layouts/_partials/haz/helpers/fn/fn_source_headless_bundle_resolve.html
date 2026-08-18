@@ -1,0 +1,32 @@
+{{/*
+  fn_source_headless_bundle_resolve.html
+  Resolve bundle-backed defaults and merge paths from a cms.headless entry.
+  Args:
+    - context (.Page context)
+    - entry (dict): folder (preferred) or src, optional props
+  Returns:
+    - dict:
+      - props (dict): bundle params.props
+      - merge_paths (slice): bundle params.merge_paths
+      - bundle_path (string): source path used
+*/}}
+{{- $context := index . "context" -}}
+{{- $entry := index . "entry" | default dict -}}
+{{- $bundlePath := index $entry "folder" | default (index $entry "src" | default "") -}}
+{{- $bundleProps := dict -}}
+{{- $mergePaths := slice -}}
+
+{{- if and $context $bundlePath -}}
+  {{- $bundlePage := $context.Site.GetPage $bundlePath -}}
+  {{- if $bundlePage -}}
+    {{- $bundleParams := $bundlePage.Params | default dict -}}
+    {{- $bundleProps = index $bundleParams "props" | default dict -}}
+    {{- $mergePaths = index $bundleParams "merge_paths" | default slice -}}
+  {{- end -}}
+{{- end -}}
+
+{{- return (dict
+  "props" $bundleProps
+  "merge_paths" $mergePaths
+  "bundle_path" $bundlePath
+) -}}
