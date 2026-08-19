@@ -7,7 +7,5 @@ defaults:
         sizes: 72x72
       - href: /touch-icon-iphone4.png
         sizes: 114x114
-    apple-touch-startup-image:
-      - href: /startup.png
 merge_paths:
   - - links
