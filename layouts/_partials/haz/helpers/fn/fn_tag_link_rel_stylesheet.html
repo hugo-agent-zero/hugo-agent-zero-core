@@ -9,6 +9,9 @@
   {{- else -}}
     {{- $res := resources.Get $href -}}
     {{- if $res -}}
+      {{- if in $res.Content "{{" -}}
+        {{- $res = $res | resources.ExecuteAsTemplate (printf "executed/%s" $href) . -}}
+      {{- end -}}
       <link rel="stylesheet" href="{{ $res.RelPermalink }}">
     {{- else -}}
       {{ warnf "CSS asset not found: %s" $href }}

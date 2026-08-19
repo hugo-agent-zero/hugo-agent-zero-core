@@ -4,7 +4,7 @@
 
   Order for a non-empty filename:
     1. http(s): / // → use as-is
-    2. leading / → absURL (static / site root, e.g. /defaults/meta_tag_default_image.png)
+    2. leading / → trim slash then absURL (Hugo absURL on "/foo" drops the BaseURL subdirectory)
     3. context.Resources.GetMatch (page bundle)
     4. site.Home.Resources.GetMatch (legacy back-compat)
   localValues.prop = false clears the value.
@@ -29,7 +29,7 @@
     {{- if or (strings.HasPrefix $fileName "https://") (strings.HasPrefix $fileName "http://") (strings.HasPrefix $fileName "//") -}}
       {{- $returnValue = $fileName -}}
     {{- else if hasPrefix $fileName "/" -}}
-      {{- $returnValue = $fileName | absURL -}}
+      {{- $returnValue = strings.TrimPrefix "/" $fileName | absURL -}}
     {{- else -}}
       {{- $r := false -}}
       {{- with $context -}}

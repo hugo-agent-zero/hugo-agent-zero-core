@@ -7,9 +7,11 @@
 {{- range $key, $val := $attrs }} {{ if and (ne $key "aria") (ne $key "data") }}
 {{- if and $fn (in $whiteListedKeysFn $key) -}}
 {{- if eq $fn "relURL" -}}
- {{ $key }}="{{ $val | relURL }}"
+ {{- $urlVal := partial "haz/helpers/fn/fn_href_trim_host_root.html" (dict "href" $val) -}}
+ {{ $key }}="{{ $urlVal | relURL }}"
 {{- else if eq $fn "absURL" -}}
- {{ $key }}="{{ $val | absURL }}"
+ {{- $urlVal := partial "haz/helpers/fn/fn_href_trim_host_root.html" (dict "href" $val) -}}
+ {{ $key }}="{{ $urlVal | absURL }}"
 {{- else if eq $fn "safeURL" -}}
  {{ $key }}="{{ $val | safeURL }}"
 {{- else -}}

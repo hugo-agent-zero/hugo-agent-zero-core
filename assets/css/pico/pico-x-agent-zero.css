@@ -7,7 +7,7 @@
   font-style: normal;
   font-weight: 100 900;
   font-display: swap;
-  src: url("/haz/fonts/Atkinson%20Hyperlegible/Next/AtkinsonHyperlegibleNext-VariableFont_wght.ttf") format("truetype");
+  src: url("{{ "haz/fonts/Atkinson Hyperlegible/Next/AtkinsonHyperlegibleNext-VariableFont_wght.ttf" | relURL }}") format("truetype");
 }
 
 @font-face {
@@ -15,7 +15,7 @@
   font-style: italic;
   font-weight: 100 900;
   font-display: swap;
-  src: url("/haz/fonts/Atkinson%20Hyperlegible/Next/AtkinsonHyperlegibleNext-Italic-VariableFont_wght.ttf") format("truetype");
+  src: url("{{ "haz/fonts/Atkinson Hyperlegible/Next/AtkinsonHyperlegibleNext-Italic-VariableFont_wght.ttf" | relURL }}") format("truetype");
 }
 
 @font-face {
@@ -23,7 +23,7 @@
   font-style: normal;
   font-weight: 100 900;
   font-display: swap;
-  src: url("/haz/fonts/Atkinson%20Hyperlegible/Mono/AtkinsonHyperlegibleMono-VariableFont_wght.ttf") format("truetype");
+  src: url("{{ "haz/fonts/Atkinson Hyperlegible/Mono/AtkinsonHyperlegibleMono-VariableFont_wght.ttf" | relURL }}") format("truetype");
 }
 
 @font-face {
@@ -31,7 +31,7 @@
   font-style: italic;
   font-weight: 100 900;
   font-display: swap;
-  src: url("/haz/fonts/Atkinson%20Hyperlegible/Mono/AtkinsonHyperlegibleMono-Italic-VariableFont_wght.ttf") format("truetype");
+  src: url("{{ "haz/fonts/Atkinson Hyperlegible/Mono/AtkinsonHyperlegibleMono-Italic-VariableFont_wght.ttf" | relURL }}") format("truetype");
 }
 
 :root,

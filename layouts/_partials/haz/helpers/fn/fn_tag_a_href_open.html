@@ -2,14 +2,14 @@
 {{- $fn := .fn -}}   {{/* "relURL", "absURL", "safeURL", or nil" */}}
 {{- $pairs := .pairs -}}
 {{- if eq $fn "relURL" -}}
-  {{- $href = $href | relURL -}}
+  {{- $href = partial "haz/helpers/fn/fn_href_trim_host_root.html" (dict "href" $href) | relURL -}}
 {{- else if eq $fn "absURL" -}}
-  {{- $href = $href | absURL -}}
+  {{- $href = partial "haz/helpers/fn/fn_href_trim_host_root.html" (dict "href" $href) | absURL -}}
 {{- else if eq $fn "safeURL" -}}
   {{- $href = $href | safeURL -}}
 {{- else -}}
   {{- if not (strings.HasPrefix $href "http") -}}
-    {{- $href = $href | relURL -}}
+    {{- $href = partial "haz/helpers/fn/fn_href_trim_host_root.html" (dict "href" $href) | relURL -}}
   {{- end -}}
 {{- end -}}
 {{- $whiteListedKey := slice "aria-hidden" "aria-label" "rel" -}}

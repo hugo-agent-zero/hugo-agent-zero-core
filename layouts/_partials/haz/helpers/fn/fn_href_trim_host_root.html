@@ -1,0 +1,13 @@
+{{/*
+  fn_href_trim_host_root.html
+  Leading / is host-root for Hugo relURL/absURL and drops the BaseURL subdirectory.
+  Strip one leading slash on site-relative hrefs. Leave explicit hrefs alone.
+  Args: href
+  Returns: string
+*/}}
+{{- $href := index . "href" | default "" -}}
+{{- $explicit := partial "haz/helpers/fn/fn_href_is_explicit.html" (dict "href" $href) -}}
+{{- if and (not $explicit) (hasPrefix $href "/") -}}
+  {{- $href = strings.TrimPrefix "/" $href -}}
+{{- end -}}
+{{- return $href -}}

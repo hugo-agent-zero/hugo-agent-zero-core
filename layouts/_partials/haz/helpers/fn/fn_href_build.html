@@ -11,7 +11,7 @@
 {{- else -}}
 {{- $isExplicit := partial "haz/helpers/fn/fn_href_is_explicit.html" (dict "href" $href) -}}
 {{- if not $isExplicit -}}
-{{- $href = relURL $href -}}
+{{- $href = partial "haz/helpers/fn/fn_href_trim_host_root.html" (dict "href" $href) | relURL -}}
 {{- end -}}
 {{- end -}}
 {{- return $href -}}
