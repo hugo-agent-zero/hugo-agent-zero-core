@@ -5,7 +5,7 @@
   Returns: attrs dict
 */}}
 {{- $context := index . "context" -}}
-{{- $path := strings.Trim ($context.RelPermalink | default "") "/" -}}
+{{- $path := partial "haz/helpers/fn/fn_page_path_extract.html" (dict "context" $context) -}}
 {{- $parts := slice -}}
 {{- if $path -}}
   {{- $parts = split $path "/" -}}

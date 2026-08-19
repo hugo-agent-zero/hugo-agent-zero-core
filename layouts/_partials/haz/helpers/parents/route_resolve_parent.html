@@ -10,7 +10,7 @@
 {{- $routes := $sysManifest.routes -}}
 {{- $rules := index $routes "rules" -}}
 {{- $mapChild := index $routes "map_child" -}}
-{{- $path := strings.Trim $context.RelPermalink "/" -}}
+{{- $path := partial "haz/helpers/fn/fn_page_path_extract.html" (dict "context" $context) -}}
 {{- $parts := split $path "/" -}}
 {{- $partCount := len $parts -}}
 {{- $candidates := slice $path -}}

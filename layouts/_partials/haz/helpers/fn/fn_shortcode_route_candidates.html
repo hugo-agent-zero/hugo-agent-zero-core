@@ -4,7 +4,7 @@
   Args: context
 */}}
 {{- $context := index . "context" -}}
-{{- $path := strings.Trim $context.RelPermalink "/" -}}
+{{- $path := partial "haz/helpers/fn/fn_page_path_extract.html" (dict "context" $context) -}}
 {{- $candidates := slice $path -}}
 {{- if ne $path "" -}}
   {{- $parts := split $path "/" -}}

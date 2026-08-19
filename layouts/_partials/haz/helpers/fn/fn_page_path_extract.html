@@ -1,0 +1,21 @@
+{{/*
+  fn_page_path_extract.html
+  Page → clean site-relative path (strip BaseURL subdirectory prefix).
+  RelPermalink includes the project path (e.g. /hugoagentzero_com-content/blog/post/);
+  callers match on blog/* — without this, subdirectory hosts miss every rule.
+  Independent of routes: extract The Path; routers/shortcodes/body attrs call it.
+  Args: context
+  Returns: string like "blog/demo-post-1", or "" for home
+*/}}
+{{- $context := index . "context" -}}
+{{- $path := strings.Trim ($context.RelPermalink | default "") "/" -}}
+{{- $home := strings.Trim (($context.Site.Home.RelPermalink | default "") ) "/" -}}
+{{- if and $home $path -}}
+  {{- if eq $path $home -}}
+    {{- $path = "" -}}
+  {{- else if strings.HasPrefix $path (printf "%s/" $home) -}}
+    {{- $path = strings.TrimPrefix (printf "%s/" $home) $path -}}
+    {{- $path = strings.Trim $path "/" -}}
+  {{- end -}}
+{{- end -}}
+{{- return $path -}}
