@@ -132,6 +132,33 @@ html[data-scrolled="true"] .haz_header_site > div:first-child {
   padding: 0;
 }
 
+.haz_header_site__col_other {
+  display: flex;
+  align-items: center;
+  gap: 0.15rem;
+}
+
+.haz_search {
+  display: inline-flex;
+  align-items: center;
+}
+
+/* Pagefind Component UI — theme via --pf-* host tokens; do not rename pagefind-* classes. */
+:root {
+  --pf-font: var(--pico-font-family);
+  --pf-text: var(--pico-color);
+  --pf-text-secondary: var(--pico-muted-color, var(--pico-secondary));
+  --pf-text-muted: var(--pico-muted-color);
+  --pf-background: var(--pico-background-color);
+  --pf-border: var(--pico-muted-border-color, var(--pico-border-color));
+  --pf-border-focus: var(--pico-primary);
+  --pf-hover: var(--pico-secondary-background);
+  --pf-skeleton: var(--pico-secondary-background);
+  --pf-mark: var(--pico-primary);
+  --pf-outline-focus: var(--pico-primary);
+  --pf-modal-backdrop: rgba(0, 0, 0, 0.45);
+}
+
 /* Icon chrome buttons — keep lean vs Pico’s default button chrome */
 .haz_btn {
   border: none;
