@@ -1,0 +1,26 @@
+{{/*
+  pagefind_el_parent.html
+  Output only: one <pagefind-*> tag from underscore props.
+  Caller (Atomic index) owns enabled / enabled_false / html comment.
+  YAML keys → kebab attrs. Skip "", false, and _-prefixed keys. Emit true as present.
+*/}}
+{{- $tag := index . "tag" | default "" -}}
+{{- $props := index . "props" | default dict -}}
+{{- $attrs := dict -}}
+{{- range $key, $val := $props -}}
+  {{- if and (ne $key "") (not (hasPrefix $key "_")) -}}
+    {{- $kebab := replace $key "_" "-" -}}
+    {{- $valType := printf "%T" $val -}}
+    {{- if eq $valType "bool" -}}
+      {{- if $val -}}
+        {{- $attrs = merge $attrs (dict $kebab "") -}}
+      {{- end -}}
+    {{- else if ne (printf "%v" $val) "" -}}
+      {{- $attrs = merge $attrs (dict $kebab (printf "%v" $val)) -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
+{{- if ne $tag "" -}}
+  {{- partial "haz/helpers/fn/fn_tag_tag_open.html" (dict "tag" $tag "attrs" $attrs) -}}
+  {{- printf "</%s>" $tag | safeHTML -}}
+{{- end -}}

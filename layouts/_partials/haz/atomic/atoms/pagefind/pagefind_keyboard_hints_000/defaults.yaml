@@ -1,0 +1,3 @@
+defaults:
+  instance: default
+merge_paths: []

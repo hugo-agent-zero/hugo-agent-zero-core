@@ -1,0 +1,8 @@
+defaults:
+  show_images: false
+  hide_sub_results: false
+  max_sub_results: 3
+  max_results: ""
+  link_target: ""
+  instance: default
+merge_paths: []

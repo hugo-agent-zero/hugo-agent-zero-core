@@ -1,0 +1,10 @@
+defaults:
+  filter: ""
+  label: ""
+  single_select: false
+  show_empty: false
+  wrap: false
+  sort: default
+  hide_clear: false
+  instance: default
+merge_paths: []

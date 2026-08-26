@@ -1,0 +1,49 @@
+{{- $source := index . "source" -}}
+{{- $child := index . "child" -}}
+{{- $thisObj := index . "thisObj" | default dict -}}
+{{- $sysManifest := index . "sysManifest" -}}
+{{- $context := index . "context" -}}
+{{- $thisObjProps := index $thisObj "props" | default dict -}}
+{{- $thisChildren := index $thisObj "children" | default dict -}}
+{{- $thisSource := "organisms|search|search_pagefind_modal_000" -}}
+{{- $props := index . "props" | default $thisObjProps -}}
+{{- $enabled := true -}}
+{{- if gt (len $thisObj) 0 -}}
+  {{- $enabled = index $thisObj "enabled" | default false -}}
+{{- end -}}
+{{- if $enabled -}}
+  {{- partial "haz/helpers/fn/fn_html_comment.html" (dict "text" $thisSource) -}}
+  {{- $tag := index $props "tag" | default "dialog" -}}
+  {{- $attrs := index $props "attrs" | default dict -}}
+  {{- partial "haz/helpers/fn/fn_tag_tag_open.html" (dict "tag" $tag "attrs" $attrs) -}}
+  {{- $close := index $props "close" | default dict -}}
+  {{- if index $close "enabled" | default false -}}
+    {{- $closeAttrs := index $close "attrs" | default dict -}}
+    {{- partial "haz/helpers/fn/fn_tag_tag_open.html" (dict "tag" "button" "attrs" $closeAttrs) -}}
+    {{- partial "haz/helpers/fn/fn_partial.html" (dict
+      "source" $thisSource
+      "child" "close_icon"
+      "thisObj" $thisObj
+      "sysManifest" $sysManifest
+      "context" $context
+    ) -}}
+    {{- printf "</button>" | safeHTML -}}
+  {{- end -}}
+  {{- $order := index $props "order" | default slice -}}
+  {{- partial "haz/helpers/fn/fn_multiplier.html" (dict
+    "order" $order
+    "source" $thisSource
+    "thisObj" $thisObj
+    "sysManifest" $sysManifest
+    "context" $context
+  ) -}}
+  {{- printf "</%s>" $tag | safeHTML -}}
+{{- else if index $thisChildren "enabled_false" "enabled" -}}
+  {{- partial "haz/helpers/fn/fn_partial.html" (dict
+    "source" $thisSource
+    "child" (index $thisChildren "enabled_false" "child")
+    "thisObj" $thisObj
+    "sysManifest" $sysManifest
+    "context" $context
+  ) -}}
+{{- end -}}

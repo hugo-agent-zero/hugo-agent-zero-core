@@ -1,0 +1,11 @@
+defaults:
+  placeholder: ""
+  debounce: 150
+  max_results: ""
+  show_sub_results: false
+  show_keyboard_hints: true
+  autofocus: false
+  shortcut: mod+k
+  hide_shortcut: false
+  instance: default
+merge_paths: []

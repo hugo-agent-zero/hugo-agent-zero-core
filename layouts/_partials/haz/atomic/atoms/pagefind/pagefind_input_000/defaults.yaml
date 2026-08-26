@@ -1,0 +1,6 @@
+defaults:
+  placeholder: ""
+  debounce: 300
+  autofocus: false
+  instance: default
+merge_paths: []

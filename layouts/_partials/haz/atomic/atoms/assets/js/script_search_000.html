@@ -1,0 +1,56 @@
+{{- $source := index . "source" -}}
+{{- $child := index . "child" -}}
+{{- $thisObj := index . "thisObj" -}}
+{{- $sysManifest := index . "sysManifest" -}}
+{{- $context := index . "context" -}}
+{{- $thisObjProps := index $thisObj "props" -}}
+{{- $thisChildren := index $thisObj "children" -}}
+{{- $thisSource := "atoms|script_search_000" -}}
+{{- if index $thisObj "enabled" -}}
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const btn = document.getElementById({{ index $thisObjProps "id_btn" | default "haz_btn_search" | jsonify | safeJS }});
+    const dialog = document.getElementById({{ index $thisObjProps "id_dialog" | default "haz_search_pagefind_modal" | jsonify | safeJS }});
+    const openClass = {{ index $thisObjProps "class_open" | default "haz_state__searching" | jsonify | safeJS }};
+    const root = document.documentElement;
+    if (!btn || !dialog || !root) return;
+
+    function syncClosed() {
+      btn.setAttribute("aria-expanded", "false");
+      root.classList.remove(openClass);
+    }
+
+    function openSearch() {
+      dialog.showModal();
+      btn.setAttribute("aria-expanded", "true");
+      root.classList.add(openClass);
+      const input = dialog.querySelector("pagefind-input");
+      if (input) input.focus();
+    }
+
+    function closeSearch() {
+      if (dialog.open) dialog.close();
+    }
+
+    btn.addEventListener("click", () => {
+      if (dialog.open) closeSearch();
+      else openSearch();
+    });
+
+    const closeBtn = dialog.querySelector(".haz_search_pagefind_modal__close");
+    if (closeBtn) {
+      closeBtn.addEventListener("click", () => closeSearch());
+    }
+
+    dialog.addEventListener("close", syncClosed);
+  });
+</script>
+{{- else if index $thisChildren "enabled_false" "enabled" -}}
+{{- partial "haz/helpers/fn/fn_partial.html" (dict
+  "source" $thisSource
+  "child" (index $thisChildren "enabled_false" "child")
+  "thisObj" $thisObj
+  "sysManifest" $sysManifest
+  "context" $context
+) -}}
+{{ end }}

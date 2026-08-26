@@ -1,0 +1,4 @@
+defaults:
+  reset_on_close: false
+  instance: default
+merge_paths: []
