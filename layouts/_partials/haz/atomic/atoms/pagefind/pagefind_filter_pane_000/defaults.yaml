@@ -1,0 +1,8 @@
+defaults:
+  show_empty: false
+  expanded: false
+  open: ""
+  sort: default
+  auto_open_threshold: 6
+  instance: default
+merge_paths: []

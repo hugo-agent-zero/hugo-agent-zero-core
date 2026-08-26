@@ -1,0 +1,7 @@
+defaults:
+  placeholder: ""
+  shortcut: mod+k
+  hide_shortcut: false
+  compact: false
+  instance: default
+merge_paths: []

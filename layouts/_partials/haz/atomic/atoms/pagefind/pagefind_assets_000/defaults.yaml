@@ -1,0 +1,4 @@
+defaults:
+  css: pagefind/pagefind-component-ui.css
+  js: pagefind/pagefind-component-ui.js
+merge_paths: []

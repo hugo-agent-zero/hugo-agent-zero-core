@@ -1,0 +1,34 @@
+{{- $source := index . "source" -}}
+{{- $child := index . "child" -}}
+{{- $thisObj := index . "thisObj" | default dict -}}
+{{- $sysManifest := index . "sysManifest" -}}
+{{- $context := index . "context" -}}
+{{- $thisObjProps := index $thisObj "props" | default dict -}}
+{{- $thisChildren := index $thisObj "children" | default dict -}}
+{{- $thisSource := "atoms|pagefind|pagefind_assets_000" -}}
+{{- $props := index . "props" | default $thisObjProps -}}
+{{- $enabled := true -}}
+{{- if gt (len $thisObj) 0 -}}
+  {{- $enabled = index $thisObj "enabled" | default false -}}
+{{- end -}}
+{{- if $enabled -}}
+  {{- partial "haz/helpers/fn/fn_html_comment.html" (dict "text" $thisSource) -}}
+  {{- $css := index $props "css" | default "pagefind/pagefind-component-ui.css" -}}
+  {{- $js := index $props "js" | default "pagefind/pagefind-component-ui.js" -}}
+  {{- if not (in $css "://") -}}
+    {{- $css = $css | relURL -}}
+  {{- end -}}
+  {{- if not (in $js "://") -}}
+    {{- $js = $js | relURL -}}
+  {{- end -}}
+<link rel="stylesheet" href="{{ $css }}">
+<script src="{{ $js }}" type="module"></script>
+{{- else if index $thisChildren "enabled_false" "enabled" -}}
+  {{- partial "haz/helpers/fn/fn_partial.html" (dict
+    "source" $thisSource
+    "child" (index $thisChildren "enabled_false" "child")
+    "thisObj" $thisObj
+    "sysManifest" $sysManifest
+    "context" $context
+  ) -}}
+{{- end -}}

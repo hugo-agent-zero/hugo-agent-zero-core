@@ -1,0 +1,13 @@
+defaults:
+  bundle_path: ""
+  base_url: "/"
+  excerpt_length: 30
+  lang: ""
+  instance: default
+  preload: false
+  faceted: false
+  highlight_param: ""
+  exact_diacritics: false
+  meta_cache_tag: ""
+  no_worker: false
+merge_paths: []
