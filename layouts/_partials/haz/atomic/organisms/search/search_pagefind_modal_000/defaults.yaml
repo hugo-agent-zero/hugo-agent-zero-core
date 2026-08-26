@@ -9,11 +9,6 @@ defaults:
       type: button
       class: haz_btn haz_search_pagefind_modal__close
       aria-label: Close search
-  order:
-    - assets
-    - config
-    - input
-    - results
 merge_paths:
   - - attrs
   - - close

@@ -29,10 +29,9 @@
     ) -}}
     {{- printf "</button>" | safeHTML -}}
   {{- end -}}
-  {{- $order := index $props "order" | default slice -}}
-  {{- partial "haz/helpers/fn/fn_multiplier.html" (dict
-    "order" $order
+  {{- partial "haz/helpers/fn/fn_partial.html" (dict
     "source" $thisSource
+    "child" "inner"
     "thisObj" $thisObj
     "sysManifest" $sysManifest
     "context" $context
