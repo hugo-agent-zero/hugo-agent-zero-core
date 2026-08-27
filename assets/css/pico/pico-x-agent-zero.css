@@ -207,6 +207,11 @@ html[data-scrolled="true"] .haz_header_site > div:first-child {
   display: none;
 }
 
+html.haz_state__searching,
+html.haz_state__searching body {
+  overflow: hidden;
+}
+
 .haz_search_pagefind_modal {
   --haz_search_field_max: 32rem;
   width: 100%;
@@ -327,7 +332,17 @@ html[data-scrolled="true"] .haz_header_site > div:first-child {
   line-height: inherit;
 }
 
-:is(*, #\#):is(*, #\#):is(*, #\#) .haz_search_pagefind_modal :is(.pf-result, .pf-heading-chip) {
+:is(*, #\#):is(*, #\#):is(*, #\#) .haz_search_pagefind_modal :is(.pf-result-link, .pf-heading-link) {
+  color: var(--haz_chrome, var(--pico-primary));
+  text-decoration: underline;
+  text-underline-offset: 0.125em;
+}
+
+:is(*, #\#):is(*, #\#):is(*, #\#) .haz_search_pagefind_modal :is(.pf-result-link, .pf-heading-link):is(:hover, :focus) {
+  color: var(--pico-primary-hover);
+}
+
+:is(*, #\#):is(*, #\#):is(*, #\#) .haz_search_pagefind_modal :is(.pf-result-card, .pf-heading-chip) {
   border-radius: inherit;
 }
 
@@ -336,9 +351,11 @@ html[data-scrolled="true"] .haz_header_site > div:first-child {
   color: var(--pico-primary-inverse, #fff);
   font-size: inherit;
   border: none;
-  border-radius: var(--pico-border-radius);
+  border-radius: inherit;
   box-shadow: none;
   background-image: none;
+  inset-inline-end: 3px;
+  height: calc(100% - 6px);
 }
 
 :is(*, #\#):is(*, #\#):is(*, #\#) .haz_search_pagefind_modal .pf-input-clear:hover {
@@ -356,6 +373,10 @@ html[data-scrolled="true"] .haz_header_site > div:first-child {
 
 :is(*, #\#):is(*, #\#):is(*, #\#) .haz_search_pagefind_modal .pf-input {
   padding-inline-start: 2.5rem;
+  padding-inline-end: 3.5rem;
+  font-weight: inherit;
+  border: 3px solid var(--haz_chrome, var(--pico-primary));
+  border-radius: inherit;
 }
 
 :is(*, #\#):is(*, #\#):is(*, #\#) .haz_search_pagefind_modal .pf-results {
