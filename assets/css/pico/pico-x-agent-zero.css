@@ -320,6 +320,11 @@ html[data-scrolled="true"] .haz_header_site > div:first-child {
   color: var(--haz_chrome, var(--pico-primary));
 }
 
+:is(*, #\#):is(*, #\#):is(*, #\#) .haz_search_pagefind_modal :is(.pf-heading-chip, .pf-heading-link, .pf-heading-excerpt) {
+  font-size: inherit;
+  line-height: inherit;
+}
+
 @media (min-width: 40rem) {
   .haz_search_pagefind_modal {
     width: min(var(--haz_measure, 45rem), 90vw);
