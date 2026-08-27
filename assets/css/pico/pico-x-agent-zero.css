@@ -287,9 +287,10 @@ html[data-scrolled="true"] .haz_header_site > div:first-child {
   width: 100%;
   max-width: var(--haz_search_field_max);
   margin-inline: auto;
-  font-size: 1.25rem;
+  margin-bottom: 1rem;
+  font-size: 1rem;
   text-align: center;
-  --pf-summary-font-size: 1.25rem;
+  --pf-summary-font-size: 1rem;
 }
 
 .haz_search_pagefind_modal pagefind-results {
@@ -299,7 +300,7 @@ html[data-scrolled="true"] .haz_header_site > div:first-child {
   width: 100%;
   max-width: var(--haz_search_field_max);
   margin-inline: auto;
-  --pf-results-gap: 1rem;
+  --pf-results-gap: 1.5rem;
 }
 
 .haz_search_pagefind_modal :is(.pf-result-title, .pf-result-excerpt, .pf-heading-link, .pf-heading-excerpt) {
@@ -313,6 +314,10 @@ html[data-scrolled="true"] .haz_header_site > div:first-child {
 
 :is(*, #\#):is(*, #\#):is(*, #\#) .haz_search_pagefind_modal .pf-result-title {
   font-size: 1.25rem;
+}
+
+:is(*, #\#):is(*, #\#):is(*, #\#) .haz_search_pagefind_modal .pf-summary {
+  color: var(--haz_chrome, var(--pico-primary));
 }
 
 @media (min-width: 40rem) {
