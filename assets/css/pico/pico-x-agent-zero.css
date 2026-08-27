@@ -301,6 +301,10 @@ html[data-scrolled="true"] .haz_header_site > div:first-child {
   font-size: 1.25rem;
 }
 
+:is(*, #\#):is(*, #\#):is(*, #\#) .haz_search_pagefind_modal .pf-result {
+  margin-top: 1rem;
+}
+
 @media (min-width: 40rem) {
   .haz_search_pagefind_modal {
     width: min(var(--haz_measure, 45rem), 90vw);
