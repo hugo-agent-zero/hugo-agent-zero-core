@@ -361,6 +361,8 @@ html.haz_state__searching body {
 
 :is(*, #\#):is(*, #\#):is(*, #\#) .haz_search_pagefind_modal .pf-input {
   padding-inline-start: 2.5rem;
+  padding-inline-end: 3.5rem;
+  font-weight: inherit;
 }
 
 :is(*, #\#):is(*, #\#):is(*, #\#) .haz_search_pagefind_modal .pf-results {
