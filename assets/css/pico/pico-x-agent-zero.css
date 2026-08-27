@@ -345,6 +345,10 @@ html.haz_state__searching body {
   border-radius: inherit;
 }
 
+:is(*, #\#):is(*, #\#):is(*, #\#) .haz_search_pagefind_modal .pf-heading-chips {
+  padding-inline-start: 1rem;
+}
+
 :is(*, #\#):is(*, #\#):is(*, #\#) .haz_search_pagefind_modal .pf-input-clear {
   background: var(--haz_chrome, var(--pico-primary));
   color: var(--pico-primary-inverse, #fff);
