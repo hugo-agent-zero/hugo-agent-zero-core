@@ -161,6 +161,7 @@ html[data-scrolled="true"] .haz_header_site > div:first-child {
   --pf-summary-font-size: inherit;
   --pf-result-title-font-size: inherit;
   --pf-result-excerpt-font-size: inherit;
+  --pf-border-radius: inherit;
 }
 
 /* Icon chrome buttons — keep lean vs Pico’s default button chrome */
@@ -318,6 +319,33 @@ html[data-scrolled="true"] .haz_header_site > div:first-child {
 
 :is(*, #\#):is(*, #\#):is(*, #\#) .haz_search_pagefind_modal .pf-summary {
   color: var(--haz_chrome, var(--pico-primary));
+}
+
+:is(*, #\#):is(*, #\#):is(*, #\#) .haz_search_pagefind_modal :is(.pf-heading-chip, .pf-heading-link, .pf-heading-excerpt) {
+  font-size: inherit;
+  line-height: inherit;
+}
+
+:is(*, #\#):is(*, #\#):is(*, #\#) .haz_search_pagefind_modal .pf-input-clear {
+  background: var(--haz_chrome, var(--pico-primary));
+  color: var(--pico-primary-inverse, #fff);
+  font-size: inherit;
+  border-radius: inherit;
+}
+
+:is(*, #\#):is(*, #\#):is(*, #\#) .haz_search_pagefind_modal .pf-input-clear:hover {
+  background: var(--pico-primary-hover);
+  color: var(--pico-primary-inverse, #fff);
+}
+
+:is(*, #\#):is(*, #\#):is(*, #\#) .haz_search_pagefind_modal .pf-input-wrapper::before {
+  width: 1.25rem;
+  height: 1.25rem;
+  top: calc((var(--pf-input-height) - 1.25rem) / 2);
+}
+
+:is(*, #\#):is(*, #\#):is(*, #\#) .haz_search_pagefind_modal .pf-input {
+  padding-inline-start: 2.5rem;
 }
 
 @media (min-width: 40rem) {
