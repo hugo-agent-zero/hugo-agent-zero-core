@@ -207,6 +207,7 @@ html[data-scrolled="true"] .haz_header_site > div:first-child {
 }
 
 .haz_search_pagefind_modal {
+  --haz_search_field_max: 32rem;
   width: 100%;
   max-width: 100%;
   height: 100%;
@@ -262,13 +263,20 @@ html[data-scrolled="true"] .haz_header_site > div:first-child {
   align-self: flex-end;
 }
 
+.haz_search_pagefind_modal :is(pagefind-config, pagefind-input, pagefind-summary, pagefind-results) {
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  color: inherit;
+}
+
 .haz_search_pagefind_modal pagefind-input {
   position: sticky;
   top: 0;
   z-index: 1;
   display: block;
   width: 100%;
-  max-width: 32rem;
+  max-width: var(--haz_search_field_max);
   margin-inline: auto;
   --pf-input-font-size: 1.25rem;
   --pf-input-height: 2.75rem;
@@ -277,14 +285,21 @@ html[data-scrolled="true"] .haz_header_site > div:first-child {
 .haz_search_pagefind_modal pagefind-summary {
   display: block;
   width: 100%;
-  max-width: 32rem;
+  max-width: var(--haz_search_field_max);
   margin-inline: auto;
+  font-size: 1.25rem;
+  text-align: center;
+  --pf-summary-font-size: 1.25rem;
 }
 
 .haz_search_pagefind_modal pagefind-results {
   overflow: auto;
   flex: 1;
   min-height: 0;
+  width: 100%;
+  max-width: var(--haz_search_field_max);
+  margin-inline: auto;
+  --pf-results-gap: 1rem;
 }
 
 .haz_search_pagefind_modal :is(.pf-result-title, .pf-result-excerpt, .pf-heading-link, .pf-heading-excerpt) {
@@ -292,17 +307,12 @@ html[data-scrolled="true"] .haz_header_site > div:first-child {
 }
 
 /* PF layers :is(*, #\#)×3 on these classes — match that so hide/title stick. */
-:is(*, #\#):is(*, #\#):is(*, #\#) .haz_search_pagefind_modal .pf-result-excerpt,
-:is(*, #\#):is(*, #\#):is(*, #\#) .haz_search_pagefind_modal .pf-heading-excerpt {
+:is(*, #\#):is(*, #\#):is(*, #\#) .haz_search_pagefind_modal .pf-result-excerpt {
   display: none;
 }
 
 :is(*, #\#):is(*, #\#):is(*, #\#) .haz_search_pagefind_modal .pf-result-title {
   font-size: 1.25rem;
-}
-
-:is(*, #\#):is(*, #\#):is(*, #\#) .haz_search_pagefind_modal .pf-result {
-  margin-top: 1rem;
 }
 
 @media (min-width: 40rem) {
