@@ -328,7 +328,7 @@ html[data-scrolled="true"] .haz_header_site > div:first-child {
 }
 
 :is(*, #\#):is(*, #\#):is(*, #\#) .haz_search_pagefind_modal :is(.pf-result, .pf-heading-chip) {
-  border-radius: var(--pico-border-radius);
+  border-radius: inherit;
 }
 
 :is(*, #\#):is(*, #\#):is(*, #\#) .haz_search_pagefind_modal .pf-input-clear {
