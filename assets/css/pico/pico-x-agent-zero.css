@@ -326,6 +326,18 @@ html[data-scrolled="true"] .haz_header_site > div:first-child {
   line-height: inherit;
 }
 
+:is(*, #\#):is(*, #\#):is(*, #\#) .haz_search_pagefind_modal .pf-input-clear {
+  background: var(--haz_chrome, var(--pico-primary));
+  color: var(--pico-primary-inverse, #fff);
+  font-size: inherit;
+  border-radius: inherit;
+}
+
+:is(*, #\#):is(*, #\#):is(*, #\#) .haz_search_pagefind_modal .pf-input-clear:hover {
+  background: var(--pico-primary-hover);
+  color: var(--pico-primary-inverse, #fff);
+}
+
 @media (min-width: 40rem) {
   .haz_search_pagefind_modal {
     width: min(var(--haz_measure, 45rem), 90vw);
