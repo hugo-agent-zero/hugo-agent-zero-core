@@ -332,6 +332,16 @@ html.haz_state__searching body {
   line-height: inherit;
 }
 
+:is(*, #\#):is(*, #\#):is(*, #\#) .haz_search_pagefind_modal :is(.pf-result-link, .pf-heading-link) {
+  color: var(--haz_chrome, var(--pico-primary));
+  text-decoration: underline;
+  text-underline-offset: 0.125em;
+}
+
+:is(*, #\#):is(*, #\#):is(*, #\#) .haz_search_pagefind_modal :is(.pf-result-link, .pf-heading-link):is(:hover, :focus) {
+  color: var(--pico-primary-hover);
+}
+
 :is(*, #\#):is(*, #\#):is(*, #\#) .haz_search_pagefind_modal :is(.pf-result-card, .pf-heading-chip) {
   border-radius: inherit;
 }
