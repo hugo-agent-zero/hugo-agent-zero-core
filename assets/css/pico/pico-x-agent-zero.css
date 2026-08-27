@@ -269,6 +269,14 @@ html[data-scrolled="true"] .haz_header_site > div:first-child {
   --pf-input-height: 2.75rem;
 }
 
+.haz_search_pagefind_modal pagefind-summary {
+  display: block;
+  width: 100%;
+  max-width: 32rem;
+  margin-inline: auto;
+  --pf-summary-font-size: 1rem;
+}
+
 .haz_search_pagefind_modal pagefind-results {
   overflow: auto;
   flex: 1;
