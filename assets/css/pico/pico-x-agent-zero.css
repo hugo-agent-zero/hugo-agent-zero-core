@@ -326,6 +326,10 @@ html[data-scrolled="true"] .haz_header_site > div:first-child {
   line-height: inherit;
 }
 
+:is(*, #\#):is(*, #\#):is(*, #\#) .haz_search_pagefind_modal :is(.pf-result, .pf-heading-chip) {
+  border-radius: var(--pico-border-radius);
+}
+
 :is(*, #\#):is(*, #\#):is(*, #\#) .haz_search_pagefind_modal .pf-input-clear {
   background: var(--haz_chrome, var(--pico-primary));
   color: var(--pico-primary-inverse, #fff);
