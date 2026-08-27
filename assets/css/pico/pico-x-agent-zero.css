@@ -291,6 +291,16 @@ html[data-scrolled="true"] .haz_header_site > div:first-child {
   line-height: inherit;
 }
 
+/* PF layers :is(*, #\#)×3 on these classes — match that so hide/title stick. */
+:is(*, #\#):is(*, #\#):is(*, #\#) .haz_search_pagefind_modal .pf-result-excerpt,
+:is(*, #\#):is(*, #\#):is(*, #\#) .haz_search_pagefind_modal .pf-heading-excerpt {
+  display: none;
+}
+
+:is(*, #\#):is(*, #\#):is(*, #\#) .haz_search_pagefind_modal .pf-result-title {
+  font-size: 1.25rem;
+}
+
 @media (min-width: 40rem) {
   .haz_search_pagefind_modal {
     width: min(var(--haz_measure, 45rem), 90vw);
