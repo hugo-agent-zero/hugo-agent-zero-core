@@ -338,6 +338,16 @@ html[data-scrolled="true"] .haz_header_site > div:first-child {
   color: var(--pico-primary-inverse, #fff);
 }
 
+:is(*, #\#):is(*, #\#):is(*, #\#) .haz_search_pagefind_modal .pf-input-wrapper::before {
+  width: 1.25rem;
+  height: 1.25rem;
+  top: calc((var(--pf-input-height) - 1.25rem) / 2);
+}
+
+:is(*, #\#):is(*, #\#):is(*, #\#) .haz_search_pagefind_modal .pf-input {
+  padding-inline-start: 2.5rem;
+}
+
 @media (min-width: 40rem) {
   .haz_search_pagefind_modal {
     width: min(var(--haz_measure, 45rem), 90vw);
