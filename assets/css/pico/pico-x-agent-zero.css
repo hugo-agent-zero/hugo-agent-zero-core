@@ -373,7 +373,7 @@ html[data-scrolled="true"] .haz_header_site > div:first-child {
   }
 
   .haz_search_pagefind_modal pagefind-results {
-    max-width: 100%;
+    max-width: 34rem;
   }
 }
 
