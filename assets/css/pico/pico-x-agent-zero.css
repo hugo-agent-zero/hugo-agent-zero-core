@@ -157,6 +157,10 @@ html[data-scrolled="true"] .haz_header_site > div:first-child {
   --pf-mark: var(--pico-primary);
   --pf-outline-focus: var(--pico-primary);
   --pf-modal-backdrop: rgba(0, 0, 0, 0.45);
+  /* Undo PF’s px type scale — inherit the site body. */
+  --pf-summary-font-size: inherit;
+  --pf-result-title-font-size: inherit;
+  --pf-result-excerpt-font-size: inherit;
 }
 
 /* Icon chrome buttons — keep lean vs Pico’s default button chrome */
@@ -221,6 +225,7 @@ html[data-scrolled="true"] .haz_header_site > div:first-child {
 .haz_search_pagefind_modal[open] {
   display: flex;
   opacity: 1;
+  line-height: inherit;
 }
 
 @starting-style {
@@ -274,13 +279,16 @@ html[data-scrolled="true"] .haz_header_site > div:first-child {
   width: 100%;
   max-width: 32rem;
   margin-inline: auto;
-  --pf-summary-font-size: 1rem;
 }
 
 .haz_search_pagefind_modal pagefind-results {
   overflow: auto;
   flex: 1;
   min-height: 0;
+}
+
+.haz_search_pagefind_modal :is(.pf-result-title, .pf-result-excerpt, .pf-heading-link, .pf-heading-excerpt) {
+  line-height: inherit;
 }
 
 @media (min-width: 40rem) {
