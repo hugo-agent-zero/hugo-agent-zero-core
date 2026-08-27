@@ -294,7 +294,6 @@ html.haz_state__searching body {
   width: 100%;
   max-width: var(--haz_search_field_max);
   margin-inline: auto;
-  margin-bottom: 1rem;
   font-size: 1rem;
   text-align: center;
   --pf-summary-font-size: 1rem;
