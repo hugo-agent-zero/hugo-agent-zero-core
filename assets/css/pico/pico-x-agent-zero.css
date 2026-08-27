@@ -354,8 +354,8 @@ html.haz_state__searching body {
   border-radius: inherit;
   box-shadow: none;
   background-image: none;
-  inset-inline-end: 3px;
-  height: calc(100% - 6px);
+  inset-inline-end: 5px;
+  height: calc(100% - 10px);
 }
 
 :is(*, #\#):is(*, #\#):is(*, #\#) .haz_search_pagefind_modal .pf-input-clear:hover {
