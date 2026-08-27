@@ -207,6 +207,11 @@ html[data-scrolled="true"] .haz_header_site > div:first-child {
   display: none;
 }
 
+html.haz_state__searching,
+html.haz_state__searching body {
+  overflow: hidden;
+}
+
 .haz_search_pagefind_modal {
   --haz_search_field_max: 32rem;
   width: 100%;
