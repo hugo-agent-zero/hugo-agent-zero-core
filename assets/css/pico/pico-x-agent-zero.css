@@ -299,8 +299,8 @@ html[data-scrolled="true"] .haz_header_site > div:first-child {
   flex: 1;
   min-height: 0;
   width: 100%;
-  max-width: var(--haz_search_field_max);
   margin-inline: auto;
+  border-top: 2px solid var(--haz_chrome, var(--pico-primary));
   --pf-results-gap: 1.5rem;
 }
 
@@ -355,7 +355,6 @@ html[data-scrolled="true"] .haz_header_site > div:first-child {
 
 :is(*, #\#):is(*, #\#):is(*, #\#) .haz_search_pagefind_modal .pf-results {
   margin-top: 1rem;
-  border-top: 2px solid var(--haz_chrome, var(--pico-primary));
 }
 
 @media (min-width: 40rem) {
@@ -372,8 +371,9 @@ html[data-scrolled="true"] .haz_header_site > div:first-child {
     max-width: 26rem;
   }
 
-  .haz_search_pagefind_modal pagefind-results {
+  :is(*, #\#):is(*, #\#):is(*, #\#) .haz_search_pagefind_modal .pf-results {
     max-width: 34rem;
+    margin-inline: auto;
   }
 }
 
