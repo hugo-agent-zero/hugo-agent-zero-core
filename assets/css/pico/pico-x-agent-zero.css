@@ -330,12 +330,17 @@ html[data-scrolled="true"] .haz_header_site > div:first-child {
   background: var(--haz_chrome, var(--pico-primary));
   color: var(--pico-primary-inverse, #fff);
   font-size: inherit;
+  border: none;
   border-radius: var(--pico-border-radius);
+  box-shadow: none;
+  background-image: none;
 }
 
 :is(*, #\#):is(*, #\#):is(*, #\#) .haz_search_pagefind_modal .pf-input-clear:hover {
   background: var(--pico-primary-hover);
   color: var(--pico-primary-inverse, #fff);
+  box-shadow: none;
+  background-image: none;
 }
 
 :is(*, #\#):is(*, #\#):is(*, #\#) .haz_search_pagefind_modal .pf-input-wrapper::before {
