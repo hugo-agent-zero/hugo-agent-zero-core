@@ -327,7 +327,7 @@ html[data-scrolled="true"] .haz_header_site > div:first-child {
   line-height: inherit;
 }
 
-:is(*, #\#):is(*, #\#):is(*, #\#) .haz_search_pagefind_modal :is(.pf-result, .pf-heading-chip) {
+:is(*, #\#):is(*, #\#):is(*, #\#) .haz_search_pagefind_modal :is(.pf-result-card, .pf-heading-chip) {
   border-radius: inherit;
 }
 
