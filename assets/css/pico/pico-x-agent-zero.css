@@ -216,6 +216,7 @@ html[data-scrolled="true"] .haz_header_site > div:first-child {
   margin: 0;
   padding: 1rem;
   border: none;
+  overflow: hidden;
   flex-direction: column;
   gap: 0.75rem;
   background-color: var(--pico-background-color);
@@ -327,7 +328,7 @@ html[data-scrolled="true"] .haz_header_site > div:first-child {
 }
 
 :is(*, #\#):is(*, #\#):is(*, #\#) .haz_search_pagefind_modal :is(.pf-result, .pf-heading-chip) {
-  border-radius: var(--pico-border-radius);
+  border-radius: inherit;
 }
 
 :is(*, #\#):is(*, #\#):is(*, #\#) .haz_search_pagefind_modal .pf-input-clear {
@@ -358,7 +359,7 @@ html[data-scrolled="true"] .haz_header_site > div:first-child {
 }
 
 :is(*, #\#):is(*, #\#):is(*, #\#) .haz_search_pagefind_modal .pf-results {
-  margin-top: 1rem;
+  padding: 2rem 1rem 1rem 1rem;
 }
 
 @media (min-width: 40rem) {
