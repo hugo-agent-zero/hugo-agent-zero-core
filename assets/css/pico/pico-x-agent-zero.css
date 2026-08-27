@@ -161,6 +161,7 @@ html[data-scrolled="true"] .haz_header_site > div:first-child {
   --pf-summary-font-size: inherit;
   --pf-result-title-font-size: inherit;
   --pf-result-excerpt-font-size: inherit;
+  --pf-border-radius: inherit;
 }
 
 /* Icon chrome buttons — keep lean vs Pico’s default button chrome */
