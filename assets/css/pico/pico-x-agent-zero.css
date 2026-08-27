@@ -261,6 +261,12 @@ html[data-scrolled="true"] .haz_header_site > div:first-child {
   position: sticky;
   top: 0;
   z-index: 1;
+  display: block;
+  width: 100%;
+  max-width: 32rem;
+  margin-inline: auto;
+  --pf-input-font-size: 1.25rem;
+  --pf-input-height: 2.75rem;
 }
 
 .haz_search_pagefind_modal pagefind-results {
