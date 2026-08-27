@@ -369,7 +369,7 @@ html[data-scrolled="true"] .haz_header_site > div:first-child {
 
   .haz_search_pagefind_modal pagefind-input,
   .haz_search_pagefind_modal pagefind-summary {
-    max-width: 28rem;
+    max-width: 26rem;
   }
 
   .haz_search_pagefind_modal pagefind-results {
