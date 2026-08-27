@@ -351,7 +351,7 @@ html.haz_state__searching body {
   color: var(--pico-primary-inverse, #fff);
   font-size: inherit;
   border: none;
-  border-radius: var(--pico-border-radius);
+  border-radius: inherit;
   box-shadow: none;
   background-image: none;
 }
