@@ -155,7 +155,7 @@ html[data-scrolled="true"] .haz_header_site > div:first-child {
   --pf-hover: var(--pico-secondary-background);
   --pf-skeleton: var(--pico-secondary-background);
   --pf-mark: var(--pico-primary);
-  --pf-outline-focus: var(--pico-primary);
+  --pf-outline-focus: var(--haz_chrome, var(--pico-primary));
   --pf-modal-backdrop: rgba(0, 0, 0, 0.45);
   /* Undo PF’s px type scale — inherit the site body. */
   --pf-summary-font-size: inherit;
@@ -168,7 +168,7 @@ html[data-scrolled="true"] .haz_header_site > div:first-child {
 .haz_btn {
   border: none;
   cursor: pointer;
-  padding: 0.5rem;
+  padding: 0.4rem;
   background: transparent;
 }
 
@@ -188,7 +188,7 @@ html[data-scrolled="true"] .haz_header_site > div:first-child {
 #haz_btn_nav_main,
 #haz_btn_search {
   display: inline-flex;
-  gap: 0.33em;
+  gap: 0.33rem;
 }
 
 #haz_btn_nav_main[aria-expanded="false"] svg.haz_svg__close_x {
@@ -213,6 +213,8 @@ html.haz_state__searching body {
 }
 
 .haz_search_pagefind_modal {
+  /* PF’s own :root loads later and resets --pf-outline-focus to GitHub blue. */
+  --pf-outline-focus: var(--haz_chrome, var(--pico-primary));
   --haz_search_field_max: 32rem;
   width: 100%;
   max-width: 100%;
@@ -337,12 +339,19 @@ html.haz_state__searching body {
   text-underline-offset: 0.125em;
 }
 
+/* PF-WTF: Component UI paints "#" on heading chips via ::before — not indexed text. */
+:is(*, #\#):is(*, #\#):is(*, #\#) .haz_search_pagefind_modal .pf-heading-link::before {
+  content: none;
+}
+
 :is(*, #\#):is(*, #\#):is(*, #\#) .haz_search_pagefind_modal :is(.pf-result-link, .pf-heading-link):is(:hover, :focus) {
   color: var(--pico-primary-hover);
 }
 
 :is(*, #\#):is(*, #\#):is(*, #\#) .haz_search_pagefind_modal :is(.pf-result-card, .pf-heading-chip) {
   border-radius: inherit;
+  background: var(--pico-card-background-color);
+  color: var(--pico-color);
 }
 
 :is(*, #\#):is(*, #\#):is(*, #\#) .haz_search_pagefind_modal .pf-heading-chips {
@@ -380,6 +389,12 @@ html.haz_state__searching body {
   font-weight: inherit;
   border: 3px solid var(--haz_chrome, var(--pico-primary));
   border-radius: inherit;
+}
+
+:is(*, #\#):is(*, #\#):is(*, #\#) .haz_search_pagefind_modal .pf-input:is(:focus, :focus-visible) {
+  border-color: var(--haz_chrome, var(--pico-primary));
+  box-shadow: 0 0 0 var(--pf-outline-width) var(--haz_chrome, var(--pico-primary));
+  outline: none;
 }
 
 :is(*, #\#):is(*, #\#):is(*, #\#) .haz_search_pagefind_modal .pf-results {
