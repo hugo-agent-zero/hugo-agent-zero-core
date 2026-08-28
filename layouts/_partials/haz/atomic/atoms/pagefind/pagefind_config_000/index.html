@@ -20,7 +20,7 @@
   {{- $props = merge $props (dict "bundle_path" $bundle) -}}
   {{- $base := index $props "base_url" | default "" -}}
   {{- if or (eq $base "") (eq $base "/") -}}
-    {{- $base = "/" | relURL -}}
+    {{- $base = partial "haz/helpers/fn/fn_site_root_path.html" -}}
   {{- end -}}
   {{- $props = merge $props (dict "base_url" $base) -}}
   {{- partial "haz/helpers/parents/pagefind_el_parent.html" (dict "tag" "pagefind-config" "props" $props) -}}

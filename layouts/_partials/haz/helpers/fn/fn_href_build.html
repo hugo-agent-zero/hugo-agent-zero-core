@@ -1,17 +1,22 @@
 {{/*
   fn_href_build.html
   Build final href from href only.
-  Rules:
-    - If resulting href is non-empty and not explicit (scheme/protocol/hash/query), apply relURL.
+  Empty → fn_site_root_path. Already rooted there → leave it.
+  Else trim a leading / (host-root) then relURL.
 */}}
 {{- $hrefBase := index . "href_base" | default "" -}}
 {{- $href := $hrefBase -}}
+{{- $root := partial "haz/helpers/fn/fn_site_root_path.html" -}}
 {{- if eq $href "" -}}
-{{- $href = relURL "/" -}}
+  {{- $href = $root -}}
 {{- else -}}
-{{- $isExplicit := partial "haz/helpers/fn/fn_href_is_explicit.html" (dict "href" $href) -}}
-{{- if not $isExplicit -}}
-{{- $href = partial "haz/helpers/fn/fn_href_trim_host_root.html" (dict "href" $href) | relURL -}}
-{{- end -}}
+  {{- $isExplicit := partial "haz/helpers/fn/fn_href_is_explicit.html" (dict "href" $href) -}}
+  {{- if not $isExplicit -}}
+    {{- $rootTrim := strings.TrimSuffix $root "/" -}}
+    {{- $alreadyRooted := and (ne $rootTrim "") (or (eq $href $root) (eq $href $rootTrim) (hasPrefix $href $root)) -}}
+    {{- if not $alreadyRooted -}}
+      {{- $href = partial "haz/helpers/fn/fn_href_trim_host_root.html" (dict "href" $href) | relURL -}}
+    {{- end -}}
+  {{- end -}}
 {{- end -}}
 {{- return $href -}}

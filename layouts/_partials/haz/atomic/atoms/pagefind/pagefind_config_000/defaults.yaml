@@ -1,6 +1,6 @@
 defaults:
   bundle_path: ""
-  # "/" = Hugo site root (relURL at emit). Override for a custom prefix.
+  # "/" = site root (fn_site_root_path at emit). Override for a custom prefix.
   base_url: "/"
   excerpt_length: 30
   lang: ""

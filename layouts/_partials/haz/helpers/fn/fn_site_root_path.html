@@ -1,0 +1,13 @@
+{{/*
+  fn_site_root_path.html
+  BaseURL path prefix: Home.RelPermalink.
+  Apex / custom domain → "/". Project Pages → "/hugoagentzero_com-content/".
+  Pair of fn_page_path_extract (that strips this prefix). Use this whenever
+  something needs the site root on the host, not a host-root "/".
+  Returns: string, always trailing slash
+*/}}
+{{- $root := site.Home.RelPermalink | default "/" -}}
+{{- if not (hasSuffix $root "/") -}}
+  {{- $root = printf "%s/" $root -}}
+{{- end -}}
+{{- return $root -}}
