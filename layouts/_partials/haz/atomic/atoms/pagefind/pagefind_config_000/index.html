@@ -18,6 +18,11 @@
     {{- $bundle = "pagefind/" | relURL -}}
   {{- end -}}
   {{- $props = merge $props (dict "bundle_path" $bundle) -}}
+  {{- $base := index $props "base_url" | default "" -}}
+  {{- if or (eq $base "") (eq $base "/") -}}
+    {{- $base = "/" | relURL -}}
+  {{- end -}}
+  {{- $props = merge $props (dict "base_url" $base) -}}
   {{- partial "haz/helpers/parents/pagefind_el_parent.html" (dict "tag" "pagefind-config" "props" $props) -}}
 {{- else if index $thisChildren "enabled_false" "enabled" -}}
   {{- partial "haz/helpers/fn/fn_partial.html" (dict
