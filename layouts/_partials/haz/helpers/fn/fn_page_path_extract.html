@@ -4,12 +4,13 @@
   RelPermalink includes the project path (e.g. /hugoagentzero_com-content/blog/post/);
   callers match on blog/* — without this, subdirectory hosts miss every rule.
   Independent of routes: extract The Path; routers/shortcodes/body attrs call it.
+  Prefix to strip comes from fn_site_root_path (Home.RelPermalink).
   Args: context
   Returns: string like "blog/demo-post-1", or "" for home
 */}}
 {{- $context := index . "context" -}}
-{{- $path := strings.Trim ($context.RelPermalink | default "") "/" -}}
-{{- $home := strings.Trim (($context.Site.Home.RelPermalink | default "") ) "/" -}}
+  {{- $path := strings.Trim ($context.RelPermalink | default "") "/" -}}
+  {{- $home := strings.Trim (partial "haz/helpers/fn/fn_site_root_path.html") "/" -}}
 {{- if and $home $path -}}
   {{- if eq $path $home -}}
     {{- $path = "" -}}
