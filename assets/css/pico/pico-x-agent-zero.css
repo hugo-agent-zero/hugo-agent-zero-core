@@ -343,6 +343,8 @@ html.haz_state__searching body {
 
 :is(*, #\#):is(*, #\#):is(*, #\#) .haz_search_pagefind_modal :is(.pf-result-card, .pf-heading-chip) {
   border-radius: inherit;
+  background: var(--pico-card-background-color);
+  color: var(--pico-color);
 }
 
 :is(*, #\#):is(*, #\#):is(*, #\#) .haz_search_pagefind_modal .pf-heading-chips {
