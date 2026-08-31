@@ -3,6 +3,8 @@ defaults:
   attrs:
     id: haz_search_pagefind_modal
     class: haz_search_pagefind_modal
+    data:
+      haz_modal_focus: pagefind-input
   close:
     enabled: true
     attrs:
@@ -10,8 +12,7 @@ defaults:
       class: haz_btn haz_search_pagefind_modal__close
       aria-label: Close search
       data:
-        haz_toggler: "true"
-        haz_toggle: haz_state__searching
+        haz_modal: "true"
 merge_paths:
   - - attrs
   - - close

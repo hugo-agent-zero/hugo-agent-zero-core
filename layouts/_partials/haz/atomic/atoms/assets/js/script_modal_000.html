@@ -1,0 +1,79 @@
+{{- $source := index . "source" -}}
+{{- $child := index . "child" -}}
+{{- $thisObj := index . "thisObj" -}}
+{{- $sysManifest := index . "sysManifest" -}}
+{{- $context := index . "context" -}}
+{{- $thisObjProps := index $thisObj "props" -}}
+{{- $thisChildren := index $thisObj "children" -}}
+{{- $thisSource := "atoms|script_modal_000" -}}
+{{- if index $thisObj "enabled" -}}
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const attrListen = {{ index $thisObjProps "attr_listen" | default "haz_modal" | jsonify | safeJS }};
+    const attrDialog = {{ index $thisObjProps "attr_dialog" | default "haz_modal_dialog" | jsonify | safeJS }};
+    const attrFocus = {{ index $thisObjProps "attr_focus" | default "haz_modal_focus" | jsonify | safeJS }};
+    const bound = new WeakSet();
+
+    function resolveDialog(el) {
+      const id = el.getAttribute("data-" + attrDialog) || el.getAttribute("aria-controls");
+      if (id) return document.getElementById(id);
+      return el.closest("dialog");
+    }
+
+    function pointsAt(el, dialog) {
+      if (!el || !dialog) return false;
+      if (dialog.contains(el)) return true;
+      const id = el.getAttribute("data-" + attrDialog) || el.getAttribute("aria-controls");
+      return Boolean(id && dialog.id && id === dialog.id);
+    }
+
+    function syncAria(dialog, open) {
+      document.querySelectorAll("[data-" + attrListen + "]").forEach((node) => {
+        if (!pointsAt(node, dialog) || !node.hasAttribute("aria-expanded")) return;
+        node.setAttribute("aria-expanded", open.toString());
+      });
+    }
+
+    function focusDialog(dialog) {
+      const sel = dialog.getAttribute("data-" + attrFocus);
+      const node = sel
+        ? dialog.querySelector(sel)
+        : dialog.querySelector("input, textarea, select, button, [tabindex]:not([tabindex='-1'])");
+      if (node && typeof node.focus === "function") node.focus();
+    }
+
+    function bindClose(dialog) {
+      if (bound.has(dialog)) return;
+      bound.add(dialog);
+      dialog.addEventListener("close", () => {
+        syncAria(dialog, false);
+      });
+    }
+
+    document.addEventListener("click", (event) => {
+      const target = event.target;
+      if (!(target instanceof Element)) return;
+      const el = target.closest("[data-" + attrListen + "]");
+      if (!el) return;
+      const dialog = resolveDialog(el);
+      if (!dialog || typeof dialog.showModal !== "function") return;
+      bindClose(dialog);
+      if (dialog.open) {
+        dialog.close();
+        return;
+      }
+      dialog.showModal();
+      syncAria(dialog, true);
+      focusDialog(dialog);
+    });
+  });
+</script>
+{{- else if index $thisChildren "enabled_false" "enabled" -}}
+{{- partial "haz/helpers/fn/fn_partial.html" (dict
+  "source" $thisSource
+  "child" (index $thisChildren "enabled_false" "child")
+  "thisObj" $thisObj
+  "sysManifest" $sysManifest
+  "context" $context
+) -}}
+{{ end }}

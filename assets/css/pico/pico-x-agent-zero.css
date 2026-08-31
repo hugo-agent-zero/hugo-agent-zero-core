@@ -191,24 +191,24 @@ html[data-scrolled="true"] .haz_header_site > div:first-child {
   gap: 0.33rem;
 }
 
-html:not(.haz_state__nav_open) #haz_btn_nav_main svg.haz_svg__close_x {
+#haz_btn_nav_main[aria-expanded="false"] svg.haz_svg__close_x {
   display: none;
 }
 
-html.haz_state__nav_open #haz_btn_nav_main svg.haz_svg__hamburger {
+#haz_btn_nav_main[aria-expanded="true"] svg.haz_svg__hamburger {
   display: none;
 }
 
-html:not(.haz_state__searching) #haz_btn_search svg.haz_svg__close_x {
+#haz_btn_search[aria-expanded="false"] svg.haz_svg__close_x {
   display: none;
 }
 
-html.haz_state__searching #haz_btn_search svg.haz_svg__search {
+#haz_btn_search[aria-expanded="true"] svg.haz_svg__search {
   display: none;
 }
 
-html.haz_state__searching,
-html.haz_state__searching body {
+html:has(dialog[open]),
+html:has(dialog[open]) body {
   overflow: hidden;
 }
 
@@ -235,9 +235,6 @@ html.haz_state__searching body {
 
 .haz_search_pagefind_modal {
   --haz_search_field_max: 32rem;
-  position: fixed;
-  inset: 0;
-  z-index: 300;
   width: 100%;
   max-width: 100%;
   height: 100%;
@@ -254,30 +251,38 @@ html.haz_state__searching body {
   transition: opacity 0.2s ease, overlay 0.2s ease allow-discrete, display 0.2s ease allow-discrete;
 }
 
-html.haz_state__searching .haz_search_pagefind_modal {
+.haz_search_pagefind_modal[open] {
   display: flex;
   opacity: 1;
   line-height: inherit;
 }
 
 @starting-style {
-  html.haz_state__searching .haz_search_pagefind_modal {
+  .haz_search_pagefind_modal[open] {
     opacity: 0;
   }
 }
 
-html.haz_state__searching body::after {
-  content: "";
-  position: fixed;
-  inset: 0;
-  z-index: 250;
+.haz_search_pagefind_modal::backdrop {
   background: var(--pico-modal-overlay-background-color);
   backdrop-filter: blur(8px);
-  pointer-events: auto;
+  opacity: 0;
+  transition: opacity 0.2s ease, overlay 0.2s ease allow-discrete, display 0.2s ease allow-discrete;
+}
+
+.haz_search_pagefind_modal[open]::backdrop {
+  opacity: 1;
+}
+
+@starting-style {
+  .haz_search_pagefind_modal[open]::backdrop {
+    opacity: 0;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .haz_search_pagefind_modal {
+  .haz_search_pagefind_modal,
+  .haz_search_pagefind_modal::backdrop {
     transition: none;
   }
 }
