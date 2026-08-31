@@ -14,11 +14,18 @@
     const root = document.documentElement;
     if (!root) return;
     document.addEventListener("click", (event) => {
-      const el = event.target.closest("[data-" + attrListen + "]");
+      const target = event.target;
+      if (!(target instanceof Element)) return;
+      const el = target.closest("[data-" + attrListen + "]");
       if (!el) return;
       const cls = el.getAttribute("data-" + attrClass);
       if (!cls) return;
-      root.classList.toggle(cls);
+      const open = root.classList.toggle(cls);
+      document.querySelectorAll("[data-" + attrClass + '="' + CSS.escape(cls) + '"]').forEach((node) => {
+        if (node.hasAttribute("aria-expanded")) {
+          node.setAttribute("aria-expanded", open.toString());
+        }
+      });
     });
   });
 </script>
