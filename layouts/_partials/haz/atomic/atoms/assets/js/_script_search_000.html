@@ -1,3 +1,8 @@
+{{/*
+  PARKED — feature-specific search JS (not loaded). Replaced by script_modal_000
+  (data-haz_modal + showModal). Reinstate as script_search_000.html only if a
+  one-off search script is needed again.
+*/}}
 {{- $source := index . "source" -}}
 {{- $child := index . "child" -}}
 {{- $thisObj := index . "thisObj" -}}
@@ -5,7 +10,7 @@
 {{- $context := index . "context" -}}
 {{- $thisObjProps := index $thisObj "props" -}}
 {{- $thisChildren := index $thisObj "children" -}}
-{{- $thisSource := "atoms|script_search_000" -}}
+{{- $thisSource := "atoms|_script_search_000" -}}
 {{- if index $thisObj "enabled" -}}
 <script>
   document.addEventListener("DOMContentLoaded", () => {

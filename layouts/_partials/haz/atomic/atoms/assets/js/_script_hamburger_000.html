@@ -1,3 +1,8 @@
+{{/*
+  PARKED — feature-specific menu JS (not loaded). Replaced by script_toggler_000
+  (data-haz_toggler + data-haz_toggle). Reinstate as script_hamburger_000.html only if a
+  one-off hamburger script is needed again.
+*/}}
 {{- $source := index . "source" -}}
 {{- $child := index . "child" -}}
 {{- $thisObj := index . "thisObj" -}}
@@ -5,7 +10,7 @@
 {{- $context := index . "context" -}}
 {{- $thisObjProps := index $thisObj "props" -}}
 {{- $thisChildren := index $thisObj "children" -}}
-{{- $thisSource := "atoms|script_hamburger_000" -}}
+{{- $thisSource := "atoms|_script_hamburger_000" -}}
 {{- if index $thisObj "enabled" -}}
 <script>
   document.addEventListener("DOMContentLoaded", () => {
