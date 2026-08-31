@@ -1,0 +1,33 @@
+{{- $source := index . "source" -}}
+{{- $child := index . "child" -}}
+{{- $thisObj := index . "thisObj" -}}
+{{- $sysManifest := index . "sysManifest" -}}
+{{- $context := index . "context" -}}
+{{- $thisObjProps := index $thisObj "props" -}}
+{{- $thisChildren := index $thisObj "children" -}}
+{{- $thisSource := "atoms|script_toggler_000" -}}
+{{- if index $thisObj "enabled" -}}
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const attrListen = {{ index $thisObjProps "attr_listen" | default "haz_toggler" | jsonify | safeJS }};
+    const attrClass = {{ index $thisObjProps "attr_class" | default "haz_toggle" | jsonify | safeJS }};
+    const root = document.documentElement;
+    if (!root) return;
+    document.addEventListener("click", (event) => {
+      const el = event.target.closest("[data-" + attrListen + "]");
+      if (!el) return;
+      const cls = el.getAttribute("data-" + attrClass);
+      if (!cls) return;
+      root.classList.toggle(cls);
+    });
+  });
+</script>
+{{- else if index $thisChildren "enabled_false" "enabled" -}}
+{{- partial "haz/helpers/fn/fn_partial.html" (dict
+  "source" $thisSource
+  "child" (index $thisChildren "enabled_false" "child")
+  "thisObj" $thisObj
+  "sysManifest" $sysManifest
+  "context" $context
+) -}}
+{{ end }}
