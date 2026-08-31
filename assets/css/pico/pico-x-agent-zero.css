@@ -207,8 +207,8 @@ html[data-scrolled="true"] .haz_header_site > div:first-child {
   display: none;
 }
 
-html.haz_state__searching,
-html.haz_state__searching body {
+html:has(dialog[open]),
+html:has(dialog[open]) body {
   overflow: hidden;
 }
 
