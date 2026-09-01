@@ -17,15 +17,15 @@
     "context" $context
   ) -}}
   {{- if $routeMain -}}
-    {{- $term := trim (printf "%s" (index $props "term" | default "Skip to main")) " \t\n\r" -}}
-    {{- if ne $term "" -}}
+    {{- $anchorText := trim (printf "%s" (index $props "anchor_text" | default "Skip to main")) " \t\n\r" -}}
+    {{- if ne $anchorText "" -}}
       {{- $attrs := index $props "attrs" | default dict -}}
       {{- $href := index $attrs "href" | default "#haz_main" -}}
       {{- $class := index $attrs "class" | default "haz_sr_only haz_skip_to_main" -}}
       {{- $attrs = merge $attrs (dict "href" $href "class" $class) -}}
       {{- partial "haz/helpers/fn/fn_html_comment.html" (dict "text" $thisSource) -}}
       {{- partial "haz/helpers/fn/fn_tag_tag_open.html" (dict "tag" "a" "attrs" $attrs) -}}
-      {{- $term -}}
+      {{- $anchorText -}}
       {{- print "</a>" | safeHTML -}}
     {{- end -}}
   {{- end -}}
