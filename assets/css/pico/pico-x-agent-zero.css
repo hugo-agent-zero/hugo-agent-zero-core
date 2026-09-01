@@ -1,5 +1,6 @@
 /* HAZ / Agent Zero extensions on top of vanilla Pico.
-   Site-specific tweaks belong in child/css/pico/pico-override.css */
+   Site-specific tweaks belong in child/css/pico/pico-override.css.
+   Framework-agnostic haz_* utilities live in css/haz/haz.css. */
 
 /* Atkinson Hyperlegible — HAZ default (static/haz/fonts silo) */
 @font-face {
@@ -41,45 +42,6 @@
   --pico-font-family-monospace: "Atkinson Hyperlegible Mono", ui-monospace, SFMono-Regular, "SF Mono", Menlo,
     Consolas, "Liberation Mono", monospace, var(--pico-font-family-emoji);
   --pico-font-family: var(--pico-font-family-sans-serif);
-}
-
-.haz_sr_only {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  clip-path: inset(50%);
-  white-space: nowrap;
-  border-width: 0;
-}
-
-.haz_text_align_left {
-  text-align: left;
-}
-.haz_text_align_center {
-  text-align: center;
-}
-.haz_text_align_right {
-  text-align: right;
-}
-
-.haz_display_flex {
-  display: flex;
-}
-
-.haz_flex_direction_column {
-  flex-direction: column;
-}
-
-.haz_margin_bottom_0 {
-  margin-bottom: 0;
-}
-
-.haz_display_block_inner_svg svg {
-  display: block;
 }
 
 /* Classless page measure: center body children without Pico .container.

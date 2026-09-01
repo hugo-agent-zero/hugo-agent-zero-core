@@ -1,0 +1,26 @@
+{{/*
+  fn_router_processor_main.html
+  Whether this page emits <main> + skip-to-main.
+  Plucks `main` from the same resolved route objects as the other processors
+  (rule → map_child enabled branch → defaults enabled branch).
+  First tier with an explicit key wins. Omit / null → true.
+  Args: sysManifest, context
+  Returns: bool
+*/}}
+{{- $sysManifest := index . "sysManifest" -}}
+{{- $context := index . "context" -}}
+{{- $routeType := partial "haz/helpers/fn/fn_get_route_type.html" (dict "context" $context) -}}
+{{- $resolved := partial "haz/helpers/parents/route_resolve_parent.html" (dict
+  "sysManifest" $sysManifest
+  "context" $context
+  "route_type" $routeType
+) -}}
+{{- $main := true -}}
+{{- if isset (index $resolved "matchedRule") "main" -}}
+  {{- $main = index $resolved "matchedRule" "main" -}}
+{{- else if isset (index $resolved "mapChildBranch") "main" -}}
+  {{- $main = index $resolved "mapChildBranch" "main" -}}
+{{- else if isset (index $resolved "defaultBranch") "main" -}}
+  {{- $main = index $resolved "defaultBranch" "main" -}}
+{{- end -}}
+{{- return $main -}}

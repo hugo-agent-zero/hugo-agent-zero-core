@@ -2,7 +2,8 @@
   route_resolve_parent.html
   Shared route resolution base for router processors (child, html attrs, …).
   Args: sysManifest, context, route_type
-  Returns: { matchedRule, routeKey, mapChildEntry, defaultEntry }
+  Returns: { matchedRule, routeKey, mapChildEntry, defaultEntry, mapChildBranch, defaultBranch }
+  Branches are the enabled_true / enabled_false object already picked from the matching entry.
 */}}
 {{- $routeType := index . "route_type" -}}
 {{- $sysManifest := index . "sysManifest" -}}
@@ -40,9 +41,27 @@
 {{- end -}}
 {{- $mapChildEntry := index $mapChild $routeKey -}}
 {{- $defaultEntry := index $routes "defaults" $routeType -}}
+{{- $mapChildBranch := dict -}}
+{{- if $mapChildEntry -}}
+  {{- if eq (index $mapChildEntry "enabled") true -}}
+    {{- $mapChildBranch = index $mapChildEntry "enabled_true" | default dict -}}
+  {{- else -}}
+    {{- $mapChildBranch = index $mapChildEntry "enabled_false" | default dict -}}
+  {{- end -}}
+{{- end -}}
+{{- $defaultBranch := dict -}}
+{{- if $defaultEntry -}}
+  {{- if eq (index $defaultEntry "enabled") true -}}
+    {{- $defaultBranch = index $defaultEntry "enabled_true" | default dict -}}
+  {{- else -}}
+    {{- $defaultBranch = index $defaultEntry "enabled_false" | default dict -}}
+  {{- end -}}
+{{- end -}}
 {{- return (dict
   "matchedRule" $matchedRule
   "routeKey" $routeKey
   "mapChildEntry" $mapChildEntry
   "defaultEntry" $defaultEntry
+  "mapChildBranch" $mapChildBranch
+  "defaultBranch" $defaultBranch
 ) -}}
