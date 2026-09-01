@@ -21,8 +21,10 @@
     {{- if ne $anchorText "" -}}
       {{- $attrs := index $props "attrs" | default dict -}}
       {{- $href := index $attrs "href" | default "#haz_main" -}}
-      {{- $class := index $attrs "class" | default "haz_sr_only haz_skip_to_main" -}}
-      {{- $attrs = merge $attrs (dict "href" $href "class" $class) -}}
+      {{- $attrs = merge $attrs (dict "href" $href) -}}
+      {{- if not (isset $attrs "class") -}}
+        {{- $attrs = merge $attrs (dict "class" "haz_sr_only haz_skip_to_main") -}}
+      {{- end -}}
       {{- partial "haz/helpers/fn/fn_html_comment.html" (dict "text" $thisSource) -}}
       {{- partial "haz/helpers/fn/fn_tag_tag_open.html" (dict "tag" "a" "attrs" $attrs) -}}
       {{- $anchorText -}}
