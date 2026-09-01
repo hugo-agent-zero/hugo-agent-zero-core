@@ -56,9 +56,8 @@
   border-width: 0;
 }
 
-.haz_skip_to_main:focus,
-.haz_skip_to_main:focus-visible {
-  position: absolute;
+.haz_sr_only:focus,
+.haz_sr_only:focus-visible {
   inset-block-start: 0.5rem;
   inset-inline-start: 0.5rem;
   z-index: 1000;
@@ -70,7 +69,6 @@
   clip: auto;
   clip-path: none;
   white-space: normal;
-  border-width: 0;
 }
 
 .haz_text_align_left {

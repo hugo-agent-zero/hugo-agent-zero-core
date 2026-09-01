@@ -17,6 +17,21 @@ header nav a:visited:hover {
   white-space: nowrap;
   border-width: 0;
 }
+
+.haz_sr_only:focus,
+.haz_sr_only:focus-visible {
+  inset-block-start: 0.5rem;
+  inset-inline-start: 0.5rem;
+  z-index: 1000;
+  width: auto;
+  height: auto;
+  margin: 0;
+  padding: 0.5rem 0.75rem;
+  overflow: visible;
+  clip: auto;
+  clip-path: none;
+  white-space: normal;
+}
 .haz_text_align_left {
   text-align: left;
 }
