@@ -16,7 +16,20 @@
   "sysManifest" $sysManifest
   "context" $context
 ) -}}
+{{- $routeMain := partial "haz/helpers/fn/fn_router_processor_main.html" (dict
+  "sysManifest" $sysManifest
+  "context" $context
+) -}}
+{{- if $routeMain -}}
+{{- partial "haz/helpers/fn/fn_tag_tag_open.html" (dict
+  "tag" "main"
+  "attrs" (dict "id" "haz_main" "class" "haz_main" "tabindex" "-1")
+) -}}
+{{- end -}}
 {{ block "main" . }}{{ end }}
+{{- if $routeMain -}}
+</main>
+{{- end -}}
 {{- partial "haz/helpers/fn/fn_partial.html" (dict
   "source" $thisSource
   "child" "block_main_post"

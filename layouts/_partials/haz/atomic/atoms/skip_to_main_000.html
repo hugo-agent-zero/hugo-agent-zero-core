@@ -1,0 +1,40 @@
+{{- $source := index . "source" -}}
+{{- $child := index . "child" -}}
+{{- $thisObj := index . "thisObj" | default dict -}}
+{{- $sysManifest := index . "sysManifest" -}}
+{{- $context := index . "context" -}}
+{{- $thisObjProps := index $thisObj "props" | default dict -}}
+{{- $thisChildren := index $thisObj "children" | default dict -}}
+{{- $thisSource := "atoms|skip_to_main_000" -}}
+{{- $props := index . "props" | default $thisObjProps -}}
+{{- $enabled := true -}}
+{{- if gt (len $thisObj) 0 -}}
+  {{- $enabled = index $thisObj "enabled" | default false -}}
+{{- end -}}
+{{- if $enabled -}}
+  {{- $routeMain := partial "haz/helpers/fn/fn_router_processor_main.html" (dict
+    "sysManifest" $sysManifest
+    "context" $context
+  ) -}}
+  {{- if $routeMain -}}
+    {{- $term := trim (printf "%s" (index $props "term" | default "Skip to main")) " \t\n\r" -}}
+    {{- if ne $term "" -}}
+      {{- $attrs := index $props "attrs" | default dict -}}
+      {{- $href := index $attrs "href" | default "#haz_main" -}}
+      {{- $class := index $attrs "class" | default "haz_sr_only haz_skip_to_main" -}}
+      {{- $attrs = merge $attrs (dict "href" $href "class" $class) -}}
+      {{- partial "haz/helpers/fn/fn_html_comment.html" (dict "text" $thisSource) -}}
+      {{- partial "haz/helpers/fn/fn_tag_tag_open.html" (dict "tag" "a" "attrs" $attrs) -}}
+      {{- $term -}}
+      {{- print "</a>" | safeHTML -}}
+    {{- end -}}
+  {{- end -}}
+{{- else if index $thisChildren "enabled_false" "enabled" -}}
+{{- partial "haz/helpers/fn/fn_partial.html" (dict
+  "source" $thisSource
+  "child" (index $thisChildren "enabled_false" "child")
+  "thisObj" $thisObj
+  "sysManifest" $sysManifest
+  "context" $context
+) -}}
+{{- end -}}

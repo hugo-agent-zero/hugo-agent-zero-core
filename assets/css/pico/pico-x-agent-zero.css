@@ -56,6 +56,23 @@
   border-width: 0;
 }
 
+.haz_skip_to_main:focus,
+.haz_skip_to_main:focus-visible {
+  position: absolute;
+  inset-block-start: 0.5rem;
+  inset-inline-start: 0.5rem;
+  z-index: 1000;
+  width: auto;
+  height: auto;
+  margin: 0;
+  padding: 0.5rem 0.75rem;
+  overflow: visible;
+  clip: auto;
+  clip-path: none;
+  white-space: normal;
+  border-width: 0;
+}
+
 .haz_text_align_left {
   text-align: left;
 }

@@ -1,0 +1,54 @@
+{{/*
+  fn_router_processor_main.html
+  Whether this page emits <main> + skip-to-main.
+  Same resolve path as fn_router_processor_body_attrs.
+  First tier with an explicit `main` key wins (rule → map_child branch → defaults branch).
+  Omit / null → true.
+  Args: sysManifest, context
+  Returns: bool
+*/}}
+{{- $sysManifest := index . "sysManifest" -}}
+{{- $context := index . "context" -}}
+{{- $routeType := partial "haz/helpers/fn/fn_get_route_type.html" (dict "context" $context) -}}
+{{- $resolved := partial "haz/helpers/parents/route_resolve_parent.html" (dict
+  "sysManifest" $sysManifest
+  "context" $context
+  "route_type" $routeType
+) -}}
+{{- $matchedRule := index $resolved "matchedRule" | default dict -}}
+{{- $mapChildEntry := index $resolved "mapChildEntry" -}}
+{{- $defaultEntry := index $resolved "defaultEntry" -}}
+{{- $main := true -}}
+{{- $found := false -}}
+{{- if isset $matchedRule "main" -}}
+  {{- $main = index $matchedRule "main" -}}
+  {{- $found = true -}}
+{{- end -}}
+{{- if not $found -}}
+  {{- $branch := dict -}}
+  {{- if $mapChildEntry -}}
+    {{- if eq (index $mapChildEntry "enabled") true -}}
+      {{- $branch = index $mapChildEntry "enabled_true" | default dict -}}
+    {{- else -}}
+      {{- $branch = index $mapChildEntry "enabled_false" | default dict -}}
+    {{- end -}}
+  {{- end -}}
+  {{- if and $branch (isset $branch "main") -}}
+    {{- $main = index $branch "main" -}}
+    {{- $found = true -}}
+  {{- end -}}
+{{- end -}}
+{{- if not $found -}}
+  {{- $branch := dict -}}
+  {{- if $defaultEntry -}}
+    {{- if eq (index $defaultEntry "enabled") true -}}
+      {{- $branch = index $defaultEntry "enabled_true" | default dict -}}
+    {{- else -}}
+      {{- $branch = index $defaultEntry "enabled_false" | default dict -}}
+    {{- end -}}
+  {{- end -}}
+  {{- if and $branch (isset $branch "main") -}}
+    {{- $main = index $branch "main" -}}
+  {{- end -}}
+{{- end -}}
+{{- return $main -}}
