@@ -1,0 +1,80 @@
+/* HAZ utilities — framework-agnostic. Loaded for Pico, Simple, or any vendor.
+   Framework chrome stays in pico-x-agent-zero.css / simple-extended.css. */
+
+.haz_sr_only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+.haz_sr_only:focus,
+.haz_sr_only:focus-visible {
+  inset-block-start: 0.5rem;
+  inset-inline-start: 0.5rem;
+  z-index: 1000;
+  width: auto;
+  height: auto;
+  margin: 0;
+  padding: 0.5rem 0.75rem;
+  overflow: visible;
+  clip: auto;
+  clip-path: none;
+  white-space: normal;
+}
+
+.haz_text_align_left {
+  text-align: left;
+}
+.haz_text_align_center {
+  text-align: center;
+}
+.haz_text_align_right {
+  text-align: right;
+}
+
+.haz_display_flex {
+  display: flex;
+}
+
+.haz_flex_direction_row {
+  flex-direction: row;
+}
+
+.haz_flex_direction_column {
+  flex-direction: column;
+}
+
+.haz_flex_direction_column_row {
+  flex-direction: column;
+}
+
+@media (min-width: var(--mobile-breakpoint-min, 40rem)) {
+  .haz_flex_direction_column_row {
+    flex-direction: row;
+  }
+}
+
+.haz_flex_direction_row_column {
+  flex-direction: row;
+}
+
+@media (min-width: var(--mobile-breakpoint-min, 40rem)) {
+  .haz_flex_direction_row_column {
+    flex-direction: column;
+  }
+}
+
+.haz_margin_bottom_0 {
+  margin-bottom: 0;
+}
+
+.haz_display_block_inner_svg svg {
+  display: block;
+}
