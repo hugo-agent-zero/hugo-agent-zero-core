@@ -44,6 +44,15 @@
   --pico-font-family: var(--pico-font-family-sans-serif);
 }
 
+/* Call out <main> the same way Pico calls out <article> (card panel). */
+main {
+  margin-bottom: var(--pico-block-spacing-vertical);
+  padding: var(--pico-block-spacing-vertical) var(--pico-block-spacing-horizontal);
+  border-radius: var(--pico-border-radius);
+  background: var(--pico-card-background-color);
+  box-shadow: var(--pico-card-box-shadow);
+}
+
 /* Classless page measure: center body children without Pico .container.
    Header spans full bleed; inner rows + main/footer use --haz_measure (child override). */
 body {
