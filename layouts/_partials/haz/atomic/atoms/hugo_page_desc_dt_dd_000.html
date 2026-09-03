@@ -1,0 +1,61 @@
+{{- $source := index . "source" -}}
+{{- $child := index . "child" -}}
+{{- $thisObj := index . "thisObj" | default dict -}}
+{{- $sysManifest := index . "sysManifest" -}}
+{{- $context := index . "context" -}}
+{{- $thisObjProps := index $thisObj "props" | default dict -}}
+{{- $thisChildren := index $thisObj "children" | default dict -}}
+{{- $thisSource := "atoms|hugo_page_desc_dt_dd_000" -}}
+{{- $props := index . "props" | default $thisObjProps -}}
+{{- $enabled := true -}}
+{{- if gt (len $thisObj) 0 -}}
+  {{- $enabled = index $thisObj "enabled" | default false -}}
+{{- end -}}
+{{- if $enabled -}}
+  {{- $keys := index $props "keys" | default slice -}}
+  {{- if and (eq (len $keys) 0) (isset $props "key") -}}
+    {{- $keyOne := trim (printf "%s" (index $props "key" | default "")) " \t\n\r" -}}
+    {{- if ne $keyOne "" -}}
+      {{- $keys = slice $keyOne -}}
+    {{- end -}}
+  {{- end -}}
+  {{- $divWrapper := true -}}
+  {{- if isset $props "div_wrapper" -}}
+    {{- $divWrapper = index $props "div_wrapper" -}}
+  {{- end -}}
+  {{- $settings := index $sysManifest "settings" | default dict -}}
+  {{- $descSettings := index $settings "desc" | default dict -}}
+  {{- $chosenKey := "" -}}
+  {{- $value := "" -}}
+  {{- $term := "" -}}
+  {{- range $keys -}}
+    {{- if eq $chosenKey "" -}}
+      {{- $raw := index $context.Params . | default "" -}}
+      {{- $v := trim (printf "%s" $raw) " \t\n\r" -}}
+      {{- if ne $v "" -}}
+        {{- $chosenKey = . -}}
+        {{- $value = $v -}}
+        {{- $profile := index $descSettings . | default dict -}}
+        {{- $term = index $profile "term" | default "" -}}
+      {{- end -}}
+    {{- end -}}
+  {{- end -}}
+  {{- if and (isset $props "term") (ne (trim (printf "%s" (index $props "term")) " \t\n\r") "") -}}
+    {{- $term = index $props "term" -}}
+  {{- end -}}
+  {{- if ne $value "" -}}
+    {{- partial "haz/helpers/fn/fn_html_comment.html" (dict "text" $thisSource) -}}
+    {{- if $divWrapper -}}<div>{{ end -}}
+  <dt>{{ $term }}</dt>
+  <dd>{{ $value }}</dd>
+    {{- if $divWrapper -}}</div>{{ end -}}
+  {{- end -}}
+{{- else if index $thisChildren "enabled_false" "enabled" -}}
+  {{- partial "haz/helpers/fn/fn_partial.html" (dict
+    "source" $thisSource
+    "child" (index $thisChildren "enabled_false" "child")
+    "thisObj" $thisObj
+    "sysManifest" $sysManifest
+    "context" $context
+  ) -}}
+{{- end -}}
