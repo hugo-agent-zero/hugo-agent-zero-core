@@ -42,7 +42,55 @@
   --pico-font-family-monospace: "Atkinson Hyperlegible Mono", ui-monospace, SFMono-Regular, "SF Mono", Menlo,
     Consolas, "Liberation Mono", monospace, var(--pico-font-family-emoji);
   --pico-font-family: var(--pico-font-family-sans-serif);
+
+  /*
+    #51 — measure vs ~65ch sweet spot → fluid root type (sack Pico’s stepped ladder).
+    min: always ≥ browser base (100%).
+    val + max: follow delta = measure / sweet (narrow → ease down; wide → grow).
+    Sweet is 32.5rem (65 × ~0.5em) so type math stays valid lengths; 65ch is the intent.
+    Layout --haz_measure may still be min(rem, %); type delta uses the rem-sized
+    --haz_measure_type knob (defaults to 45rem). Child may set both.
+  */
+  --haz_measure_sweet: 32.5rem;
+  --haz_measure_type: 45rem;
+  --haz_measure_delta: calc(var(--haz_measure_type) / var(--haz_measure_sweet));
+  --haz_font_val: calc((0.9rem + 0.35vw) * var(--haz_measure_delta));
+  --haz_font_max: calc(112.5% * var(--haz_measure_delta));
+  --pico-font-size: clamp(100%, var(--haz_font_val), var(--haz_font_max));
 }
+
+/* Re-assert at Pico’s breakpoints so their media-query --pico-font-size cannot win. */
+@media (min-width: 576px) {
+  :root,
+  :host {
+    --pico-font-size: clamp(100%, var(--haz_font_val), var(--haz_font_max));
+  }
+}
+@media (min-width: 768px) {
+  :root,
+  :host {
+    --pico-font-size: clamp(100%, var(--haz_font_val), var(--haz_font_max));
+  }
+}
+@media (min-width: 1024px) {
+  :root,
+  :host {
+    --pico-font-size: clamp(100%, var(--haz_font_val), var(--haz_font_max));
+  }
+}
+@media (min-width: 1280px) {
+  :root,
+  :host {
+    --pico-font-size: clamp(100%, var(--haz_font_val), var(--haz_font_max));
+  }
+}
+@media (min-width: 1536px) {
+  :root,
+  :host {
+    --pico-font-size: clamp(100%, var(--haz_font_val), var(--haz_font_max));
+  }
+}
+
 
 /* Call out <main> the same way Pico calls out <article> (card panel). */
 main {
