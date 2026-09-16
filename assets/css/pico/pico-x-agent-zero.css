@@ -55,14 +55,25 @@ main {
 }
 
 /* #57 — measure-shell inset. One horizontal token for measure-column body children
-   (including main). Nested articles must not double-inset. Header/footer/nav are
+   (including main). Nested articles must not double-inset. Header/footer are
    full-bleed chrome; their content rows share measure width with main’s outer edges
-   (no extra padding-inline — that would sit inside the card’s inset). */
+   (no extra padding-inline — that would sit inside the card’s inset). Pre-footer
+   social nav stays in the measure column so it lines up with panel socials. */
 body > main,
 body > aside,
 body > section,
 body > [aria-label="Announcement"] {
   padding-inline: var(--pico-block-spacing-horizontal);
+}
+
+/* Narrow viewports: side gutters (measure %) + shell pad stack — halve shell pad. */
+@media (max-width: 40rem) {
+  body > main,
+  body > aside,
+  body > section,
+  body > [aria-label="Announcement"] {
+    padding-inline: calc(var(--pico-block-spacing-horizontal) * 0.5);
+  }
 }
 
 main article {
@@ -74,6 +85,12 @@ main article {
 body {
   display: grid;
   grid-template-columns: 1fr var(--haz_measure, min(45rem, 90%)) 1fr;
+}
+
+@media (max-width: 40rem) {
+  body {
+    grid-template-columns: 1fr var(--haz_measure, min(45rem, 95%)) 1fr;
+  }
 }
 
 body > * {
@@ -88,10 +105,6 @@ body > footer {
   background-image: none;
 }
 
-body > nav {
-  grid-column: 1 / -1;
-}
-
 body > header {
   padding-bottom: 0.5rem;
   position: sticky;
@@ -104,11 +117,17 @@ html[data-scrolled="true"] body > header {
 }
 
 .haz_header_site > div,
-.haz_footer_site > div,
-.haz_socials {
+.haz_footer_site > div {
   width: 100%;
   max-width: var(--haz_measure, min(45rem, 90%));
   margin-inline: auto;
+}
+
+@media (max-width: 40rem) {
+  .haz_header_site > div,
+  .haz_footer_site > div {
+    max-width: var(--haz_measure, min(45rem, 95%));
+  }
 }
 
 .haz_header_site > div:first-child {
