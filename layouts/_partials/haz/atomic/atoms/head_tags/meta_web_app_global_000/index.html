@@ -5,7 +5,7 @@
 {{- $context := index . "context" -}}
 {{- $thisObjProps := index $thisObj "props" | default dict -}}
 {{- $thisChildren := index $thisObj "children" | default dict -}}
-{{- $thisSource := "atoms|head_tags|meta_apple_global_000" -}}
+{{- $thisSource := "atoms|head_tags|meta_web_app_global_000" -}}
 {{- $props := index . "props" | default $thisObjProps -}}
 {{- $enabled := true -}}
 {{- if gt (len $thisObj) 0 -}}
