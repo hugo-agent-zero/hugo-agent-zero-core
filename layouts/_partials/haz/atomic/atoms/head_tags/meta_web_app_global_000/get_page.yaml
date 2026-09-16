@@ -3,4 +3,4 @@ get:
     path:
       - head_tags
       - meta
-      - apple_global
+      - web_app_global
