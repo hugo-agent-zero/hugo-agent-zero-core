@@ -62,16 +62,14 @@ main {
    Mobile-first: tighter shell pad by default; full pad from 40rem up. */
 body > main,
 body > aside,
-body > section,
-body > [aria-label="Announcement"] {
+body > section {
   padding-inline: calc(var(--pico-block-spacing-horizontal) * 0.5);
 }
 
 @media (min-width: 40rem) {
   body > main,
   body > aside,
-  body > section,
-  body > [aria-label="Announcement"] {
+  body > section {
     padding-inline: var(--pico-block-spacing-horizontal);
   }
 }
