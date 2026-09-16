@@ -57,21 +57,12 @@ main {
 /* #57 — measure-shell inset. One horizontal token for measure-column body children
    (including main). Nested articles must not double-inset. Header/footer are
    full-bleed chrome; their content rows share measure width with main’s outer edges
-   (no extra padding-inline — that would sit inside the card’s inset). Pre-footer
-   social nav stays in the measure column so it lines up with panel socials.
-   Mobile-first: tighter shell pad by default; full pad from 40rem up. */
+   (no extra padding-inline — that would sit inside the card’s inset).
+   Outside gutters (screen edge → measure) are --haz_measure %, not this pad. */
 body > main,
 body > aside,
 body > section {
-  padding-inline: calc(var(--pico-block-spacing-horizontal) * 0.5);
-}
-
-@media (min-width: 40rem) {
-  body > main,
-  body > aside,
-  body > section {
-    padding-inline: var(--pico-block-spacing-horizontal);
-  }
+  padding-inline: var(--pico-block-spacing-horizontal);
 }
 
 main article {
@@ -80,7 +71,7 @@ main article {
 
 /* Classless page measure: center body children without Pico .container.
    Chrome spans full bleed; inner rows + main use --haz_measure (child override).
-   Mobile-first fallback 95%; 90% from 40rem up. */
+   Mobile-first: wider column (tighter outside gutters) by default; 90% from 40rem. */
 body {
   display: grid;
   grid-template-columns: 1fr var(--haz_measure, min(45rem, 95%)) 1fr;
