@@ -138,10 +138,25 @@ html[data-scrolled="true"] .haz_header_site > div:first-child {
   padding-block: 0;
 }
 
+/* Header controls — mobile-first: no gap / no inline pad; restore from 40rem. */
 .haz_header_site__col_other {
   display: flex;
   align-items: center;
-  gap: 0.15rem;
+  gap: 0;
+}
+
+.haz_header_site__col_other .haz_btn {
+  padding: 0.4rem 0;
+}
+
+@media (min-width: 40rem) {
+  .haz_header_site__col_other {
+    gap: 0.15rem;
+  }
+
+  .haz_header_site__col_other .haz_btn {
+    padding: 0.4rem;
+  }
 }
 
 .haz_search {
