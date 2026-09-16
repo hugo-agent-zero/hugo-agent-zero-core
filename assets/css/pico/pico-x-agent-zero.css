@@ -44,17 +44,33 @@
   --pico-font-family: var(--pico-font-family-sans-serif);
 }
 
-/* Call out <main> the same way Pico calls out <article> (card panel). */
+/* Call out <main> the same way Pico calls out <article> (card panel).
+   Horizontal inset lives on the shared body > measure-shell list below. */
 main {
   margin-bottom: var(--pico-block-spacing-vertical);
-  padding: var(--pico-block-spacing-vertical) var(--pico-block-spacing-horizontal);
+  padding-block: var(--pico-block-spacing-vertical);
   border-radius: var(--pico-border-radius);
   background: var(--pico-card-background-color);
   box-shadow: var(--pico-card-box-shadow);
 }
 
+/* #57 — measure-shell inset. One horizontal token for every measure-column body child
+   (including main). Nested articles must not double-inset. Header/footer are full-bleed
+   chrome; their content rows carry the same token below. */
+body > main,
+body > aside,
+body > section,
+body > nav,
+body > [aria-label="Announcement"] {
+  padding-inline: var(--pico-block-spacing-horizontal);
+}
+
+main article {
+  padding-inline: 0;
+}
+
 /* Classless page measure: center body children without Pico .container.
-   Header spans full bleed; inner rows + main/footer use --haz_measure (child override). */
+   Header/footer span full bleed; inner rows + main use --haz_measure (child override). */
 body {
   display: grid;
   grid-template-columns: 1fr var(--haz_measure, min(45rem, 90%)) 1fr;
@@ -64,43 +80,49 @@ body > * {
   grid-column: 2;
 }
 
-body > header {
+/* Site chrome: full-bleed shell; inset on content rows (not on the landmark). */
+body > header,
+body > footer {
   grid-column: 1 / -1;
+  background-color: var(--pico-background-color);
+  background-image: none;
+}
+
+body > header {
   padding-bottom: 0.5rem;
   position: sticky;
   top: 0;
   z-index: 200;
-  /* Opaque fill so scrolled content cannot show through sticky header + open nav. */
-  background-color: var(--pico-background-color);
-  background-image: none;
 }
 
 html[data-scrolled="true"] body > header {
   padding-block: 0.5rem;
 }
 
-.haz_header_site > div {
+.haz_header_site > div,
+.haz_footer_site > div {
   width: 100%;
   max-width: var(--haz_measure, min(45rem, 90%));
   margin-inline: auto;
+  padding-inline: var(--pico-block-spacing-horizontal);
 }
 
 .haz_header_site > div:first-child {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0.75rem 0;
+  padding-block: 0.75rem;
 }
 
 html[data-scrolled="true"] .haz_header_site > div:first-child {
-  padding: 0;
+  padding-block: 0;
 }
 
 .haz_header_site > div:nth-child(2) {
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 0;
+  padding-block: 0;
 }
 
 .haz_header_site__col_other {
