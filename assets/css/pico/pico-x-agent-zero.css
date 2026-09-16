@@ -58,21 +58,21 @@ main {
    (including main). Nested articles must not double-inset. Header/footer are
    full-bleed chrome; their content rows share measure width with main’s outer edges
    (no extra padding-inline — that would sit inside the card’s inset). Pre-footer
-   social nav stays in the measure column so it lines up with panel socials. */
+   social nav stays in the measure column so it lines up with panel socials.
+   Mobile-first: tighter shell pad by default; full pad from 40rem up. */
 body > main,
 body > aside,
 body > section,
 body > [aria-label="Announcement"] {
-  padding-inline: var(--pico-block-spacing-horizontal);
+  padding-inline: calc(var(--pico-block-spacing-horizontal) * 0.5);
 }
 
-/* Narrow viewports: side gutters (measure %) + shell pad stack — halve shell pad. */
-@media (max-width: 40rem) {
+@media (min-width: 40rem) {
   body > main,
   body > aside,
   body > section,
   body > [aria-label="Announcement"] {
-    padding-inline: calc(var(--pico-block-spacing-horizontal) * 0.5);
+    padding-inline: var(--pico-block-spacing-horizontal);
   }
 }
 
@@ -81,15 +81,16 @@ main article {
 }
 
 /* Classless page measure: center body children without Pico .container.
-   Chrome spans full bleed; inner rows + main use --haz_measure (child override). */
+   Chrome spans full bleed; inner rows + main use --haz_measure (child override).
+   Mobile-first fallback 95%; 90% from 40rem up. */
 body {
   display: grid;
-  grid-template-columns: 1fr var(--haz_measure, min(45rem, 90%)) 1fr;
+  grid-template-columns: 1fr var(--haz_measure, min(45rem, 95%)) 1fr;
 }
 
-@media (max-width: 40rem) {
+@media (min-width: 40rem) {
   body {
-    grid-template-columns: 1fr var(--haz_measure, min(45rem, 95%)) 1fr;
+    grid-template-columns: 1fr var(--haz_measure, min(45rem, 90%)) 1fr;
   }
 }
 
@@ -119,14 +120,14 @@ html[data-scrolled="true"] body > header {
 .haz_header_site > div,
 .haz_footer_site > div {
   width: 100%;
-  max-width: var(--haz_measure, min(45rem, 90%));
+  max-width: var(--haz_measure, min(45rem, 95%));
   margin-inline: auto;
 }
 
-@media (max-width: 40rem) {
+@media (min-width: 40rem) {
   .haz_header_site > div,
   .haz_footer_site > div {
-    max-width: var(--haz_measure, min(45rem, 95%));
+    max-width: var(--haz_measure, min(45rem, 90%));
   }
 }
 
