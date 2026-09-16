@@ -54,13 +54,13 @@ main {
   box-shadow: var(--pico-card-box-shadow);
 }
 
-/* #57 — measure-shell inset. One horizontal token for every measure-column body child
-   (including main). Nested articles must not double-inset. Header/footer are full-bleed
-   chrome; their content rows carry the same token below. */
+/* #57 — measure-shell inset. One horizontal token for measure-column body children
+   (including main). Nested articles must not double-inset. Header/footer/nav are
+   full-bleed chrome; their content rows share measure width with main’s outer edges
+   (no extra padding-inline — that would sit inside the card’s inset). */
 body > main,
 body > aside,
 body > section,
-body > nav,
 body > [aria-label="Announcement"] {
   padding-inline: var(--pico-block-spacing-horizontal);
 }
@@ -70,7 +70,7 @@ main article {
 }
 
 /* Classless page measure: center body children without Pico .container.
-   Header/footer span full bleed; inner rows + main use --haz_measure (child override). */
+   Chrome spans full bleed; inner rows + main use --haz_measure (child override). */
 body {
   display: grid;
   grid-template-columns: 1fr var(--haz_measure, min(45rem, 90%)) 1fr;
@@ -80,12 +80,16 @@ body > * {
   grid-column: 2;
 }
 
-/* Site chrome: full-bleed shell; inset on content rows (not on the landmark). */
+/* Site chrome: full-bleed shell; content rows match main’s outer measure edges. */
 body > header,
 body > footer {
   grid-column: 1 / -1;
   background-color: var(--pico-background-color);
   background-image: none;
+}
+
+body > nav {
+  grid-column: 1 / -1;
 }
 
 body > header {
@@ -100,11 +104,11 @@ html[data-scrolled="true"] body > header {
 }
 
 .haz_header_site > div,
-.haz_footer_site > div {
+.haz_footer_site > div,
+.haz_socials {
   width: 100%;
   max-width: var(--haz_measure, min(45rem, 90%));
   margin-inline: auto;
-  padding-inline: var(--pico-block-spacing-horizontal);
 }
 
 .haz_header_site > div:first-child {
