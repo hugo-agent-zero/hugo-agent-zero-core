@@ -53,6 +53,21 @@ main {
   box-shadow: var(--pico-card-box-shadow);
 }
 
+/* #57 — measure-shell inset. Pico pads article as the page card; HAZ uses main as that
+   shell, so body siblings need the same horizontal token, and nested articles must not
+   double-inset (singles + list teasers). Header stays full-bleed; inset on content rows. */
+body > footer,
+body > aside,
+body > section,
+body > nav,
+body > [aria-label="Announcement"] {
+  padding-inline: var(--pico-block-spacing-horizontal);
+}
+
+main article {
+  padding-inline: 0;
+}
+
 /* Classless page measure: center body children without Pico .container.
    Header spans full bleed; inner rows + main/footer use --haz_measure (child override). */
 body {
@@ -83,24 +98,25 @@ html[data-scrolled="true"] body > header {
   width: 100%;
   max-width: var(--haz_measure, min(45rem, 90%));
   margin-inline: auto;
+  padding-inline: var(--pico-block-spacing-horizontal);
 }
 
 .haz_header_site > div:first-child {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0.75rem 0;
+  padding-block: 0.75rem;
 }
 
 html[data-scrolled="true"] .haz_header_site > div:first-child {
-  padding: 0;
+  padding-block: 0;
 }
 
 .haz_header_site > div:nth-child(2) {
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 0;
+  padding-block: 0;
 }
 
 .haz_header_site__col_other {
