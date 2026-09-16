@@ -44,18 +44,20 @@
   --pico-font-family: var(--pico-font-family-sans-serif);
 }
 
-/* Call out <main> the same way Pico calls out <article> (card panel). */
+/* Call out <main> the same way Pico calls out <article> (card panel).
+   Horizontal inset lives on the shared body > measure-shell list below. */
 main {
   margin-bottom: var(--pico-block-spacing-vertical);
-  padding: var(--pico-block-spacing-vertical) var(--pico-block-spacing-horizontal);
+  padding-block: var(--pico-block-spacing-vertical);
   border-radius: var(--pico-border-radius);
   background: var(--pico-card-background-color);
   box-shadow: var(--pico-card-box-shadow);
 }
 
-/* #57 — measure-shell inset. Pico pads article as the page card; HAZ uses main as that
-   shell, so body siblings need the same horizontal token, and nested articles must not
-   double-inset (singles + list teasers). Header stays full-bleed; inset on content rows. */
+/* #57 — measure-shell inset. One horizontal token for every measure-column body child
+   (including main). Nested articles must not double-inset. Header stays full-bleed;
+   inset on content rows. */
+body > main,
 body > footer,
 body > aside,
 body > section,
