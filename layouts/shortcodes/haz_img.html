@@ -119,7 +119,7 @@
           {{- end -}}
         {{- end -}}
         {{- if not $hasLayout -}}
-          {{- $merged := trim (printf "%s %s" $existingClass $layoutClass) -}}
+          {{- $merged := strings.TrimSpace (printf "%s %s" $existingClass $layoutClass) -}}
           {{- $imgTag = replaceRE `(?i)\bclass\s*=\s*"[^"]*"` (printf "class=\"%s\"" $merged) $imgTag 1 -}}
           {{- $imgTag = replaceRE `(?i)\bclass\s*=\s*'[^']*'` (printf "class=\"%s\"" $merged) $imgTag 1 -}}
         {{- end -}}
