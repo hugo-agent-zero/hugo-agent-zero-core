@@ -570,3 +570,20 @@ html[data-theme="dark"] #haz_btn_color_scheme svg.haz_svg__sun {
 html[data-theme="light"] #haz_btn_color_scheme svg.haz_svg__moon {
   display: none;
 }
+
+/* haz_img preset classes — layout fractions of the measure column.
+   Class names match settings.images.presets (e.g. key 100_100). */
+.haz_img__100_100 {
+  width: 100%;
+  height: auto;
+}
+
+.haz_img__50_50 {
+  width: 50%;
+  height: auto;
+}
+
+.haz_img__25_25 {
+  width: 25%;
+  height: auto;
+}

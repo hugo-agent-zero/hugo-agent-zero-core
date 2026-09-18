@@ -1,0 +1,148 @@
+{{/*
+  haz_img — enrich author <img> tags with srcset / sizes / preset class.
+
+  Usage:
+    {{< haz_img key="100_100" >}}
+    <img src="hero.jpg" alt="…" loading="lazy">
+    {{< /haz_img >}}
+
+  Params:
+    key  required — id into settings.images.presets (mnemonic convention:
+         desktop_mobile % of measure, e.g. 100_100 / 50_50 / 50_100).
+         Lookup only; digits are not parsed at runtime.
+
+  Inner: author HTML (img + optional wrappers). Stem from each img src=;
+  variants from .Page.Resources; sizes + class from the preset. Sparse OK.
+*/}}
+{{- $page := .Page -}}
+{{- $presetKey := "" -}}
+{{- with .Get "key" -}}
+  {{- $presetKey = . -}}
+{{- end -}}
+
+{{- $sysManifest := partial "haz/helpers/fn/fn_get_sys_manifest.html" $page -}}
+{{- $settings := index $sysManifest "settings" | default dict -}}
+{{- $images := index $settings "images" | default dict -}}
+{{- $config := index $images "config" | default dict -}}
+{{- $variants := index $images "variants" | default dict -}}
+{{- $presets := index $images "presets" | default dict -}}
+
+{{- $variantSep := index $config "variant_sep" | default "_" -}}
+{{- $classPrefix := index $config "class_prefix" | default "haz_img__" -}}
+{{- $contentWidthPx := index $config "content_width_px" | default 0 -}}
+{{- if not $contentWidthPx -}}
+  {{- $contentWidth := index $config "content_width" | default "45rem" -}}
+  {{- $remPx := index $config "rem_px" | default 16 -}}
+  {{- $cwStr := replaceRE `[^0-9.]` "" $contentWidth -}}
+  {{- $contentWidthPx = mul (float $cwStr) (float $remPx) -}}
+{{- end -}}
+{{- $contentWidthPx = float $contentWidthPx -}}
+
+{{- $preset := false -}}
+{{- if and $presetKey (isset $presets $presetKey) -}}
+  {{- $preset = index $presets $presetKey -}}
+{{- end -}}
+
+{{- $sizesAttr := "" -}}
+{{- $layoutClass := "" -}}
+{{- if ne $preset false -}}
+  {{- $sizesAttr = index $preset "sizes" | default "" -}}
+  {{- $layoutClass = index $preset "class" | default (printf "%s%s" $classPrefix $presetKey) -}}
+{{- end -}}
+
+{{- $inner := .Inner | strings.TrimSpace -}}
+{{- $imgMatches := findRE `(?i)<img\b[^>]*>` $inner -}}
+
+{{- if or (not $presetKey) (eq $preset false) (not $sizesAttr) (eq (len $imgMatches) 0) -}}
+<!-- haz_img: missing/unknown key, empty sizes, or no img in Inner -->
+{{- else -}}
+  {{- range $imgMatches -}}
+    {{- $original := . -}}
+    {{- $imgTag := . -}}
+
+    {{- /* strip author srcset/sizes so shortcode wins */ -}}
+    {{- $imgTag = replaceRE `(?i)\s+srcset\s*=\s*"[^"]*"` "" $imgTag -}}
+    {{- $imgTag = replaceRE `(?i)\s+sizes\s*=\s*"[^"]*"` "" $imgTag -}}
+    {{- $imgTag = replaceRE `(?i)\s+srcset\s*=\s*'[^']*'` "" $imgTag -}}
+    {{- $imgTag = replaceRE `(?i)\s+sizes\s*=\s*'[^']*'` "" $imgTag -}}
+
+    {{- $src := "" -}}
+    {{- if findRE `(?i)\bsrc\s*=\s*"` $imgTag -}}
+      {{- $src = replaceRE `(?is)^.*\bsrc\s*=\s*"([^"]+)".*$` `$1` $imgTag -}}
+    {{- else if findRE `(?i)\bsrc\s*=\s*'` $imgTag -}}
+      {{- $src = replaceRE `(?is)^.*\bsrc\s*=\s*'([^']+)'.*$` `$1` $imgTag -}}
+    {{- end -}}
+
+    {{- if and $src (not (findRE `(?i)<img` $src)) -}}
+      {{- /* Hugo strings.TrimPrefix/Suffix: PREFIX|SUFFIX then STRING (not Go order). */ -}}
+      {{- $srcPath := strings.TrimPrefix "./" $src -}}
+      {{- $base := path.Base $srcPath -}}
+      {{- $ext := path.Ext $base -}}
+      {{- $stem := strings.TrimSuffix $ext $base -}}
+      {{- $dir := path.Dir $srcPath -}}
+
+      {{- $srcsetParts := slice -}}
+      {{- range $vKey, $vFactor := $variants -}}
+        {{- $wPx := int (math.Round (mul $contentWidthPx (float $vFactor))) -}}
+        {{- $fileName := printf "%s%s%s%s" $stem $variantSep $vKey $ext -}}
+        {{- if and $dir (ne $dir ".") -}}
+          {{- $fileName = printf "%s/%s" $dir $fileName -}}
+        {{- end -}}
+        {{- $res := $page.Resources.GetMatch $fileName -}}
+        {{- if $res -}}
+          {{- $srcsetParts = $srcsetParts | append (dict "w" $wPx "url" $res.RelPermalink) -}}
+        {{- end -}}
+      {{- end -}}
+      {{- $srcsetAttr := "" -}}
+      {{- if gt (len $srcsetParts) 0 -}}
+        {{- $sorted := sort $srcsetParts "w" -}}
+        {{- $bits := slice -}}
+        {{- range $sorted -}}
+          {{- $bits = $bits | append (printf "%s %dw" .url .w) -}}
+        {{- end -}}
+        {{- $srcsetAttr = delimit $bits ", " -}}
+      {{- end -}}
+
+      {{- $classSub := findRESubmatch `(?i)\bclass\s*=\s*"([^"]*)"` $imgTag -}}
+      {{- if eq (len $classSub) 0 -}}
+        {{- $classSub = findRESubmatch `(?i)\bclass\s*=\s*'([^']*)'` $imgTag -}}
+      {{- end -}}
+      {{- $needClassAttr := true -}}
+      {{- if gt (len $classSub) 0 -}}
+        {{- $needClassAttr = false -}}
+        {{- $existingClass := index (index $classSub 0) 1 -}}
+        {{- $tokens := split $existingClass " " -}}
+        {{- $hasLayout := false -}}
+        {{- range $tokens -}}
+          {{- if eq . $layoutClass -}}
+            {{- $hasLayout = true -}}
+          {{- end -}}
+        {{- end -}}
+        {{- if not $hasLayout -}}
+          {{- $merged := trim (printf "%s %s" $existingClass $layoutClass) -}}
+          {{- $imgTag = replaceRE `(?i)\bclass\s*=\s*"[^"]*"` (printf "class=\"%s\"" $merged) $imgTag 1 -}}
+          {{- $imgTag = replaceRE `(?i)\bclass\s*=\s*'[^']*'` (printf "class=\"%s\"" $merged) $imgTag 1 -}}
+        {{- end -}}
+      {{- end -}}
+
+      {{- $inject := "" -}}
+      {{- if $srcsetAttr -}}
+        {{- $inject = printf "%s srcset=\"%s\"" $inject $srcsetAttr -}}
+      {{- end -}}
+      {{- $inject = printf "%s sizes=\"%s\"" $inject $sizesAttr -}}
+      {{- if $needClassAttr -}}
+        {{- $inject = printf "%s class=\"%s\"" $inject $layoutClass -}}
+      {{- end -}}
+
+      {{- if findRE `/\s*>$` $imgTag -}}
+        {{- $imgTag = replaceRE `/\s*>$` (printf "%s />" $inject) $imgTag 1 -}}
+      {{- else -}}
+        {{- $imgTag = replaceRE `>$` (printf "%s>" $inject) $imgTag 1 -}}
+      {{- end -}}
+
+      {{- $inner = strings.Replace $inner $original $imgTag 1 -}}
+    {{- end -}}
+  {{- end -}}
+
+  {{- $inner | safeHTML -}}
+{{- end -}}
