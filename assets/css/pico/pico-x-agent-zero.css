@@ -69,6 +69,75 @@ main article {
   padding-inline: 0;
 }
 
+/* #58 — blog meta + pages list. Pico skips classless dl/dt/dd; HAZ kit defaults live here.
+   Child may override brand tweaks; structure stays pico-x. */
+.haz_blog_meta {
+  margin-bottom: 1.25rem;
+  padding-left: 1rem;
+  font-size: 0.9375rem;
+  opacity: 0.9;
+}
+
+.haz_blog_meta dl {
+  margin: 0;
+}
+
+.haz_blog_meta dl > div {
+  margin-bottom: 1.25rem;
+}
+
+.haz_blog_meta dl > div:last-child {
+  margin-bottom: 0;
+}
+
+.haz_blog_meta dl > div > div {
+  display: grid;
+  grid-template-columns: 5.5rem minmax(0, 1fr);
+  column-gap: 1rem;
+  align-items: baseline;
+}
+
+.haz_blog_meta dt {
+  margin: 0;
+  font-weight: 700;
+}
+
+.haz_blog_meta dd {
+  margin: 0;
+}
+
+.haz_blog_meta dd ul {
+  display: inline;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.haz_blog_meta dd li {
+  display: inline;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.haz_pages_list,
+.haz_pages_list > li {
+  list-style: none;
+}
+
+.haz_pages_list {
+  padding: 0;
+  margin: 0;
+}
+
+.haz_pages_list > li > article > :first-child {
+  margin-top: 0;
+}
+
+.haz_pages_list .haz_blog_meta {
+  margin-bottom: 0;
+}
+
 /* Classless page measure: center body children without Pico .container.
    Chrome spans full bleed; inner rows + main use --haz_measure (child override).
    Mobile-first: wider column (tighter outside gutters) by default; 90% from 40rem. */
