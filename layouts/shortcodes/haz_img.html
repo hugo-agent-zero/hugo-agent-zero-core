@@ -2,14 +2,15 @@
   haz_img — enrich author <img> tags with srcset / sizes / preset class.
 
   Usage:
-    {{< haz_img key="100_100" >}}
+    {{< haz_img key="m100_d100" >}}
     <img src="hero.jpg" alt="…" loading="lazy">
     {{< /haz_img >}}
 
   Params:
     key  required — id into settings.images.presets (mnemonic convention:
-         desktop_mobile % of measure, e.g. 100_100 / 50_50 / 50_100).
-         Lookup only; digits are not parsed at runtime.
+         m{pct}_d{pct} = mobile then desktop % of measure, e.g. m100_d100 /
+         m50_d50 / m100_d50). Optional tablet: m{pct}_t{pct}_d{pct}.
+         Lookup only; segments are not parsed at runtime.
 
   Inner: author HTML (img + optional wrappers). Stem from each img src=;
   variants from .Page.Resources; sizes + class from the preset. Sparse OK.

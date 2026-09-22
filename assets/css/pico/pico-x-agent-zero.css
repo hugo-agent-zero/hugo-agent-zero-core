@@ -572,18 +572,39 @@ html[data-theme="light"] #haz_btn_color_scheme svg.haz_svg__moon {
 }
 
 /* haz_img preset classes — layout fractions of the measure column.
-   Class names match settings.images.presets (e.g. key 100_100). */
-.haz_img__100_100 {
+   Class names match settings.images.presets (e.g. key m100_d100).
+   Unequal m/d: mobile width first; desktop from 45rem (measure floor). */
+.haz_img__m100_d100 {
   width: 100%;
   height: auto;
 }
 
-.haz_img__50_50 {
+.haz_img__m50_d50 {
   width: 50%;
   height: auto;
 }
 
-.haz_img__25_25 {
+.haz_img__m25_d25 {
   width: 25%;
   height: auto;
+}
+
+.haz_img__m100_d50 {
+  width: 100%;
+  height: auto;
+}
+
+.haz_img__m100_d75 {
+  width: 100%;
+  height: auto;
+}
+
+@media (min-width: 45rem) {
+  .haz_img__m100_d50 {
+    width: 50%;
+  }
+
+  .haz_img__m100_d75 {
+    width: 75%;
+  }
 }
