@@ -1,18 +1,18 @@
 {{/*
-  haz_img — enrich author <img> tags with srcset / sizes / preset class.
+  haz_img — enrich author <img> with srcset / sizes / width utilities.
 
   Usage:
-    {{< haz_img key="100_100" >}}
+    {{< haz_img key="m100_t100_d100" >}}
     <img src="hero.jpg" alt="…" loading="lazy">
     {{< /haz_img >}}
 
   Params:
-    key  required — id into settings.images.presets (mnemonic convention:
-         desktop_mobile % of measure, e.g. 100_100 / 50_50 / 50_100).
-         Lookup only; digits are not parsed at runtime.
+    key  required — m{pct}_t{pct}_d{pct} or m{pct}_d{pct} (tablet inherits mobile).
+         pct ∈ 25|50|75|100 = % of that tier’s usable band max (not always measure).
+         Parsed at runtime. settings.images.config: content_width, content_width_px,
+         breakpoints.min_tablet / min_desktop (fractions of measure), content_inset.
 
-  Inner: author HTML (img + optional wrappers). Stem from each img src=;
-  variants from .Page.Resources; sizes + class from the preset. Sparse OK.
+  Inner: author HTML. Stem from src= → .Page.Resources variants (xs…xxl). Sparse OK.
 */}}
 {{- $page := .Page -}}
 {{- $presetKey := "" -}}
@@ -24,43 +24,92 @@
 {{- $settings := index $sysManifest "settings" | default dict -}}
 {{- $images := index $settings "images" | default dict -}}
 {{- $config := index $images "config" | default dict -}}
-{{- $variants := index $images "variants" | default dict -}}
-{{- $presets := index $images "presets" | default dict -}}
 
 {{- $variantSep := index $config "variant_sep" | default "_" -}}
-{{- $classPrefix := index $config "class_prefix" | default "haz_img__" -}}
-{{- $contentWidthPx := index $config "content_width_px" | default 0 -}}
+{{- $contentWidth := index $config "content_width" | default "45rem" -}}
+{{- $remPx := float (index $config "rem_px" | default 16) -}}
+{{- $cwStr := replaceRE `[^0-9.]` "" $contentWidth -}}
+{{- $cwRem := float $cwStr -}}
+{{- $contentWidthPx := float (index $config "content_width_px" | default 0) -}}
 {{- if not $contentWidthPx -}}
-  {{- $contentWidth := index $config "content_width" | default "45rem" -}}
-  {{- $remPx := index $config "rem_px" | default 16 -}}
-  {{- $cwStr := replaceRE `[^0-9.]` "" $contentWidth -}}
-  {{- $contentWidthPx = mul (float $cwStr) (float $remPx) -}}
-{{- end -}}
-{{- $contentWidthPx = float $contentWidthPx -}}
-
-{{- $preset := false -}}
-{{- if and $presetKey (isset $presets $presetKey) -}}
-  {{- $preset = index $presets $presetKey -}}
+  {{- $contentWidthPx = mul $cwRem $remPx -}}
 {{- end -}}
 
-{{- $sizesAttr := "" -}}
-{{- $layoutClass := "" -}}
-{{- if ne $preset false -}}
-  {{- $sizesAttr = index $preset "sizes" | default "" -}}
-  {{- $layoutClass = index $preset "class" | default (printf "%s%s" $classPrefix $presetKey) -}}
+{{- $bps := index $config "breakpoints" | default dict -}}
+{{- $minTablet := float (index $bps "min_tablet" | default 0.5) -}}
+{{- $minDesktop := float (index $bps "min_desktop" | default 0.8) -}}
+{{- $insetRem := float (index $config "content_inset" | default 0) -}}
+{{- $insetPx := mul $insetRem $remPx -}}
+
+{{- $mqTabletRem := mul $cwRem $minTablet -}}
+{{- $mqDesktopRem := mul $cwRem $minDesktop -}}
+
+{{- $bandMobilePx := mul $contentWidthPx $minTablet -}}
+{{- $bandTabletPx := mul $contentWidthPx $minDesktop -}}
+{{- $bandDesktopPx := $contentWidthPx -}}
+{{- $bandMobileRem := mul $cwRem $minTablet -}}
+{{- $bandTabletRem := mul $cwRem $minDesktop -}}
+{{- $bandDesktopRem := $cwRem -}}
+{{- $usableMobilePx := math.Max 0 (sub $bandMobilePx (mul $insetPx 2)) -}}
+{{- $usableTabletPx := math.Max 0 (sub $bandTabletPx (mul $insetPx 2)) -}}
+{{- $usableDesktopPx := math.Max 0 (sub $bandDesktopPx (mul $insetPx 2)) -}}
+{{- $usableMobileRem := math.Max 0 (sub $bandMobileRem (mul $insetRem 2)) -}}
+{{- $usableTabletRem := math.Max 0 (sub $bandTabletRem (mul $insetRem 2)) -}}
+{{- $usableDesktopRem := math.Max 0 (sub $bandDesktopRem (mul $insetRem 2)) -}}
+
+{{- $variantWidths := dict
+  "xs" (int (math.Round (mul $usableMobilePx 0.5)))
+  "sm" (int (math.Round $usableMobilePx))
+  "md" (int (math.Round $usableTabletPx))
+  "lg" (int (math.Round $usableDesktopPx))
+  "xl" (int (math.Round (mul $usableDesktopPx 1.5)))
+  "xxl" (int (math.Round (mul $usableDesktopPx 2.0)))
+-}}
+
+{{- $mPct := 0 -}}
+{{- $tPct := 0 -}}
+{{- $dPct := 0 -}}
+{{- $keyOK := false -}}
+{{- $mtd := findRESubmatch `(?i)^m(\d+)_t(\d+)_d(\d+)$` $presetKey -}}
+{{- $mdOnly := findRESubmatch `(?i)^m(\d+)_d(\d+)$` $presetKey -}}
+{{- if gt (len $mtd) 0 -}}
+  {{- $mPct = int (index (index $mtd 0) 1) -}}
+  {{- $tPct = int (index (index $mtd 0) 2) -}}
+  {{- $dPct = int (index (index $mtd 0) 3) -}}
+  {{- $keyOK = true -}}
+{{- else if gt (len $mdOnly) 0 -}}
+  {{- $mPct = int (index (index $mdOnly 0) 1) -}}
+  {{- $dPct = int (index (index $mdOnly 0) 2) -}}
+  {{- $tPct = $mPct -}}
+  {{- $keyOK = true -}}
 {{- end -}}
+
+{{- $allowed := slice 25 50 75 100 -}}
+{{- $pctsOK := false -}}
+{{- if $keyOK -}}
+  {{- $pctsOK = and (in $allowed $mPct) (in $allowed $tPct) (in $allowed $dPct) -}}
+{{- end -}}
+
+{{- $dHole := printf "%.4grem" (mul $usableDesktopRem (div (float $dPct) 100.0)) -}}
+{{- $tHole := printf "%.4grem" (mul $usableTabletRem (div (float $tPct) 100.0)) -}}
+{{- $mHole := printf "%dvw" $mPct -}}
+{{- $sizesAttr := printf "(min-width: %.4grem) %s, (min-width: %.4grem) %s, %s" $mqDesktopRem $dHole $mqTabletRem $tHole $mHole -}}
+
+{{- $wM := printf "haz_img_w_m__%d" $mPct -}}
+{{- $wT := printf "haz_img_w_t__%d" $tPct -}}
+{{- $wD := printf "haz_img_w_d__%d" $dPct -}}
+{{- $layoutClasses := printf "%s %s %s" $wM $wT $wD -}}
 
 {{- $inner := .Inner | strings.TrimSpace -}}
 {{- $imgMatches := findRE `(?i)<img\b[^>]*>` $inner -}}
 
-{{- if or (not $presetKey) (eq $preset false) (not $sizesAttr) (eq (len $imgMatches) 0) -}}
-<!-- haz_img: missing/unknown key, empty sizes, or no img in Inner -->
+{{- if or (not $presetKey) (not $pctsOK) (eq (len $imgMatches) 0) -}}
+<!-- haz_img: bad/missing key (need m25|50|75|100[_t…]_d…), or no img in Inner -->
 {{- else -}}
   {{- range $imgMatches -}}
     {{- $original := . -}}
     {{- $imgTag := . -}}
 
-    {{- /* strip author srcset/sizes so shortcode wins */ -}}
     {{- $imgTag = replaceRE `(?i)\s+srcset\s*=\s*"[^"]*"` "" $imgTag -}}
     {{- $imgTag = replaceRE `(?i)\s+sizes\s*=\s*"[^"]*"` "" $imgTag -}}
     {{- $imgTag = replaceRE `(?i)\s+srcset\s*=\s*'[^']*'` "" $imgTag -}}
@@ -74,7 +123,6 @@
     {{- end -}}
 
     {{- if and $src (not (findRE `(?i)<img` $src)) -}}
-      {{- /* Hugo strings.TrimPrefix/Suffix: PREFIX|SUFFIX then STRING (not Go order). */ -}}
       {{- $srcPath := strings.TrimPrefix "./" $src -}}
       {{- $base := path.Base $srcPath -}}
       {{- $ext := path.Ext $base -}}
@@ -82,8 +130,7 @@
       {{- $dir := path.Dir $srcPath -}}
 
       {{- $srcsetParts := slice -}}
-      {{- range $vKey, $vFactor := $variants -}}
-        {{- $wPx := int (math.Round (mul $contentWidthPx (float $vFactor))) -}}
+      {{- range $vKey, $wPx := $variantWidths -}}
         {{- $fileName := printf "%s%s%s%s" $stem $variantSep $vKey $ext -}}
         {{- if and $dir (ne $dir ".") -}}
           {{- $fileName = printf "%s/%s" $dir $fileName -}}
@@ -111,18 +158,9 @@
       {{- if gt (len $classSub) 0 -}}
         {{- $needClassAttr = false -}}
         {{- $existingClass := index (index $classSub 0) 1 -}}
-        {{- $tokens := split $existingClass " " -}}
-        {{- $hasLayout := false -}}
-        {{- range $tokens -}}
-          {{- if eq . $layoutClass -}}
-            {{- $hasLayout = true -}}
-          {{- end -}}
-        {{- end -}}
-        {{- if not $hasLayout -}}
-          {{- $merged := strings.TrimSpace (printf "%s %s" $existingClass $layoutClass) -}}
-          {{- $imgTag = replaceRE `(?i)\bclass\s*=\s*"[^"]*"` (printf "class=\"%s\"" $merged) $imgTag 1 -}}
-          {{- $imgTag = replaceRE `(?i)\bclass\s*=\s*'[^']*'` (printf "class=\"%s\"" $merged) $imgTag 1 -}}
-        {{- end -}}
+        {{- $merged := strings.TrimSpace (printf "%s %s" $existingClass $layoutClasses) -}}
+        {{- $imgTag = replaceRE `(?i)\bclass\s*=\s*"[^"]*"` (printf "class=\"%s\"" $merged) $imgTag 1 -}}
+        {{- $imgTag = replaceRE `(?i)\bclass\s*=\s*'[^']*'` (printf "class=\"%s\"" $merged) $imgTag 1 -}}
       {{- end -}}
 
       {{- $inject := "" -}}
@@ -131,7 +169,7 @@
       {{- end -}}
       {{- $inject = printf "%s sizes=\"%s\"" $inject $sizesAttr -}}
       {{- if $needClassAttr -}}
-        {{- $inject = printf "%s class=\"%s\"" $inject $layoutClass -}}
+        {{- $inject = printf "%s class=\"%s\"" $inject $layoutClasses -}}
       {{- end -}}
 
       {{- if findRE `/\s*>$` $imgTag -}}
