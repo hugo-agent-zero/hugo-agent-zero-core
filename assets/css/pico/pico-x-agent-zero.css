@@ -2,7 +2,7 @@
    Site-specific tweaks belong in child/css/pico/pico-override.css.
    Framework-agnostic haz_* utilities live in css/haz/haz.css. */
 
-/* Atkinson Hyperlegible — HAZ default (static/haz/fonts silo) */
+/* Atkinson Hyperlegible â€” HAZ default (static/haz/fonts silo) */
 @font-face {
   font-family: "Atkinson Hyperlegible Next";
   font-style: normal;
@@ -54,11 +54,11 @@ main {
   box-shadow: var(--pico-card-box-shadow);
 }
 
-/* #57 — measure-shell inset. One horizontal token for measure-column body children
+/* #57 â€” measure-shell inset. One horizontal token for measure-column body children
    (including main). Nested articles must not double-inset. Header/footer are
-   full-bleed chrome; their content rows share measure width with main’s outer edges
-   (no extra padding-inline — that would sit inside the card’s inset).
-   Outside gutters (screen edge → measure) are --haz_measure %, not this pad. */
+   full-bleed chrome; their content rows share measure width with mainâ€™s outer edges
+   (no extra padding-inline â€” that would sit inside the cardâ€™s inset).
+   Outside gutters (screen edge â†’ measure) are --haz_measure %, not this pad. */
 body > main,
 body > aside,
 body > section {
@@ -69,7 +69,7 @@ main article {
   padding-inline: 0;
 }
 
-/* #58 — blog meta + pages list. Pico skips classless dl/dt/dd; HAZ kit defaults live here.
+/* #58 â€” blog meta + pages list. Pico skips classless dl/dt/dd; HAZ kit defaults live here.
    Child may override brand tweaks; structure stays pico-x. */
 .haz_blog_meta {
   margin-bottom: 1.25rem;
@@ -156,7 +156,7 @@ body > * {
   grid-column: 2;
 }
 
-/* Site chrome: full-bleed shell; content rows match main’s outer measure edges. */
+/* Site chrome: full-bleed shell; content rows match mainâ€™s outer measure edges. */
 body > header,
 body > footer {
   grid-column: 1 / -1;
@@ -207,7 +207,7 @@ html[data-scrolled="true"] .haz_header_site > div:first-child {
   padding-block: 0;
 }
 
-/* Header controls — mobile-first: no gap / no inline pad; restore from 40rem. */
+/* Header controls â€” mobile-first: no gap / no inline pad; restore from 40rem. */
 .haz_header_site__col_other {
   display: flex;
   align-items: center;
@@ -233,7 +233,7 @@ html[data-scrolled="true"] .haz_header_site > div:first-child {
   align-items: center;
 }
 
-/* Pagefind Component UI — theme via --pf-* host tokens; do not rename pagefind-* classes. */
+/* Pagefind Component UI â€” theme via --pf-* host tokens; do not rename pagefind-* classes. */
 :root {
   --pf-font: var(--pico-font-family);
   --pf-text: var(--pico-color);
@@ -247,14 +247,14 @@ html[data-scrolled="true"] .haz_header_site > div:first-child {
   --pf-mark: var(--pico-mark-color);
   --pf-outline-focus: var(--haz_chrome, var(--pico-primary));
   --pf-modal-backdrop: rgba(0, 0, 0, 0.45);
-  /* Undo PF’s px type scale — inherit the site body. */
+  /* Undo PFâ€™s px type scale â€” inherit the site body. */
   --pf-summary-font-size: inherit;
   --pf-result-title-font-size: inherit;
   --pf-result-excerpt-font-size: inherit;
   --pf-border-radius: var(--pico-border-radius);
 }
 
-/* Icon chrome buttons — keep lean vs Pico’s default button chrome */
+/* Icon chrome buttons â€” keep lean vs Picoâ€™s default button chrome */
 .haz_btn {
   border: none;
   cursor: pointer;
@@ -304,7 +304,7 @@ html:has(dialog[open]) body {
 
 .haz_search_pagefind_modal,
 .haz_search_pagefind_modal [data-pf-theme] {
-  /* PF :root / [data-pf-theme] load later with hardcoded light+dark. Re-bind here so Pico’s data-theme wins both ways. */
+  /* PF :root / [data-pf-theme] load later with hardcoded light+dark. Re-bind here so Picoâ€™s data-theme wins both ways. */
   --pf-font: var(--pico-font-family);
   --pf-text: var(--pico-color);
   --pf-text-secondary: var(--pico-muted-color, var(--pico-secondary));
@@ -439,7 +439,7 @@ html:has(dialog[open]) body {
   line-height: inherit;
 }
 
-/* PF layers :is(*, #\#)×3 on these classes — match that so hide/title stick. */
+/* PF layers :is(*, #\#)Ã—3 on these classes â€” match that so hide/title stick. */
 :is(*, #\#):is(*, #\#):is(*, #\#) .haz_search_pagefind_modal .pf-result-excerpt {
   display: none;
 }
@@ -463,7 +463,7 @@ html:has(dialog[open]) body {
   text-underline-offset: 0.125em;
 }
 
-/* PF-WTF: Component UI paints "#" on heading chips via ::before — not indexed text. */
+/* PF-WTF: Component UI paints "#" on heading chips via ::before â€” not indexed text. */
 :is(*, #\#):is(*, #\#):is(*, #\#) .haz_search_pagefind_modal .pf-heading-link::before {
   content: none;
 }
@@ -571,23 +571,6 @@ html[data-theme="light"] #haz_btn_color_scheme svg.haz_svg__moon {
   display: none;
 }
 
-<<<<<<< Updated upstream
-/* haz_img preset classes — layout fractions of the measure column.
-   Class names match settings.images.presets (e.g. key 100_100). */
-.haz_img__100_100 {
-  width: 100%;
-  height: auto;
-}
-
-.haz_img__50_50 {
-  width: 50%;
-  height: auto;
-}
-
-.haz_img__25_25 {
-  width: 25%;
-  height: auto;
-=======
 /* haz_img width utilities — mobile-first; pct of content box per tier.
    MQ rem must match settings: min_tablet/min_desktop × content_width (0.5/0.8 × 45rem).
    Shortcode emits haz_img_w_m__* + haz_img_w_t__* + haz_img_w_d__* from key. */
@@ -608,5 +591,4 @@ html[data-theme="light"] #haz_btn_color_scheme svg.haz_svg__moon {
   .haz_img_w_d__50 { width: 50%; }
   .haz_img_w_d__75 { width: 75%; }
   .haz_img_w_d__100 { width: 100%; }
->>>>>>> Stashed changes
 }

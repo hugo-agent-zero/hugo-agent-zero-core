@@ -2,25 +2,15 @@
   haz_img — enrich author <img> with srcset / sizes / width utilities.
 
   Usage:
-<<<<<<< Updated upstream
-    {{< haz_img key="100_100" >}}
-=======
     {{< haz_img key="m100_t100_d100" >}}
->>>>>>> Stashed changes
     <img src="hero.jpg" alt="…" loading="lazy">
     {{< /haz_img >}}
 
   Params:
-<<<<<<< Updated upstream
-    key  required — id into settings.images.presets (mnemonic convention:
-         desktop_mobile % of measure, e.g. 100_100 / 50_50 / 50_100).
-         Lookup only; digits are not parsed at runtime.
-=======
     key  required — m{pct}_t{pct}_d{pct} or m{pct}_d{pct} (tablet inherits mobile).
          pct ∈ 25|50|75|100 = % of that tier’s usable band max (not always measure).
          Parsed at runtime. settings.images.config: content_width, content_width_px,
          breakpoints.min_tablet / min_desktop (fractions of measure), content_inset.
->>>>>>> Stashed changes
 
   Inner: author HTML. Stem from src= → .Page.Resources variants (xs…xxl). Sparse OK.
 */}}
@@ -51,11 +41,9 @@
 {{- $insetRem := float (index $config "content_inset" | default 0) -}}
 {{- $insetPx := mul $insetRem $remPx -}}
 
-{{- /* Viewport MQ starts (fractions of measure → rem). */ -}}
 {{- $mqTabletRem := mul $cwRem $minTablet -}}
 {{- $mqDesktopRem := mul $cwRem $minDesktop -}}
 
-{{- /* Band maxes then usable (minus both-side inset). */ -}}
 {{- $bandMobilePx := mul $contentWidthPx $minTablet -}}
 {{- $bandTabletPx := mul $contentWidthPx $minDesktop -}}
 {{- $bandDesktopPx := $contentWidthPx -}}
@@ -69,7 +57,6 @@
 {{- $usableTabletRem := math.Max 0 (sub $bandTabletRem (mul $insetRem 2)) -}}
 {{- $usableDesktopRem := math.Max 0 (sub $bandDesktopRem (mul $insetRem 2)) -}}
 
-{{- /* Derived srcset rungs: sm=mobile max, md=tablet max, lg=desktop max. */ -}}
 {{- $variantWidths := dict
   "xs" (int (math.Round (mul $usableMobilePx 0.5)))
   "sm" (int (math.Round $usableMobilePx))
@@ -79,7 +66,6 @@
   "xxl" (int (math.Round (mul $usableDesktopPx 2.0)))
 -}}
 
-{{- /* Parse key: mN_tN_dN or mN_dN (t inherits m). */ -}}
 {{- $mPct := 0 -}}
 {{- $tPct := 0 -}}
 {{- $dPct := 0 -}}
@@ -104,7 +90,6 @@
   {{- $pctsOK = and (in $allowed $mPct) (in $allowed $tPct) (in $allowed $dPct) -}}
 {{- end -}}
 
-{{- /* sizes: desktop MQ, tablet MQ, mobile vw fallback. */ -}}
 {{- $dHole := printf "%.4grem" (mul $usableDesktopRem (div (float $dPct) 100.0)) -}}
 {{- $tHole := printf "%.4grem" (mul $usableTabletRem (div (float $tPct) 100.0)) -}}
 {{- $mHole := printf "%dvw" $mPct -}}
