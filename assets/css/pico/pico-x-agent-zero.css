@@ -571,6 +571,7 @@ html[data-theme="light"] #haz_btn_color_scheme svg.haz_svg__moon {
   display: none;
 }
 
+<<<<<<< Updated upstream
 /* haz_img preset classes — layout fractions of the measure column.
    Class names match settings.images.presets (e.g. key 100_100). */
 .haz_img__100_100 {
@@ -586,4 +587,26 @@ html[data-theme="light"] #haz_btn_color_scheme svg.haz_svg__moon {
 .haz_img__25_25 {
   width: 25%;
   height: auto;
+=======
+/* haz_img width utilities — mobile-first; pct of content box per tier.
+   MQ rem must match settings: min_tablet/min_desktop × content_width (0.5/0.8 × 45rem).
+   Shortcode emits haz_img_w_m__* + haz_img_w_t__* + haz_img_w_d__* from key. */
+.haz_img_w_m__25 { width: 25%; height: auto; }
+.haz_img_w_m__50 { width: 50%; height: auto; }
+.haz_img_w_m__75 { width: 75%; height: auto; }
+.haz_img_w_m__100 { width: 100%; height: auto; }
+
+@media (min-width: 22.5rem) {
+  .haz_img_w_t__25 { width: 25%; }
+  .haz_img_w_t__50 { width: 50%; }
+  .haz_img_w_t__75 { width: 75%; }
+  .haz_img_w_t__100 { width: 100%; }
+}
+
+@media (min-width: 36rem) {
+  .haz_img_w_d__25 { width: 25%; }
+  .haz_img_w_d__50 { width: 50%; }
+  .haz_img_w_d__75 { width: 75%; }
+  .haz_img_w_d__100 { width: 100%; }
+>>>>>>> Stashed changes
 }
