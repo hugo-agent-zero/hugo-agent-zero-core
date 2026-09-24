@@ -45,7 +45,7 @@
 {{- $bps := index $config "breakpoints" | default dict -}}
 {{- $minTabletPx := int (index $bps "min_tablet" | default 768) -}}
 {{- $minDesktopPx := int (index $bps "min_desktop" | default 992) -}}
-{{- /* Column vs viewport above 40rem matches child --haz_measure 90%. */ -}}
+{{- /* Column vs viewport above min_tablet (768) matches child --haz_measure 90%. */ -}}
 {{- $gutter := 0.9 -}}
 {{- $lgPx := $contentWidthPx -}}
 {{- $smPx := math.Min $lgPx (mul $gutter (sub (float $minTabletPx) 1.0)) -}}

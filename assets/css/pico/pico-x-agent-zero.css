@@ -140,13 +140,14 @@ main article {
 
 /* Classless page measure: center body children without Pico .container.
    Chrome spans full bleed; inner rows + main use --haz_measure (child override).
-   Mobile-first: wider column (tighter outside gutters) by default; 90% from 40rem. */
+   Mobile-first: wider column (tighter outside gutters) by default;
+   90% from min_tablet (768px). Stamp the px — rem MQs drift with fluid type. */
 body {
   display: grid;
   grid-template-columns: 1fr var(--haz_measure, min(65ch, 95%)) 1fr;
 }
 
-@media (min-width: 40rem) {
+@media (min-width: 768px) {
   body {
     grid-template-columns: 1fr var(--haz_measure, min(65ch, 90%)) 1fr;
   }
@@ -182,7 +183,7 @@ html[data-scrolled="true"] body > header {
   margin-inline: auto;
 }
 
-@media (min-width: 40rem) {
+@media (min-width: 768px) {
   .haz_header_site > div,
   .haz_footer_site > div {
     max-width: var(--haz_measure, min(65ch, 90%));
@@ -207,7 +208,7 @@ html[data-scrolled="true"] .haz_header_site > div:first-child {
   padding-block: 0;
 }
 
-/* Header controls â€” mobile-first: no gap / no inline pad; restore from 40rem. */
+/* Header controls — mobile-first: no gap / no inline pad; restore from min_tablet. */
 .haz_header_site__col_other {
   display: flex;
   align-items: center;
@@ -218,7 +219,7 @@ html[data-scrolled="true"] .haz_header_site > div:first-child {
   padding: 0.4rem 0.2rem;
 }
 
-@media (min-width: 40rem) {
+@media (min-width: 768px) {
   .haz_header_site__col_other {
     gap: 0.15rem;
   }
@@ -543,7 +544,7 @@ html:has(dialog[open]) body {
   padding: 2rem 1rem 1rem 1rem;
 }
 
-@media (min-width: 40rem) {
+@media (min-width: 768px) {
   .haz_search_pagefind_modal {
     width: min(var(--haz_measure, 65ch), 90vw);
     max-width: min(var(--haz_measure, 65ch), 90vw);
