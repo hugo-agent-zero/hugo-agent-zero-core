@@ -11,7 +11,7 @@
          pct ∈ 25|50|75|100 = % of that tier’s hole (not extra export files).
          settings.haz_img.config: content_width / content_width_px;
          lg = content_width_px (the column). BPs are when (Pico md/lg), not a cap on lg.
-         sizes keeps the content_width unit (68ch → 68ch, not 68rem).
+         sizes is px: desktop = content_width_px × d%, tablet = min_tablet × t%, mobile = m% vw.
 
   Inner: author HTML. Stem from src= → .Page.Resources variants (xs…xxl). Sparse OK.
 */}}
@@ -84,8 +84,8 @@
   {{- $pctsOK = and (in $allowed $mPct) (in $allowed $tPct) (in $allowed $dPct) -}}
 {{- end -}}
 
-{{- $dHole := printf "%.4g%s" (mul $cwNum (div (float $dPct) 100.0)) $cwUnit -}}
-{{- $tHole := printf "%.4g%s" (mul $cwNum (div (float $tPct) 100.0)) $cwUnit -}}
+{{- $dHole := printf "%dpx" (int (math.Round (mul $contentWidthPx (div (float $dPct) 100.0)))) -}}
+{{- $tHole := printf "%dpx" (int (math.Round (mul (float $minTabletPx) (div (float $tPct) 100.0)))) -}}
 {{- $mHole := printf "%dvw" $mPct -}}
 {{- $sizesAttr := printf "(min-width: %dpx) %s, (min-width: %dpx) %s, %s" $minDesktopPx $dHole $minTabletPx $tHole $mHole -}}
 
