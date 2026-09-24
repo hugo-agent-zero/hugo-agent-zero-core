@@ -15,8 +15,9 @@
          pct ∈ 25|50|75|100 = % of that tier’s hole (not extra export files).
          settings.haz_img.config: content_width / content_width_px;
          lg = content_width_px (the column). BPs are when (Pico md/lg), not a cap on lg.
-         sizes is px, snapped to the band: d = lg × d%, t = md × t%,
-         m = min(m% vw, sm × m%). MQs are the BPs — md from min_tablet, lg from min_desktop.
+         sizes is auto first, then px snapped to the band (fallback):
+         d = lg × d%, t = md × t%, m = min(m% vw, sm × m%).
+         MQs are the BPs — md from min_tablet, lg from min_desktop.
     lazy optional — false skips loading=lazy (heroes). true forces it.
          Default is settings.haz_img.config.default_lazy (true).
 
@@ -118,7 +119,7 @@
 {{- $dHole := printf "%dpx" $dNeed -}}
 {{- $tHole := printf "%dpx" $tNeed -}}
 {{- $mHole := printf "min(%dvw, %dpx)" $mPct $mNeed -}}
-{{- $sizesAttr := printf "(min-width: %dpx) %s, (min-width: %dpx) %s, %s" $minDesktopPx $dHole $minTabletPx $tHole $mHole -}}
+{{- $sizesAttr := printf "auto, (min-width: %dpx) %s, (min-width: %dpx) %s, %s" $minDesktopPx $dHole $minTabletPx $tHole $mHole -}}
 
 {{- $wM := printf "haz_img_w_m__%d" $mPct -}}
 {{- $wT := printf "haz_img_w_t__%d" $tPct -}}
