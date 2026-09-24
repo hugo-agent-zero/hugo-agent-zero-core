@@ -8,9 +8,9 @@
 
   Params:
     key  required — m{pct}_t{pct}_d{pct} or m{pct}_d{pct} (tablet inherits mobile).
-         pct ∈ 25|50|75|100 = % of that tier’s usable band max (not always measure).
-         Parsed at runtime. settings.images.config: content_width, content_width_px,
-         breakpoints.min_tablet / min_desktop (fractions of measure), content_inset.
+         pct ∈ 25|50|75|100 = % of that tier’s hole (not extra export files).
+         settings.haz_img.config: content_width / content_width_px (how-wide / lg);
+         breakpoints.min_tablet / min_desktop = viewport px (Pico md/lg). No inset subtract.
 
   Inner: author HTML. Stem from src= → .Page.Resources variants (xs…xxl). Sparse OK.
 */}}
@@ -22,8 +22,8 @@
 
 {{- $sysManifest := partial "haz/helpers/fn/fn_get_sys_manifest.html" $page -}}
 {{- $settings := index $sysManifest "settings" | default dict -}}
-{{- $images := index $settings "images" | default dict -}}
-{{- $config := index $images "config" | default dict -}}
+{{- $hazImg := index $settings "haz_img" | default dict -}}
+{{- $config := index $hazImg "config" | default dict -}}
 
 {{- $variantSep := index $config "variant_sep" | default "_" -}}
 {{- $contentWidth := index $config "content_width" | default "45rem" -}}
@@ -36,34 +36,21 @@
 {{- end -}}
 
 {{- $bps := index $config "breakpoints" | default dict -}}
-{{- $minTablet := float (index $bps "min_tablet" | default 0.5) -}}
-{{- $minDesktop := float (index $bps "min_desktop" | default 0.8) -}}
-{{- $insetRem := float (index $config "content_inset" | default 0) -}}
-{{- $insetPx := mul $insetRem $remPx -}}
-
-{{- $mqTabletRem := mul $cwRem $minTablet -}}
-{{- $mqDesktopRem := mul $cwRem $minDesktop -}}
-
-{{- $bandMobilePx := mul $contentWidthPx $minTablet -}}
-{{- $bandTabletPx := mul $contentWidthPx $minDesktop -}}
-{{- $bandDesktopPx := $contentWidthPx -}}
-{{- $bandMobileRem := mul $cwRem $minTablet -}}
-{{- $bandTabletRem := mul $cwRem $minDesktop -}}
-{{- $bandDesktopRem := $cwRem -}}
-{{- $usableMobilePx := math.Max 0 (sub $bandMobilePx (mul $insetPx 2)) -}}
-{{- $usableTabletPx := math.Max 0 (sub $bandTabletPx (mul $insetPx 2)) -}}
-{{- $usableDesktopPx := math.Max 0 (sub $bandDesktopPx (mul $insetPx 2)) -}}
-{{- $usableMobileRem := math.Max 0 (sub $bandMobileRem (mul $insetRem 2)) -}}
-{{- $usableTabletRem := math.Max 0 (sub $bandTabletRem (mul $insetRem 2)) -}}
-{{- $usableDesktopRem := math.Max 0 (sub $bandDesktopRem (mul $insetRem 2)) -}}
+{{- $minTabletPx := int (index $bps "min_tablet" | default 768) -}}
+{{- $minDesktopPx := int (index $bps "min_desktop" | default 992) -}}
+{{- /* Column vs viewport above 40rem matches child --haz_measure 90%. */ -}}
+{{- $gutter := 0.9 -}}
+{{- $lgPx := $contentWidthPx -}}
+{{- $smPx := math.Min $lgPx (mul $gutter (sub (float $minTabletPx) 1.0)) -}}
+{{- $mdPx := math.Min $lgPx (mul $gutter (sub (float $minDesktopPx) 1.0)) -}}
 
 {{- $variantWidths := dict
-  "xs" (int (math.Round (mul $usableMobilePx 0.5)))
-  "sm" (int (math.Round $usableMobilePx))
-  "md" (int (math.Round $usableTabletPx))
-  "lg" (int (math.Round $usableDesktopPx))
-  "xl" (int (math.Round (mul $usableDesktopPx 1.5)))
-  "xxl" (int (math.Round (mul $usableDesktopPx 2.0)))
+  "xs" (int (math.Round (mul $smPx 0.5)))
+  "sm" (int (math.Round $smPx))
+  "md" (int (math.Round $mdPx))
+  "lg" (int (math.Round $lgPx))
+  "xl" (int (math.Round (mul $lgPx 1.5)))
+  "xxl" (int (math.Round (mul $lgPx 2.0)))
 -}}
 
 {{- $mPct := 0 -}}
@@ -90,10 +77,10 @@
   {{- $pctsOK = and (in $allowed $mPct) (in $allowed $tPct) (in $allowed $dPct) -}}
 {{- end -}}
 
-{{- $dHole := printf "%.4grem" (mul $usableDesktopRem (div (float $dPct) 100.0)) -}}
-{{- $tHole := printf "%.4grem" (mul $usableTabletRem (div (float $tPct) 100.0)) -}}
+{{- $dHole := printf "%.4grem" (mul $cwRem (div (float $dPct) 100.0)) -}}
+{{- $tHole := printf "%.4grem" (mul $cwRem (div (float $tPct) 100.0)) -}}
 {{- $mHole := printf "%dvw" $mPct -}}
-{{- $sizesAttr := printf "(min-width: %.4grem) %s, (min-width: %.4grem) %s, %s" $mqDesktopRem $dHole $mqTabletRem $tHole $mHole -}}
+{{- $sizesAttr := printf "(min-width: %dpx) %s, (min-width: %dpx) %s, %s" $minDesktopPx $dHole $minTabletPx $tHole $mHole -}}
 
 {{- $wM := printf "haz_img_w_m__%d" $mPct -}}
 {{- $wT := printf "haz_img_w_t__%d" $tPct -}}
