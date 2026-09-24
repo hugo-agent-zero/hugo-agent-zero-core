@@ -581,10 +581,17 @@ html[data-theme="light"] #haz_btn_color_scheme svg.haz_svg__moon {
   --haz_min_desktop: 992px;
 }
 
-.haz_img_m25 { width: 25%; height: auto; }
-.haz_img_m50 { width: 50%; height: auto; }
-.haz_img_m75 { width: 75%; height: auto; }
-.haz_img_m100 { width: 100%; height: auto; }
+.haz_img_m25, .haz_img_m50, .haz_img_m75, .haz_img_m100,
+.haz_img_t25, .haz_img_t50, .haz_img_t75, .haz_img_t100,
+.haz_img_d25, .haz_img_d50, .haz_img_d75, .haz_img_d100 {
+  display: block;
+  height: auto;
+}
+
+.haz_img_m25 { width: 25%; }
+.haz_img_m50 { width: 50%; }
+.haz_img_m75 { width: 75%; }
+.haz_img_m100 { width: 100%; }
 
 @media (min-width: 768px) {
   .haz_img_t25 { width: 25%; }

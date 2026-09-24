@@ -20,6 +20,7 @@
          MQs are the BPs — md from min_tablet, lg from min_desktop.
     lazy optional — false skips loading=lazy (heroes). true forces it.
          Default is settings.haz_img.config.default_lazy (true).
+         Writes width/height from the file if the author omitted them (keeps the ratio).
 
   Inner: author HTML. Stem from src= → .Page.Resources variants (xs…xxl). Sparse OK.
 */}}
@@ -157,6 +158,15 @@
       {{- $stem := strings.TrimSuffix $ext $base -}}
       {{- $dir := path.Dir $srcPath -}}
 
+      {{- $imgW := 0 -}}
+      {{- $imgH := 0 -}}
+      {{- $dimRes := $page.Resources.GetMatch $srcPath -}}
+      {{- if and $dimRes (eq $dimRes.MediaType.MainType "image") -}}
+        {{- $imgW = $dimRes.Width -}}
+        {{- $imgH = $dimRes.Height -}}
+      {{- end -}}
+      {{- $hasWH := findRE `(?i)\bwidth\s*=` $imgTag -}}
+
       {{- $srcsetParts := slice -}}
       {{- range $vKey, $wPx := $variantWidths -}}
         {{- $fileName := printf "%s%s%s%s" $stem $variantSep $vKey $ext -}}
@@ -198,6 +208,9 @@
       {{- $inject = printf "%s sizes=\"%s\"" $inject $sizesAttr -}}
       {{- if $wantLazy -}}
         {{- $inject = printf "%s loading=\"lazy\"" $inject -}}
+      {{- end -}}
+      {{- if and $imgW $imgH (eq (len $hasWH) 0) -}}
+        {{- $inject = printf "%s width=\"%d\" height=\"%d\"" $inject $imgW $imgH -}}
       {{- end -}}
       {{- if $needClassAttr -}}
         {{- $inject = printf "%s class=\"%s\"" $inject $layoutClasses -}}
