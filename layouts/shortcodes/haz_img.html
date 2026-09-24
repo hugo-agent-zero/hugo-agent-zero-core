@@ -26,7 +26,7 @@
 {{- $config := index $hazImg "config" | default dict -}}
 
 {{- $variantSep := index $config "variant_sep" | default "_" -}}
-{{- $contentWidth := index $config "content_width" | default "55rem" -}}
+{{- $contentWidth := index $config "content_width" | default "65ch" -}}
 {{- $remPx := float (index $config "rem_px" | default 16) -}}
 {{- $cwStr := replaceRE `[^0-9.]` "" $contentWidth -}}
 {{- $cwRem := float $cwStr -}}
