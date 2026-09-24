@@ -11,7 +11,8 @@
          pct ∈ 25|50|75|100 = % of that tier’s hole (not extra export files).
          settings.haz_img.config: content_width / content_width_px;
          lg = content_width_px (the column). BPs are when (Pico md/lg), not a cap on lg.
-         sizes is px: desktop = content_width_px × d%, tablet = min_tablet × t%, mobile = m% vw.
+         sizes is px, snapped to the band: d = lg × d%, t = md × t%,
+         m = min(m% vw, sm × m%). MQs are the BPs — md from min_tablet, lg from min_desktop.
 
   Inner: author HTML. Stem from src= → .Page.Resources variants (xs…xxl). Sparse OK.
 */}}
@@ -84,9 +85,12 @@
   {{- $pctsOK = and (in $allowed $mPct) (in $allowed $tPct) (in $allowed $dPct) -}}
 {{- end -}}
 
-{{- $dHole := printf "%dpx" (int (math.Round (mul $contentWidthPx (div (float $dPct) 100.0)))) -}}
-{{- $tHole := printf "%dpx" (int (math.Round (mul (float $minTabletPx) (div (float $tPct) 100.0)))) -}}
-{{- $mHole := printf "%dvw" $mPct -}}
+{{- $dNeed := int (math.Round (mul $lgPx (div (float $dPct) 100.0))) -}}
+{{- $tNeed := int (math.Round (mul $mdPx (div (float $tPct) 100.0))) -}}
+{{- $mNeed := int (math.Round (mul $smPx (div (float $mPct) 100.0))) -}}
+{{- $dHole := printf "%dpx" $dNeed -}}
+{{- $tHole := printf "%dpx" $tNeed -}}
+{{- $mHole := printf "min(%dvw, %dpx)" $mPct $mNeed -}}
 {{- $sizesAttr := printf "(min-width: %dpx) %s, (min-width: %dpx) %s, %s" $minDesktopPx $dHole $minTabletPx $tHole $mHole -}}
 
 {{- $wM := printf "haz_img_w_m__%d" $mPct -}}
