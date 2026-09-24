@@ -121,9 +121,9 @@
 {{- $mHole := printf "min(%dvw, %dpx)" $mPct $mNeed -}}
 {{- $sizesAttr := printf "auto, (min-width: %dpx) %s, (min-width: %dpx) %s, %s" $minDesktopPx $dHole $minTabletPx $tHole $mHole -}}
 
-{{- $wM := printf "haz_img_w_m__%d" $mPct -}}
-{{- $wT := printf "haz_img_w_t__%d" $tPct -}}
-{{- $wD := printf "haz_img_w_d__%d" $dPct -}}
+{{- $wM := printf "haz_img_m%d" $mPct -}}
+{{- $wT := printf "haz_img_t%d" $tPct -}}
+{{- $wD := printf "haz_img_d%d" $dPct -}}
 {{- $layoutClasses := printf "%s %s %s" $wM $wT $wD -}}
 
 {{- $inner := .Inner | strings.TrimSpace -}}
