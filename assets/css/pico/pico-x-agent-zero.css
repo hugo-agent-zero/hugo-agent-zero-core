@@ -143,12 +143,12 @@ main article {
    Mobile-first: wider column (tighter outside gutters) by default; 90% from 40rem. */
 body {
   display: grid;
-  grid-template-columns: 1fr var(--haz_measure, min(45rem, 95%)) 1fr;
+  grid-template-columns: 1fr var(--haz_measure, min(55rem, 95%)) 1fr;
 }
 
 @media (min-width: 40rem) {
   body {
-    grid-template-columns: 1fr var(--haz_measure, min(45rem, 90%)) 1fr;
+    grid-template-columns: 1fr var(--haz_measure, min(55rem, 90%)) 1fr;
   }
 }
 
@@ -178,14 +178,14 @@ html[data-scrolled="true"] body > header {
 .haz_header_site > div,
 .haz_footer_site > div {
   width: 100%;
-  max-width: var(--haz_measure, min(45rem, 95%));
+  max-width: var(--haz_measure, min(55rem, 95%));
   margin-inline: auto;
 }
 
 @media (min-width: 40rem) {
   .haz_header_site > div,
   .haz_footer_site > div {
-    max-width: var(--haz_measure, min(45rem, 90%));
+    max-width: var(--haz_measure, min(55rem, 90%));
   }
 }
 
@@ -545,8 +545,8 @@ html:has(dialog[open]) body {
 
 @media (min-width: 40rem) {
   .haz_search_pagefind_modal {
-    width: min(var(--haz_measure, 45rem), 90vw);
-    max-width: min(var(--haz_measure, 45rem), 90vw);
+    width: min(var(--haz_measure, 55rem), 90vw);
+    max-width: min(var(--haz_measure, 55rem), 90vw);
     height: min(40rem, 90vh);
     max-height: 90vh;
     margin: auto;
