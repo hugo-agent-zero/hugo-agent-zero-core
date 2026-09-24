@@ -3,7 +3,11 @@
 
   Usage:
     {{< haz_img key="m100_t100_d100" >}}
-    <img src="hero.jpg" alt="…" loading="lazy">
+    <img src="photo.jpg" alt="…">
+    {{< /haz_img >}}
+
+    {{< haz_img key="m100_t100_d100" lazy=false >}}
+    <img src="hero.jpg" alt="…">
     {{< /haz_img >}}
 
   Params:
@@ -13,6 +17,8 @@
          lg = content_width_px (the column). BPs are when (Pico md/lg), not a cap on lg.
          sizes is px, snapped to the band: d = lg × d%, t = md × t%,
          m = min(m% vw, sm × m%). MQs are the BPs — md from min_tablet, lg from min_desktop.
+    lazy optional — false skips loading=lazy (heroes). true forces it.
+         Default is settings.haz_img.config.default_lazy (true).
 
   Inner: author HTML. Stem from src= → .Page.Resources variants (xs…xxl). Sparse OK.
 */}}
@@ -26,6 +32,27 @@
 {{- $settings := index $sysManifest "settings" | default dict -}}
 {{- $hazImg := index $settings "haz_img" | default dict -}}
 {{- $config := index $hazImg "config" | default dict -}}
+
+{{- $defaultLazy := true -}}
+{{- if isset $config "default_lazy" -}}
+  {{- $cfgLazy := index $config "default_lazy" -}}
+  {{- if eq (printf "%T" $cfgLazy) "bool" -}}
+    {{- $defaultLazy = $cfgLazy -}}
+  {{- else -}}
+    {{- $cfgLow := lower (printf "%v" $cfgLazy) -}}
+    {{- $defaultLazy = or (eq $cfgLow "true") (eq $cfgLow "1") (eq $cfgLow "yes") (eq $cfgLow "on") -}}
+  {{- end -}}
+{{- end -}}
+{{- $wantLazy := $defaultLazy -}}
+{{- if isset .Params "lazy" -}}
+  {{- $lazyValue := .Get "lazy" -}}
+  {{- if eq (printf "%T" $lazyValue) "bool" -}}
+    {{- $wantLazy = $lazyValue -}}
+  {{- else -}}
+    {{- $lazyLow := lower (printf "%v" $lazyValue) -}}
+    {{- $wantLazy = or (eq $lazyLow "true") (eq $lazyLow "1") (eq $lazyLow "yes") (eq $lazyLow "on") -}}
+  {{- end -}}
+{{- end -}}
 
 {{- $variantSep := index $config "variant_sep" | default "_" -}}
 {{- $contentWidth := index $config "content_width" | default "65ch" -}}
@@ -110,8 +137,10 @@
 
     {{- $imgTag = replaceRE `(?i)\s+srcset\s*=\s*"[^"]*"` "" $imgTag -}}
     {{- $imgTag = replaceRE `(?i)\s+sizes\s*=\s*"[^"]*"` "" $imgTag -}}
+    {{- $imgTag = replaceRE `(?i)\s+loading\s*=\s*"[^"]*"` "" $imgTag -}}
     {{- $imgTag = replaceRE `(?i)\s+srcset\s*=\s*'[^']*'` "" $imgTag -}}
     {{- $imgTag = replaceRE `(?i)\s+sizes\s*=\s*'[^']*'` "" $imgTag -}}
+    {{- $imgTag = replaceRE `(?i)\s+loading\s*=\s*'[^']*'` "" $imgTag -}}
 
     {{- $src := "" -}}
     {{- if findRE `(?i)\bsrc\s*=\s*"` $imgTag -}}
@@ -166,6 +195,9 @@
         {{- $inject = printf "%s srcset=\"%s\"" $inject $srcsetAttr -}}
       {{- end -}}
       {{- $inject = printf "%s sizes=\"%s\"" $inject $sizesAttr -}}
+      {{- if $wantLazy -}}
+        {{- $inject = printf "%s loading=\"lazy\"" $inject -}}
+      {{- end -}}
       {{- if $needClassAttr -}}
         {{- $inject = printf "%s class=\"%s\"" $inject $layoutClasses -}}
       {{- end -}}
