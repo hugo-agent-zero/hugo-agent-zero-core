@@ -9,8 +9,8 @@
   Params:
     key  required — m{pct}_t{pct}_d{pct} or m{pct}_d{pct} (tablet inherits mobile).
          pct ∈ 25|50|75|100 = % of that tier’s hole (not extra export files).
-         settings.haz_img.config: content_width / content_width_px (how-wide / lg);
-         breakpoints.min_tablet / min_desktop = viewport px (Pico md/lg). No inset subtract.
+         settings.haz_img.config: content_width / content_width_px;
+         lg = min(content_width_px, min_desktop). BPs are viewport px (Pico md/lg).
 
   Inner: author HTML. Stem from src= → .Page.Resources variants (xs…xxl). Sparse OK.
 */}}
@@ -40,7 +40,7 @@
 {{- $minDesktopPx := int (index $bps "min_desktop" | default 992) -}}
 {{- /* Column vs viewport above 40rem matches child --haz_measure 90%. */ -}}
 {{- $gutter := 0.9 -}}
-{{- $lgPx := $contentWidthPx -}}
+{{- $lgPx := math.Min $contentWidthPx (float $minDesktopPx) -}}
 {{- $smPx := math.Min $lgPx (mul $gutter (sub (float $minTabletPx) 1.0)) -}}
 {{- $mdPx := math.Min $lgPx (mul $gutter (sub (float $minDesktopPx) 1.0)) -}}
 
