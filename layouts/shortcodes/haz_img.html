@@ -10,7 +10,8 @@
     key  required — m{pct}_t{pct}_d{pct} or m{pct}_d{pct} (tablet inherits mobile).
          pct ∈ 25|50|75|100 = % of that tier’s hole (not extra export files).
          settings.haz_img.config: content_width / content_width_px;
-         lg = min(content_width_px, min_desktop). BPs are viewport px (Pico md/lg).
+         lg = content_width_px (the column). BPs are when (Pico md/lg), not a cap on lg.
+         sizes keeps the content_width unit (68ch → 68ch, not 68rem).
 
   Inner: author HTML. Stem from src= → .Page.Resources variants (xs…xxl). Sparse OK.
 */}}
@@ -29,10 +30,16 @@
 {{- $contentWidth := index $config "content_width" | default "65ch" -}}
 {{- $remPx := float (index $config "rem_px" | default 16) -}}
 {{- $cwStr := replaceRE `[^0-9.]` "" $contentWidth -}}
-{{- $cwRem := float $cwStr -}}
+{{- $cwNum := float $cwStr -}}
+{{- $cwUnit := strings.TrimSpace (replaceRE `[0-9.]` "" $contentWidth) -}}
+{{- if not $cwUnit -}}
+  {{- $cwUnit = "ch" -}}
+{{- end -}}
 {{- $contentWidthPx := float (index $config "content_width_px" | default 0) -}}
 {{- if not $contentWidthPx -}}
-  {{- $contentWidthPx = mul $cwRem $remPx -}}
+  {{- if eq $cwUnit "rem" -}}
+    {{- $contentWidthPx = mul $cwNum $remPx -}}
+  {{- end -}}
 {{- end -}}
 
 {{- $bps := index $config "breakpoints" | default dict -}}
@@ -40,7 +47,7 @@
 {{- $minDesktopPx := int (index $bps "min_desktop" | default 992) -}}
 {{- /* Column vs viewport above 40rem matches child --haz_measure 90%. */ -}}
 {{- $gutter := 0.9 -}}
-{{- $lgPx := math.Min $contentWidthPx (float $minDesktopPx) -}}
+{{- $lgPx := $contentWidthPx -}}
 {{- $smPx := math.Min $lgPx (mul $gutter (sub (float $minTabletPx) 1.0)) -}}
 {{- $mdPx := math.Min $lgPx (mul $gutter (sub (float $minDesktopPx) 1.0)) -}}
 
@@ -77,8 +84,8 @@
   {{- $pctsOK = and (in $allowed $mPct) (in $allowed $tPct) (in $allowed $dPct) -}}
 {{- end -}}
 
-{{- $dHole := printf "%.4grem" (mul $cwRem (div (float $dPct) 100.0)) -}}
-{{- $tHole := printf "%.4grem" (mul $cwRem (div (float $tPct) 100.0)) -}}
+{{- $dHole := printf "%.4g%s" (mul $cwNum (div (float $dPct) 100.0)) $cwUnit -}}
+{{- $tHole := printf "%.4g%s" (mul $cwNum (div (float $tPct) 100.0)) $cwUnit -}}
 {{- $mHole := printf "%dvw" $mPct -}}
 {{- $sizesAttr := printf "(min-width: %dpx) %s, (min-width: %dpx) %s, %s" $minDesktopPx $dHole $minTabletPx $tHole $mHole -}}
 
