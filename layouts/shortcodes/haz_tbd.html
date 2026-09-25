@@ -34,7 +34,7 @@
   {{- if $wantClear -}}
     {{- $class = printf "%s haz_clear" $class -}}
   {{- end -}}
-<div class="{{ $class }}" style="--haz_spacer_size: {{ $size }}rem"></div>
+<div class="{{ $class }}" style="height: {{ $size }}rem"></div>
 {{- else -}}
 <!-- haz_tbd: need type (spacer) -->
 {{- end -}}
