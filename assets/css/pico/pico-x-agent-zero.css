@@ -609,6 +609,11 @@ html[data-theme="light"] #haz_btn_color_scheme svg.haz_svg__moon {
   object-fit: cover;
 }
 
+.haz_img_center {
+  display: block;
+  margin-inline: auto;
+}
+
 .haz_float_left {
   float: left;
   margin-inline-end: 1rem;

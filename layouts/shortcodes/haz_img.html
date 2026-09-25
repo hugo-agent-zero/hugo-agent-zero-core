@@ -15,6 +15,8 @@
          Preset owns m/t/d (25|50|75|100), ratio (as-is → --haz_img_ratio),
          fit (cover for v1), optional class (open extra classes).
          sizes is px snapped to the band from those percents.
+         Empty ratio = as-is (no frame / cover) and no auto prefix
+         (auto without a frame pins height at 150).
     lazy optional — false skips loading=lazy (heroes). true forces it.
          Default is settings.haz_img.config.default_lazy (true).
 
@@ -124,7 +126,10 @@
 {{- $dHole := printf "%dpx" $dNeed -}}
 {{- $tHole := printf "%dpx" $tNeed -}}
 {{- $mHole := printf "min(%dvw, %dpx)" $mPct $mNeed -}}
-{{- $sizesAttr := printf "auto, (min-width: %dpx) %s, (min-width: %dpx) %s, %s" $minDesktopPx $dHole $minTabletPx $tHole $mHole -}}
+{{- $sizesAttr := printf "(min-width: %dpx) %s, (min-width: %dpx) %s, %s" $minDesktopPx $dHole $minTabletPx $tHole $mHole -}}
+{{- if $ratio -}}
+  {{- $sizesAttr = printf "auto, %s" $sizesAttr -}}
+{{- end -}}
 
 {{- $wM := printf "haz_img_m%d" $mPct -}}
 {{- $wT := printf "haz_img_t%d" $tPct -}}
