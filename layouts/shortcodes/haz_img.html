@@ -12,10 +12,9 @@
 
   Params:
     key  required — settings.haz_img.presets name (a helpful string).
-         Preset owns m/t/d (25|50|75|100), ratio (as-is → --haz_img_ratio),
-         fit (cover for v1), optional class (open extra classes).
-         m_align / t_align / d_align: left|right|center|none.
-         Blank inherits the previous band. none resets a leftover float.
+         Preset owns m/t/d maps: w (25|50|75|100), align (left|right|center|none).
+         Omit a band or field → inherit the previous band.
+         ratio as-is → --haz_img_ratio. fit cover for v1. class is leftovers.
          sizes is px snapped to the band from those percents.
          Empty ratio = as-is (no frame / cover) and no auto prefix
          (auto without a frame pins height at 150).
@@ -96,14 +95,49 @@
   {{- $preset = index $presets $presetKey -}}
 {{- end -}}
 
+{{- $alignAllowed := slice "left" "right" "center" "none" -}}
+{{- $mBand := index $preset "m" | default dict -}}
+{{- $tBand := index $preset "t" | default dict -}}
+{{- $dBand := index $preset "d" | default dict -}}
+
 {{- $mPct := 0 -}}
-{{- $tPct := 0 -}}
-{{- $dPct := 0 -}}
+{{- $mAlign := "" -}}
+{{- if isset $mBand "w" -}}
+  {{- $mPct = int (index $mBand "w") -}}
+{{- end -}}
+{{- with index $mBand "align" -}}
+  {{- $cand := lower (strings.TrimSpace (printf "%v" .)) -}}
+  {{- if in $alignAllowed $cand -}}
+    {{- $mAlign = $cand -}}
+  {{- end -}}
+{{- end -}}
+
+{{- $tPct := $mPct -}}
+{{- $tAlign := $mAlign -}}
+{{- if isset $tBand "w" -}}
+  {{- $tPct = int (index $tBand "w") -}}
+{{- end -}}
+{{- with index $tBand "align" -}}
+  {{- $cand := lower (strings.TrimSpace (printf "%v" .)) -}}
+  {{- if in $alignAllowed $cand -}}
+    {{- $tAlign = $cand -}}
+  {{- end -}}
+{{- end -}}
+
+{{- $dPct := $tPct -}}
+{{- $dAlign := $tAlign -}}
+{{- if isset $dBand "w" -}}
+  {{- $dPct = int (index $dBand "w") -}}
+{{- end -}}
+{{- with index $dBand "align" -}}
+  {{- $cand := lower (strings.TrimSpace (printf "%v" .)) -}}
+  {{- if in $alignAllowed $cand -}}
+    {{- $dAlign = $cand -}}
+  {{- end -}}
+{{- end -}}
+
 {{- $keyOK := false -}}
 {{- if gt (len $preset) 0 -}}
-  {{- $mPct = int (index $preset "m" | default 0) -}}
-  {{- $dPct = int (index $preset "d" | default 0) -}}
-  {{- $tPct = int (index $preset "t" | default $mPct) -}}
   {{- $keyOK = true -}}
 {{- end -}}
 
@@ -114,31 +148,6 @@
 {{- $extraClass := "" -}}
 {{- with index $preset "class" -}}
   {{- $extraClass = strings.TrimSpace (printf "%v" .) -}}
-{{- end -}}
-
-{{- $alignAllowed := slice "left" "right" "center" "none" -}}
-{{- $mAlign := "" -}}
-{{- $tAlign := "" -}}
-{{- $dAlign := "" -}}
-{{- with index $preset "m_align" -}}
-  {{- $cand := lower (strings.TrimSpace (printf "%v" .)) -}}
-  {{- if in $alignAllowed $cand -}}
-    {{- $mAlign = $cand -}}
-  {{- end -}}
-{{- end -}}
-{{- $tAlign = $mAlign -}}
-{{- with index $preset "t_align" -}}
-  {{- $cand := lower (strings.TrimSpace (printf "%v" .)) -}}
-  {{- if in $alignAllowed $cand -}}
-    {{- $tAlign = $cand -}}
-  {{- end -}}
-{{- end -}}
-{{- $dAlign = $tAlign -}}
-{{- with index $preset "d_align" -}}
-  {{- $cand := lower (strings.TrimSpace (printf "%v" .)) -}}
-  {{- if in $alignAllowed $cand -}}
-    {{- $dAlign = $cand -}}
-  {{- end -}}
 {{- end -}}
 
 {{- $allowed := slice 25 50 75 100 -}}
