@@ -14,6 +14,8 @@
     key  required — settings.haz_img.presets name (a helpful string).
          Preset owns m/t/d (25|50|75|100), ratio (as-is → --haz_img_ratio),
          fit (cover for v1), optional class (open extra classes).
+         m_align / t_align / d_align: left|right|center|none.
+         Blank inherits the previous band. none resets a leftover float.
          sizes is px snapped to the band from those percents.
          Empty ratio = as-is (no frame / cover) and no auto prefix
          (auto without a frame pins height at 150).
@@ -114,6 +116,31 @@
   {{- $extraClass = strings.TrimSpace (printf "%v" .) -}}
 {{- end -}}
 
+{{- $alignAllowed := slice "left" "right" "center" "none" -}}
+{{- $mAlign := "" -}}
+{{- $tAlign := "" -}}
+{{- $dAlign := "" -}}
+{{- with index $preset "m_align" -}}
+  {{- $cand := lower (strings.TrimSpace (printf "%v" .)) -}}
+  {{- if in $alignAllowed $cand -}}
+    {{- $mAlign = $cand -}}
+  {{- end -}}
+{{- end -}}
+{{- $tAlign = $mAlign -}}
+{{- with index $preset "t_align" -}}
+  {{- $cand := lower (strings.TrimSpace (printf "%v" .)) -}}
+  {{- if in $alignAllowed $cand -}}
+    {{- $tAlign = $cand -}}
+  {{- end -}}
+{{- end -}}
+{{- $dAlign = $tAlign -}}
+{{- with index $preset "d_align" -}}
+  {{- $cand := lower (strings.TrimSpace (printf "%v" .)) -}}
+  {{- if in $alignAllowed $cand -}}
+    {{- $dAlign = $cand -}}
+  {{- end -}}
+{{- end -}}
+
 {{- $allowed := slice 25 50 75 100 -}}
 {{- $pctsOK := false -}}
 {{- if $keyOK -}}
@@ -135,6 +162,15 @@
 {{- $wT := printf "haz_img_t%d" $tPct -}}
 {{- $wD := printf "haz_img_d%d" $dPct -}}
 {{- $layoutClasses := printf "%s %s %s" $wM $wT $wD -}}
+{{- if $mAlign -}}
+  {{- $layoutClasses = printf "%s haz_img_m_%s" $layoutClasses $mAlign -}}
+{{- end -}}
+{{- if $tAlign -}}
+  {{- $layoutClasses = printf "%s haz_img_t_%s" $layoutClasses $tAlign -}}
+{{- end -}}
+{{- if $dAlign -}}
+  {{- $layoutClasses = printf "%s haz_img_d_%s" $layoutClasses $dAlign -}}
+{{- end -}}
 {{- if $ratio -}}
   {{- $layoutClasses = printf "%s haz_img_frame haz_img_cover" $layoutClasses -}}
 {{- end -}}
