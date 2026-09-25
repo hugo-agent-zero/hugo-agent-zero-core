@@ -2,22 +2,19 @@
   haz_img — enrich author <img> with srcset / sizes / width utilities.
 
   Usage:
-    {{< haz_img key="m100_t100_d100" >}}
+    {{< haz_img key="story_wide" >}}
     <img src="photo.jpg" alt="…">
     {{< /haz_img >}}
 
-    {{< haz_img key="m100_t100_d100" lazy=false >}}
+    {{< haz_img key="story_wide" lazy=false >}}
     <img src="hero.jpg" alt="…">
     {{< /haz_img >}}
 
   Params:
-    key  required — m{pct}_t{pct}_d{pct} or m{pct}_d{pct} (tablet inherits mobile).
-         pct ∈ 25|50|75|100 = % of that tier’s hole (not extra export files).
-         settings.haz_img.config: content_width / content_width_px;
-         lg = content_width_px (the column). BPs are when (Pico md/lg), not a cap on lg.
-         sizes is auto first, then px snapped to the band (fallback):
-         d = lg × d%, t = md × t%, m = min(m% vw, sm × m%).
-         MQs are the BPs — md from min_tablet, lg from min_desktop.
+    key  required — settings.haz_img.presets name (a helpful string).
+         Preset owns m/t/d (25|50|75|100), ratio (as-is → --haz_img_ratio),
+         fit (cover for v1), optional class (open extra classes).
+         sizes is px snapped to the band from those percents.
     lazy optional — false skips loading=lazy (heroes). true forces it.
          Default is settings.haz_img.config.default_lazy (true).
 
@@ -89,22 +86,30 @@
   "xxl" (int (math.Round (mul $lgPx 2.0)))
 -}}
 
+{{- $presets := index $hazImg "presets" | default dict -}}
+{{- $preset := dict -}}
+{{- if and $presetKey (isset $presets $presetKey) -}}
+  {{- $preset = index $presets $presetKey -}}
+{{- end -}}
+
 {{- $mPct := 0 -}}
 {{- $tPct := 0 -}}
 {{- $dPct := 0 -}}
 {{- $keyOK := false -}}
-{{- $mtd := findRESubmatch `(?i)^m(\d+)_t(\d+)_d(\d+)$` $presetKey -}}
-{{- $mdOnly := findRESubmatch `(?i)^m(\d+)_d(\d+)$` $presetKey -}}
-{{- if gt (len $mtd) 0 -}}
-  {{- $mPct = int (index (index $mtd 0) 1) -}}
-  {{- $tPct = int (index (index $mtd 0) 2) -}}
-  {{- $dPct = int (index (index $mtd 0) 3) -}}
+{{- if gt (len $preset) 0 -}}
+  {{- $mPct = int (index $preset "m" | default 0) -}}
+  {{- $dPct = int (index $preset "d" | default 0) -}}
+  {{- $tPct = int (index $preset "t" | default $mPct) -}}
   {{- $keyOK = true -}}
-{{- else if gt (len $mdOnly) 0 -}}
-  {{- $mPct = int (index (index $mdOnly 0) 1) -}}
-  {{- $dPct = int (index (index $mdOnly 0) 2) -}}
-  {{- $tPct = $mPct -}}
-  {{- $keyOK = true -}}
+{{- end -}}
+
+{{- $ratio := "" -}}
+{{- with index $preset "ratio" -}}
+  {{- $ratio = printf "%v" . -}}
+{{- end -}}
+{{- $extraClass := "" -}}
+{{- with index $preset "class" -}}
+  {{- $extraClass = strings.TrimSpace (printf "%v" .) -}}
 {{- end -}}
 
 {{- $allowed := slice 25 50 75 100 -}}
@@ -125,12 +130,18 @@
 {{- $wT := printf "haz_img_t%d" $tPct -}}
 {{- $wD := printf "haz_img_d%d" $dPct -}}
 {{- $layoutClasses := printf "%s %s %s" $wM $wT $wD -}}
+{{- if $ratio -}}
+  {{- $layoutClasses = printf "%s haz_img_frame haz_img_cover" $layoutClasses -}}
+{{- end -}}
+{{- if $extraClass -}}
+  {{- $layoutClasses = printf "%s %s" $layoutClasses $extraClass -}}
+{{- end -}}
 
 {{- $inner := .Inner | strings.TrimSpace -}}
 {{- $imgMatches := findRE `(?i)<img\b[^>]*>` $inner -}}
 
 {{- if or (not $presetKey) (not $pctsOK) (eq (len $imgMatches) 0) -}}
-<!-- haz_img: bad/missing key (need m25|50|75|100[_t…]_d…), or no img in Inner -->
+<!-- haz_img: bad/missing key (need a settings.haz_img.presets name), or no img in Inner -->
 {{- else -}}
   {{- range $imgMatches -}}
     {{- $original := . -}}
@@ -201,6 +212,16 @@
       {{- end -}}
       {{- if $needClassAttr -}}
         {{- $inject = printf "%s class=\"%s\"" $inject $layoutClasses -}}
+      {{- end -}}
+      {{- if $ratio -}}
+        {{- $ratioStyle := printf "--haz_img_ratio: %s" $ratio -}}
+        {{- if findRE `(?i)\bstyle\s*=\s*"` $imgTag -}}
+          {{- $imgTag = replaceRE `(?i)\bstyle\s*=\s*"([^"]*)"` (printf "style=\"$1; %s\"" $ratioStyle) $imgTag 1 -}}
+        {{- else if findRE `(?i)\bstyle\s*=\s*'` $imgTag -}}
+          {{- $imgTag = replaceRE `(?i)\bstyle\s*=\s*'([^']*)'` (printf "style='$1; %s'" $ratioStyle) $imgTag 1 -}}
+        {{- else -}}
+          {{- $inject = printf "%s style=\"%s\"" $inject $ratioStyle -}}
+        {{- end -}}
       {{- end -}}
 
       {{- if findRE `/\s*>$` $imgTag -}}

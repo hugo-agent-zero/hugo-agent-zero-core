@@ -599,3 +599,28 @@ html[data-theme="light"] #haz_btn_color_scheme svg.haz_svg__moon {
   .haz_img_d75 { width: 75%; }
   .haz_img_d100 { width: 100%; }
 }
+
+.haz_img_frame {
+  aspect-ratio: var(--haz_img_ratio);
+  height: auto;
+}
+
+.haz_img_cover {
+  object-fit: cover;
+}
+
+.haz_float_left {
+  float: left;
+  margin-inline-end: 1rem;
+  margin-block-end: 0.5rem;
+}
+
+.haz_float_right {
+  float: right;
+  margin-inline-start: 1rem;
+  margin-block-end: 0.5rem;
+}
+
+.haz_clear {
+  clear: both;
+}
