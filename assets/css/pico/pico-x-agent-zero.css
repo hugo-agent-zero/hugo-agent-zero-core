@@ -609,6 +609,26 @@ html[data-theme="light"] #haz_btn_color_scheme svg.haz_svg__moon {
   object-fit: cover;
 }
 
+.haz_img_m_left { float: left; margin-inline-end: 1rem; margin-block-end: 0.5rem; }
+.haz_img_m_right { float: right; margin-inline-start: 1rem; margin-block-end: 0.5rem; }
+.haz_img_m_center { display: block; float: none; margin-inline: auto; }
+.haz_img_m_none { float: none; margin-inline: 0; }
+
+@media (min-width: 768px) {
+  .haz_img_t_left { float: left; margin-inline-end: 1rem; margin-inline-start: 0; margin-block-end: 0.5rem; }
+  .haz_img_t_right { float: right; margin-inline-start: 1rem; margin-inline-end: 0; margin-block-end: 0.5rem; }
+  .haz_img_t_center { display: block; float: none; margin-inline: auto; }
+  .haz_img_t_none { float: none; margin-inline: 0; }
+}
+
+@media (min-width: 992px) {
+  .haz_img_d_left { float: left; margin-inline-end: 1rem; margin-inline-start: 0; margin-block-end: 0.5rem; }
+  .haz_img_d_right { float: right; margin-inline-start: 1rem; margin-inline-end: 0; margin-block-end: 0.5rem; }
+  .haz_img_d_center { display: block; float: none; margin-inline: auto; }
+  .haz_img_d_none { float: none; margin-inline: 0; }
+}
+
+/* Open class bag (escape). Starters use m_align / t_align / d_align. */
 .haz_img_center {
   display: block;
   margin-inline: auto;
@@ -624,6 +644,10 @@ html[data-theme="light"] #haz_btn_color_scheme svg.haz_svg__moon {
   float: right;
   margin-inline-start: 1rem;
   margin-block-end: 0.5rem;
+}
+
+.haz_spacer {
+  height: var(--haz_spacer_size, 1rem);
 }
 
 .haz_clear {
