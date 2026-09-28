@@ -4,21 +4,27 @@
   Usage (MD → markup):
 
     {{< haz_do add="spacer" >}}
-    → <div class="haz_do haz_do_spacer"></div>
+    → <div class="haz_do haz_do_spacer haz_clear"></div>
 
     {{< haz_do add="spacer" height="2" >}}
-    → <div class="haz_do haz_do_spacer" style="height: 2rem"></div>
+    → <div class="haz_do haz_do_spacer haz_clear" style="height: 2rem"></div>
 
     {{< haz_do add="spacer" height="24" height_unit="px" >}}
-    → <div class="haz_do haz_do_spacer" style="height: 24px"></div>
+    → <div class="haz_do haz_do_spacer haz_clear" style="height: 24px"></div>
+
+    {{< haz_do add="spacer" clear=false >}}
+    → <div class="haz_do haz_do_spacer"></div>
 
     {{< haz_do add="spacer" class="haz_my_gap" >}}
-    → <div class="haz_do haz_do_spacer haz_my_gap"></div>
+    → <div class="haz_do haz_do_spacer haz_clear haz_my_gap"></div>
 
   add          verb. Allowlist: spacer.
   height       spacer: number. Omitted → CSS default (.haz_do_spacer).
   height_unit  spacer: CSS length unit. Default rem. Allowlist: rem em px vh vw %.
+  clear        spacer: default true. false skips haz_clear (float utility).
   class        appended after kit classes. Escaped. Does not replace them.
+
+  Blades: layouts/_partials/haz/shortcodes/haz_do/
 */}}
 {{- $add := "" -}}
 {{- with .Get "add" -}}
@@ -29,24 +35,5 @@
 {{- if not (in $allowedAdds $add) -}}
 <!-- haz_do: need add (spacer) -->
 {{- else if eq $add "spacer" -}}
-  {{- $class := "haz_do haz_do_spacer" -}}
-  {{- with .Get "class" -}}
-    {{- $extra := strings.TrimSpace . | htmlEscape -}}
-    {{- if $extra -}}
-      {{- $class = printf "%s %s" $class $extra -}}
-    {{- end -}}
-  {{- end -}}
-  {{- $args := dict "class" $class -}}
-  {{- if isset .Params "height" -}}
-    {{- $unit := "rem" -}}
-    {{- $allowedUnits := slice "rem" "em" "px" "vh" "vw" "%" -}}
-    {{- with .Get "height_unit" -}}
-      {{- $u := lower (strings.TrimSpace .) -}}
-      {{- if in $allowedUnits $u -}}
-        {{- $unit = $u -}}
-      {{- end -}}
-    {{- end -}}
-    {{- $args = merge $args (dict "height" (printf "%v%s" (float (.Get "height")) $unit)) -}}
-  {{- end -}}
-  {{- partial "haz/helpers/fn/fn_tag_div_spacer.html" $args -}}
+  {{- partial "haz/shortcodes/haz_do/haz_do_spacer.html" . -}}
 {{- end -}}
