@@ -1,0 +1,15 @@
+{{/*
+  Empty div spacer. Accepts class, optional height (CSS length, unit included).
+  No height → no style; CSS owns the default.
+*/}}
+{{- $attrs := dict -}}
+{{- with index . "class" -}}
+  {{- if . -}}
+    {{- $attrs = merge $attrs (dict "class" .) -}}
+  {{- end -}}
+{{- end -}}
+{{- with index . "height" -}}
+  {{- $attrs = merge $attrs (dict "style" (printf "height: %v" .)) -}}
+{{- end -}}
+{{- partial "haz/helpers/fn/fn_tag_tag_open.html" (dict "tag" "div" "attrs" $attrs) -}}
+{{- print "</div>" | safeHTML -}}

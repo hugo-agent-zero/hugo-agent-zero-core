@@ -646,6 +646,10 @@ html[data-theme="light"] #haz_btn_color_scheme svg.haz_svg__moon {
   margin-block-end: 0.5rem;
 }
 
+.haz_do_spacer {
+  height: 1rem;
+}
+
 .haz_clear {
   clear: both;
 }
