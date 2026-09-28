@@ -7,7 +7,7 @@
     {{< haz_do add="spacer" class="haz_my_gap" >}}
 
   add    verb. Only spacer for now.
-  size   spacer: rem, default 1.
+  size   spacer: rem. Omitted → CSS default (.haz_do_spacer).
   class  appended after kit classes. Escaped. Does not replace them.
 */}}
 {{- $add := "" -}}
@@ -16,10 +16,6 @@
 {{- end -}}
 
 {{- if eq $add "spacer" -}}
-  {{- $size := 1.0 -}}
-  {{- with .Get "size" -}}
-    {{- $size = float . -}}
-  {{- end -}}
   {{- $class := "haz_do haz_do_spacer" -}}
   {{- with .Get "class" -}}
     {{- $extra := strings.TrimSpace . | htmlEscape -}}
@@ -27,12 +23,11 @@
       {{- $class = printf "%s %s" $class $extra -}}
     {{- end -}}
   {{- end -}}
-  {{- $attrs := dict
-    "class" $class
-    "style" (printf "height: %vrem" $size)
-  -}}
-  {{- partial "haz/helpers/fn/fn_tag_tag_open.html" (dict "tag" "div" "attrs" $attrs) -}}
-  {{- print "</div>" | safeHTML -}}
+  {{- $attrs := dict "class" $class -}}
+  {{- if isset .Params "size" -}}
+    {{- $attrs = merge $attrs (dict "style" (printf "height: %vrem" (float (.Get "size")))) -}}
+  {{- end -}}
+  {{- partial "haz/helpers/fn/fn_tag_spacer.html" (dict "attrs" $attrs) -}}
 {{- else -}}
 <!-- haz_do: need add (spacer) -->
 {{- end -}}
