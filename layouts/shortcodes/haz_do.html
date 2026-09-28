@@ -1,5 +1,5 @@
 {{/*
-  haz_do — stream toolbox. One shortcode, a handful of blades. Not WordPress.
+  haz_do — stream toolbox dispatcher. Not WordPress.
 
   Usage:
     {{< haz_do add="spacer" >}}
@@ -13,15 +13,20 @@
   {{- $add = lower (strings.TrimSpace .) -}}
 {{- end -}}
 
-{{- if eq $add "spacer" -}}
-  {{- $class := printf "haz_do haz_do_%s" $add -}}
+{{- $blades := dict
+  "spacer" "haz/helpers/fn/fn_do_add_spacer.html"
+-}}
+
+{{- $fn := index $blades $add -}}
+{{- if $fn -}}
+  {{- $extra := "" -}}
   {{- with .Get "class" -}}
-    {{- $extra := strings.TrimSpace . | htmlEscape -}}
-    {{- if $extra -}}
-      {{- $class = printf "%s %s" $class $extra -}}
-    {{- end -}}
+    {{- $extra = strings.TrimSpace . | htmlEscape -}}
   {{- end -}}
-<div class="{{ $class }}"></div>
+  {{- partial $fn (dict
+    "add" $add
+    "class" $extra
+  ) -}}
 {{- else -}}
 <!-- haz_do: need add (spacer) -->
 {{- end -}}
