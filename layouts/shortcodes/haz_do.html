@@ -23,11 +23,11 @@
       {{- $class = printf "%s %s" $class $extra -}}
     {{- end -}}
   {{- end -}}
-  {{- $attrs := dict "class" $class -}}
+  {{- $args := dict "class" $class -}}
   {{- if isset .Params "size" -}}
-    {{- $attrs = merge $attrs (dict "style" (printf "height: %vrem" (float (.Get "size")))) -}}
+    {{- $args = merge $args (dict "height" (float (.Get "size"))) -}}
   {{- end -}}
-  {{- partial "haz/helpers/fn/fn_tag_spacer.html" (dict "attrs" $attrs) -}}
+  {{- partial "haz/helpers/fn/fn_tag_div_spacer.html" $args -}}
 {{- else -}}
 <!-- haz_do: need add (spacer) -->
 {{- end -}}

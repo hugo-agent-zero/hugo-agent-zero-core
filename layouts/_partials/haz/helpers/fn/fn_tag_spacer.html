@@ -1,7 +1,0 @@
-{{/*
-  Empty spacer tag. Passive: attrs in, markup out. Default tag is div.
-*/}}
-{{- $tag := index . "tag" | default "div" -}}
-{{- $attrs := index . "attrs" | default dict -}}
-{{- partial "haz/helpers/fn/fn_tag_tag_open.html" (dict "tag" $tag "attrs" $attrs) -}}
-{{- printf "</%s>" $tag | safeHTML -}}
