@@ -144,12 +144,12 @@ main article {
    90% from min_tablet (768px). Stamp the px — rem MQs drift with fluid type. */
 body {
   display: grid;
-  grid-template-columns: 1fr var(--haz_measure, min(65ch, 95%)) 1fr;
+  grid-template-columns: 1fr var(--haz_measure, min(1065px, 95%)) 1fr;
 }
 
 @media (min-width: 768px) {
   body {
-    grid-template-columns: 1fr var(--haz_measure, min(65ch, 90%)) 1fr;
+    grid-template-columns: 1fr var(--haz_measure, min(1065px, 90%)) 1fr;
   }
 }
 
@@ -179,14 +179,14 @@ html[data-scrolled="true"] body > header {
 .haz_header_site > div,
 .haz_footer_site > div {
   width: 100%;
-  max-width: var(--haz_measure, min(65ch, 95%));
+  max-width: var(--haz_measure, min(1065px, 95%));
   margin-inline: auto;
 }
 
 @media (min-width: 768px) {
   .haz_header_site > div,
   .haz_footer_site > div {
-    max-width: var(--haz_measure, min(65ch, 90%));
+    max-width: var(--haz_measure, min(1065px, 90%));
   }
 }
 
@@ -546,8 +546,8 @@ html:has(dialog[open]) body {
 
 @media (min-width: 768px) {
   .haz_search_pagefind_modal {
-    width: min(var(--haz_measure, 65ch), 90vw);
-    max-width: min(var(--haz_measure, 65ch), 90vw);
+    width: min(var(--haz_measure, 1065px), 90vw);
+    max-width: min(var(--haz_measure, 1065px), 90vw);
     height: min(40rem, 90vh);
     max-height: 90vh;
     margin: auto;
