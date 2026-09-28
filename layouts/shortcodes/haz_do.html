@@ -9,7 +9,7 @@
 
   Attr name is the verb. First blade: add="spacer".
   size   spacer: rem, default 1. Floats ok. 0 is a fence with no air.
-  clear  spacer: default true. false skips haz_do_clear.
+  clear  spacer: default true. false skips appending haz_clear (float utility).
   class  appended after kit classes. Does not replace them.
 */}}
 {{- $add := "" -}}
@@ -34,7 +34,7 @@
   {{- end -}}
   {{- $class := printf "haz_do haz_do_%s" $add -}}
   {{- if $wantClear -}}
-    {{- $class = printf "%s haz_do_clear" $class -}}
+    {{- $class = printf "%s haz_clear" $class -}}
   {{- end -}}
   {{- with .Get "class" -}}
     {{- $extra := strings.TrimSpace . -}}
