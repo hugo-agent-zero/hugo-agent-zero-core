@@ -2,11 +2,11 @@
   haz_tbd — layouts.yaml tap. Declared spot; fill from the graph.
 
   Usage:
-    {{< haz_tbd key="demo" >}}
-    {{< haz_tbd key="demo" enabled=true >}}
+    {{< haz_tbd name="demo" >}}
+    {{< haz_tbd name="demo" enabled=true >}}
 
   Args:
-    key      string, required
+    name     string, required
     enabled  bool, optional; omitted or literal true enables.
              Any present non-bool or false value disables.
 */}}
@@ -21,10 +21,10 @@
 
 {{- if $enabled -}}
   {{- $key := "" -}}
-  {{- if isset .Params "key" -}}
-    {{- $keyValue := .Get "key" -}}
-    {{- if eq (printf "%T" $keyValue) "string" -}}
-      {{- $key = $keyValue -}}
+  {{- if isset .Params "name" -}}
+    {{- $nameValue := .Get "name" -}}
+    {{- if eq (printf "%T" $nameValue) "string" -}}
+      {{- $key = $nameValue -}}
     {{- end -}}
   {{- end -}}
   {{- $sysManifest := partial "haz/helpers/fn/fn_get_sys_manifest.html" .Page -}}

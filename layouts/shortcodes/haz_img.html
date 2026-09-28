@@ -2,16 +2,16 @@
   haz_img — enrich author <img> with srcset / sizes / width utilities.
 
   Usage:
-    {{< haz_img key="story_wide" >}}
+    {{< haz_img name="story_wide" >}}
     <img src="photo.jpg" alt="…">
     {{< /haz_img >}}
 
-    {{< haz_img key="story_wide" lazy=false >}}
+    {{< haz_img name="story_wide" lazy=false >}}
     <img src="hero.jpg" alt="…">
     {{< /haz_img >}}
 
   Params:
-    key  required — settings.haz_img.presets name (a helpful string).
+    name required — settings.haz_img.presets name (a helpful string).
          Preset owns m/t/d maps: w (25|50|75|100), align (left|right|center|none).
          Omit a band or field → inherit the previous band.
          ratio as-is → --haz_img_ratio. fit cover for v1. class is leftovers.
@@ -25,7 +25,7 @@
 */}}
 {{- $page := .Page -}}
 {{- $presetKey := "" -}}
-{{- with .Get "key" -}}
+{{- with .Get "name" -}}
   {{- $presetKey = . -}}
 {{- end -}}
 
@@ -191,7 +191,7 @@
 {{- $imgMatches := findRE `(?i)<img\b[^>]*>` $inner -}}
 
 {{- if or (not $presetKey) (not $pctsOK) (eq (len $imgMatches) 0) -}}
-<!-- haz_img: bad/missing key (need a settings.haz_img.presets name), or no img in Inner -->
+<!-- haz_img: bad/missing name (need a settings.haz_img.presets name), or no img in Inner -->
 {{- else -}}
   {{- range $imgMatches -}}
     {{- $original := . -}}
