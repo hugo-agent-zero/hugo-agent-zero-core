@@ -4,7 +4,7 @@
   Args: key, source, sysManifest, context
 */}}
 {{- $key := index . "key" | default "" -}}
-{{- $source := index . "source" | default "shortcode|haz" -}}
+{{- $source := index . "source" | default "shortcode|haz_tbd" -}}
 {{- $sysManifest := index . "sysManifest" | default dict -}}
 {{- $context := index . "context" -}}
 {{- $entry := partial "haz/helpers/fn/fn_shortcode_resolve.html" (dict
