@@ -1,8 +1,9 @@
 {{/*
-  haz shortcode
+  haz_tbd — layouts.yaml tap. Declared spot; fill from the graph.
+
   Usage:
-    {{< haz key="demo" >}}
-    {{< haz key="demo" enabled=true >}}
+    {{< haz_tbd key="demo" >}}
+    {{< haz_tbd key="demo" enabled=true >}}
 
   Args:
     key      string, required
@@ -29,7 +30,7 @@
   {{- $sysManifest := partial "haz/helpers/fn/fn_get_sys_manifest.html" .Page -}}
   {{- partial "haz/helpers/parents/shortcode_parent.html" (dict
     "key" $key
-    "source" "shortcode|haz"
+    "source" "shortcode|haz_tbd"
     "sysManifest" $sysManifest
     "context" .Page
   ) -}}
