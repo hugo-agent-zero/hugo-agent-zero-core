@@ -1,21 +1,21 @@
 {{/*
-  haz_tbd — catch-all for a handful of stream helpers. Name is a placeholder.
+  haz_do — stream toolbox. One shortcode, a handful of blades. Not WordPress.
 
   Usage:
-    {{< haz_tbd type="spacer" >}}
-    {{< haz_tbd type="spacer" size="2" >}}
-    {{< haz_tbd type="spacer" size="0.5" clear=false >}}
+    {{< haz_do add="spacer" >}}
+    {{< haz_do add="spacer" size="2" >}}
+    {{< haz_do add="spacer" size="0.5" clear=false >}}
 
-  type   required. spacer for now.
+  Attr name is the verb. First blade: add="spacer".
   size   spacer: rem, default 1. Floats ok. 0 is a fence with no air.
   clear  spacer: default true. false skips the clear class.
 */}}
-{{- $type := "" -}}
-{{- with .Get "type" -}}
-  {{- $type = lower (strings.TrimSpace .) -}}
+{{- $add := "" -}}
+{{- with .Get "add" -}}
+  {{- $add = lower (strings.TrimSpace .) -}}
 {{- end -}}
 
-{{- if eq $type "spacer" -}}
+{{- if eq $add "spacer" -}}
   {{- $size := 1.0 -}}
   {{- with .Get "size" -}}
     {{- $size = float . -}}
@@ -36,5 +36,5 @@
   {{- end -}}
 <div class="{{ $class }}" style="height: {{ $size }}rem"></div>
 {{- else -}}
-<!-- haz_tbd: need type (spacer) -->
+<!-- haz_do: need add (spacer) -->
 {{- end -}}
