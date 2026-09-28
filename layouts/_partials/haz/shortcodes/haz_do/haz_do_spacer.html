@@ -1,0 +1,37 @@
+{{/*
+  haz_do spacer blade. Receives the shortcode context (.).
+  Builds class + optional finished height, then fn_tag_div_spacer.
+*/}}
+{{- $class := "haz_do haz_do_spacer" -}}
+{{- $wantClear := true -}}
+{{- if isset .Params "clear" -}}
+  {{- $clearValue := .Get "clear" -}}
+  {{- if eq (printf "%T" $clearValue) "bool" -}}
+    {{- $wantClear = $clearValue -}}
+  {{- else -}}
+    {{- $clearLow := lower (printf "%v" $clearValue) -}}
+    {{- $wantClear = or (eq $clearLow "true") (eq $clearLow "1") (eq $clearLow "yes") (eq $clearLow "on") -}}
+  {{- end -}}
+{{- end -}}
+{{- if $wantClear -}}
+  {{- $class = printf "%s haz_clear" $class -}}
+{{- end -}}
+{{- with .Get "class" -}}
+  {{- $extra := strings.TrimSpace . | htmlEscape -}}
+  {{- if $extra -}}
+    {{- $class = printf "%s %s" $class $extra -}}
+  {{- end -}}
+{{- end -}}
+{{- $args := dict "class" $class -}}
+{{- if isset .Params "height" -}}
+  {{- $unit := "rem" -}}
+  {{- $allowedUnits := slice "rem" "em" "px" "vh" "vw" "%" -}}
+  {{- with .Get "height_unit" -}}
+    {{- $u := lower (strings.TrimSpace .) -}}
+    {{- if in $allowedUnits $u -}}
+      {{- $unit = $u -}}
+    {{- end -}}
+  {{- end -}}
+  {{- $args = merge $args (dict "height" (printf "%v%s" (float (.Get "height")) $unit)) -}}
+{{- end -}}
+{{- partial "haz/helpers/fn/fn_tag_div_spacer.html" $args -}}
