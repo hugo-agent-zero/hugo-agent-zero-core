@@ -4,11 +4,12 @@
   Usage:
     {{< haz_do add="spacer" >}}
     {{< haz_do add="spacer" size="2" >}}
-    {{< haz_do add="spacer" size="0.5" clear=false >}}
+    {{< haz_do add="spacer" class="haz_my_gap" >}}
 
   Attr name is the verb. First blade: add="spacer".
   size   spacer: rem, default 1. Floats ok. 0 is a fence with no air.
-  clear  spacer: default true. false skips the clear class.
+  clear  spacer: default true. false skips haz_do_clear.
+  class  appended after kit classes. Does not replace them.
 */}}
 {{- $add := "" -}}
 {{- with .Get "add" -}}
@@ -30,9 +31,15 @@
       {{- $wantClear = or (eq $clearLow "true") (eq $clearLow "1") (eq $clearLow "yes") (eq $clearLow "on") -}}
     {{- end -}}
   {{- end -}}
-  {{- $class := "haz_spacer" -}}
+  {{- $class := printf "haz_do haz_do_%s" $add -}}
   {{- if $wantClear -}}
-    {{- $class = printf "%s haz_clear" $class -}}
+    {{- $class = printf "%s haz_do_clear" $class -}}
+  {{- end -}}
+  {{- with .Get "class" -}}
+    {{- $extra := strings.TrimSpace . -}}
+    {{- if $extra -}}
+      {{- $class = printf "%s %s" $class $extra -}}
+    {{- end -}}
   {{- end -}}
 <div class="{{ $class }}" style="height: {{ $size }}rem"></div>
 {{- else -}}
