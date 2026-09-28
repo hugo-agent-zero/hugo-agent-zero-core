@@ -3,14 +3,10 @@
 
   Usage:
     {{< haz_do add="spacer" >}}
-    {{< haz_do add="spacer" size="2" >}}
-    {{< haz_do add="spacer" size="0.5" clear=false >}}
     {{< haz_do add="spacer" class="haz_my_gap" >}}
 
-  Attr name is the verb. First blade: add="spacer".
-  size   spacer: rem, default 1. Floats ok. 0 is a fence with no air.
-  clear  spacer: default true. false skips appending haz_clear (float utility).
-  class  appended after kit classes. Does not replace them.
+  add    verb. Only spacer for now.
+  class  appended after kit classes. Escaped. Does not replace them.
 */}}
 {{- $add := "" -}}
 {{- with .Get "add" -}}
@@ -18,31 +14,14 @@
 {{- end -}}
 
 {{- if eq $add "spacer" -}}
-  {{- $size := 1.0 -}}
-  {{- with .Get "size" -}}
-    {{- $size = float . -}}
-  {{- end -}}
-  {{- $wantClear := true -}}
-  {{- if isset .Params "clear" -}}
-    {{- $clearValue := .Get "clear" -}}
-    {{- if eq (printf "%T" $clearValue) "bool" -}}
-      {{- $wantClear = $clearValue -}}
-    {{- else -}}
-      {{- $clearLow := lower (printf "%v" $clearValue) -}}
-      {{- $wantClear = or (eq $clearLow "true") (eq $clearLow "1") (eq $clearLow "yes") (eq $clearLow "on") -}}
-    {{- end -}}
-  {{- end -}}
   {{- $class := printf "haz_do haz_do_%s" $add -}}
-  {{- if $wantClear -}}
-    {{- $class = printf "%s haz_clear" $class -}}
-  {{- end -}}
   {{- with .Get "class" -}}
-    {{- $extra := strings.TrimSpace . -}}
+    {{- $extra := strings.TrimSpace . | htmlEscape -}}
     {{- if $extra -}}
       {{- $class = printf "%s %s" $class $extra -}}
     {{- end -}}
   {{- end -}}
-<div class="{{ $class }}" style="height: {{ $size }}rem"></div>
+<div class="{{ $class }}"></div>
 {{- else -}}
 <!-- haz_do: need add (spacer) -->
 {{- end -}}
