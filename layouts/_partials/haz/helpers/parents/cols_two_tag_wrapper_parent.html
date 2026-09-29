@@ -37,6 +37,11 @@
 </div>
 {{- $rowBelowAttrs := index $props "row_below_attrs" | default dict -}}
 {{- partial "haz/helpers/fn/fn_tag_tag_open.html" (dict "tag" "div" "attrs" $rowBelowAttrs) -}}
+{{- $rowBelowInnerAttrs := index $props "row_below_inner_attrs" | default dict -}}
+{{- $rowBelowInner := gt (len $rowBelowInnerAttrs) 0 -}}
+{{- if $rowBelowInner -}}
+{{- partial "haz/helpers/fn/fn_tag_tag_open.html" (dict "tag" "div" "attrs" $rowBelowInnerAttrs) -}}
+{{- end -}}
 {{- partial "haz/helpers/fn/fn_partial.html" (dict
   "source" $thisSource
   "child" "row_below"
@@ -44,5 +49,8 @@
   "sysManifest" $sysManifest
   "context" $context
 ) -}}
+{{- if $rowBelowInner -}}
+</div>
+{{- end -}}
 </div>
 {{- printf "</%s>" $tag | safeHTML -}}
