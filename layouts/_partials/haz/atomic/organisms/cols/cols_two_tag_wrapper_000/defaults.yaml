@@ -4,8 +4,10 @@ defaults:
   brand_attrs: {}
   col_other_attrs: {}
   row_below_attrs: {}
+  row_below_inner_attrs: {}
 merge_paths:
   - - attrs
   - - brand_attrs
   - - col_other_attrs
   - - row_below_attrs
+  - - row_below_inner_attrs

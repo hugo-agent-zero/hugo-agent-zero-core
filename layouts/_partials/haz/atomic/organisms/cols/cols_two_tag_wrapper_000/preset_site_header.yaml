@@ -9,3 +9,6 @@ preset:
     class: haz_site_header__col_other
   row_below_attrs:
     id: haz_nav_main_panel
+  # Inner wrap so child CSS can ease open/close via grid 0fr→1fr (needs overflow:hidden child).
+  row_below_inner_attrs:
+    class: haz_site_header__panel_inner
