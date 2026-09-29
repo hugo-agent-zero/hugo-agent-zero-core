@@ -1,11 +1,11 @@
 preset:
   tag: header
   attrs:
-    id: haz_header_site
-    class: haz_header_site
+    id: haz_site_header
+    class: haz_site_header
   brand_attrs:
-    class: haz_header_site__brand
+    class: haz_site_header__brand
   col_other_attrs:
-    class: haz_header_site__col_other
+    class: haz_site_header__col_other
   row_below_attrs:
     id: haz_nav_main_panel
