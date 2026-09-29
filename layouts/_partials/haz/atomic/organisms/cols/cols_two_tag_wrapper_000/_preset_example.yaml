@@ -1,4 +1,4 @@
-# Non-loaded starter — copy/adapt to preset_header.yaml, preset_footer.yaml, etc.
+# Non-loaded starter — copy/adapt to preset_site_header.yaml, preset_footer.yaml, etc.
 preset:
   # Outer landmark/shell tag (header | footer | div | …)
   tag: div
