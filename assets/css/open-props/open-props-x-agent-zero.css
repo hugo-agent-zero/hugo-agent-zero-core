@@ -1,6 +1,5 @@
-/* HAZ bridge on Open Props (trial: open-props-test).
-   Site tweaks: child/css/open-props/open-props-override.css
-   Framework-agnostic haz_* utilities: css/haz/haz.css */
+/* HAZ bridge: Simple.css floor + Open Props crayons (trial open-props-test).
+   Site tweaks: child/css/open-props/open-props-override.css */
 
 /* Atkinson Hyperlegible — HAZ default (static/haz/fonts silo) */
 @font-face {
@@ -41,61 +40,21 @@
     Cantarell, Helvetica, Arial, "Helvetica Neue", sans-serif;
   --haz_font_mono: "Atkinson Hyperlegible Mono", ui-monospace, SFMono-Regular, "SF Mono", Menlo,
     Consolas, "Liberation Mono", monospace;
-  --font-sans: var(--haz_font_sans);
-  --font-system-ui: var(--haz_font_sans);
-  --font-monospace-code: var(--haz_font_mono);
+  /* Simple.css font hooks */
+  --sans-font: var(--haz_font_sans);
+  --mono-font: var(--haz_font_mono);
 }
 
 html {
   font-family: var(--haz_font_sans);
 }
 
-/* HAZ toggles data-theme; OP combined normalize leans on prefers-color-scheme.
-   Re-stamp surface/text/link when the kit toggle wins. */
-html[data-theme="light"] {
-  color-scheme: light;
-  --link: var(--indigo-7);
-  --link-visited: var(--purple-7);
-  --text-1: var(--gray-12);
-  --text-2: var(--gray-7);
-  --surface-1: var(--gray-0);
-  --surface-2: var(--gray-2);
-  --surface-3: var(--gray-3);
-  --surface-4: var(--gray-4);
-  --scrollthumb-color: var(--gray-7);
-  --shadow-strength: 2%;
-  --shadow-color: 220 3% 15%;
-}
-
-html[data-theme="dark"] {
-  color-scheme: dark;
-  --link: var(--indigo-3);
-  --link-visited: var(--purple-3);
-  --text-1: var(--gray-0);
-  --text-2: var(--gray-4);
-  --surface-1: var(--gray-9);
-  --surface-2: var(--gray-8);
-  --surface-3: var(--gray-7);
-  --surface-4: var(--gray-6);
-  --scrollthumb-color: var(--gray-6);
-  --shadow-strength: 10%;
-  --shadow-color: 220 40% 2%;
-}
-
-html[data-theme="light"],
-html[data-theme="dark"] {
-  background-color: var(--surface-1);
-  color: var(--text-1);
-  accent-color: var(--brand, var(--link));
-  caret-color: var(--brand, var(--link));
-}
-
-/* Classless page measure (same job as pico-x). */
+/* Classless page measure (same job as pico-x). Uses Simple --bg/--text. */
 body {
   display: grid;
   grid-template-columns: 1fr var(--haz_measure, min(1065px, 90%)) 1fr;
-  background-color: var(--surface-1);
-  color: var(--text-1);
+  background-color: var(--bg, var(--surface-1, #fff));
+  color: var(--text, var(--text-1, #212121));
 }
 
 body > * {
@@ -105,7 +64,7 @@ body > * {
 body > header,
 body > footer {
   grid-column: 1 / -1;
-  background-color: var(--surface-1);
+  background-color: var(--bg, var(--surface-1, #fff));
 }
 
 body > header {
@@ -169,24 +128,24 @@ html[data-scrolled="true"] .haz_header_site > div:first-child {
   align-items: center;
 }
 
-/* Pagefind — bind to OP / HAZ tokens */
+/* Pagefind — Simple / HAZ tokens */
 :root {
   --pf-font: var(--haz_font_sans);
-  --pf-text: var(--text-1);
-  --pf-text-secondary: var(--text-2);
-  --pf-text-muted: var(--text-2);
-  --pf-background: var(--surface-1);
-  --pf-border: var(--surface-3);
-  --pf-border-focus: var(--brand, var(--link));
-  --pf-hover: var(--surface-2);
-  --pf-skeleton: var(--surface-2);
-  --pf-mark: var(--yellow-3, #ffdd33);
-  --pf-outline-focus: var(--haz_chrome, var(--brand, var(--link)));
+  --pf-text: var(--text);
+  --pf-text-secondary: var(--text-light, var(--text));
+  --pf-text-muted: var(--text-light, var(--text));
+  --pf-background: var(--bg);
+  --pf-border: var(--border, var(--surface-3, #ccc));
+  --pf-border-focus: var(--accent);
+  --pf-hover: var(--accent-bg, var(--bg));
+  --pf-skeleton: var(--accent-bg, var(--bg));
+  --pf-mark: var(--marked, #ffdd33);
+  --pf-outline-focus: var(--haz_chrome, var(--accent));
   --pf-modal-backdrop: rgba(0, 0, 0, 0.45);
   --pf-summary-font-size: inherit;
   --pf-result-title-font-size: inherit;
   --pf-result-excerpt-font-size: inherit;
-  --pf-border-radius: var(--radius-2, 0.5rem);
+  --pf-border-radius: var(--standard-border-radius, 5px);
 }
 
 .haz_btn {
@@ -239,17 +198,17 @@ html:has(dialog[open]) body {
 .haz_search_pagefind_modal,
 .haz_search_pagefind_modal [data-pf-theme] {
   --pf-font: var(--haz_font_sans);
-  --pf-text: var(--text-1);
-  --pf-text-secondary: var(--text-2);
-  --pf-text-muted: var(--text-2);
-  --pf-background: var(--surface-1);
+  --pf-text: var(--text);
+  --pf-text-secondary: var(--text-light, var(--text));
+  --pf-text-muted: var(--text-light, var(--text));
+  --pf-background: var(--bg);
   --pf-border: transparent;
-  --pf-border-focus: var(--haz_chrome, var(--brand, var(--link)));
-  --pf-hover: var(--surface-2);
-  --pf-skeleton: var(--surface-2);
-  --pf-outline-focus: var(--haz_chrome, var(--brand, var(--link)));
+  --pf-border-focus: var(--haz_chrome, var(--accent));
+  --pf-hover: var(--accent-bg, var(--bg));
+  --pf-skeleton: var(--accent-bg, var(--bg));
+  --pf-outline-focus: var(--haz_chrome, var(--accent));
   --pf-modal-backdrop: rgba(0, 0, 0, 0.45);
-  --pf-border-radius: var(--radius-2, 0.5rem);
+  --pf-border-radius: var(--standard-border-radius, 5px);
 }
 
 .haz_search_pagefind_modal {
@@ -264,8 +223,8 @@ html:has(dialog[open]) body {
   overflow: hidden;
   flex-direction: column;
   gap: 0.75rem;
-  background-color: var(--surface-1);
-  color: var(--text-1);
+  background-color: var(--bg);
+  color: var(--text);
   opacity: 0;
   transition: opacity 0.2s ease, overlay 0.2s ease allow-discrete, display 0.2s ease allow-discrete;
 }
@@ -308,18 +267,10 @@ html:has(dialog[open]) body {
   align-items: baseline;
 }
 
-main {
-  margin-bottom: var(--size-fluid-3, 1.5rem);
-  padding-block: var(--size-fluid-3, 1.5rem);
-  border-radius: var(--radius-3, 0.75rem);
-  background: var(--surface-2);
-  box-shadow: var(--shadow-2, none);
-}
-
 body > main,
 body > aside,
 body > section {
-  padding-inline: var(--size-3, 1rem);
+  padding-inline: 1rem;
 }
 
 main article {
