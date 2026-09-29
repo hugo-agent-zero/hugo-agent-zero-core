@@ -67,60 +67,13 @@ body > footer {
   background-color: var(--bg, var(--surface-1, #fff));
 }
 
-body > header {
-  padding-bottom: 0.5rem;
-  position: sticky;
-  top: 0;
-  z-index: 200;
-}
+/* Site header layout (sticky, flex rows, __col_other) lives in the child —
+   child/css/site_header.css — markup is layouts-owned there. */
 
-html[data-scrolled="true"] body > header {
-  padding-block: 0.5rem;
-}
-
-.haz_site_header > div,
 .haz_footer_site > div {
   width: 100%;
   max-width: var(--haz_measure, min(1065px, 90%));
   margin-inline: auto;
-}
-
-.haz_site_header > div:first-child {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding-block: 0.75rem;
-}
-
-html[data-scrolled="true"] .haz_site_header > div:first-child {
-  padding-block: 0;
-}
-
-.haz_site_header > div:nth-child(2) {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding-block: 0;
-}
-
-.haz_site_header__col_other {
-  display: flex;
-  align-items: center;
-  gap: 0;
-}
-
-.haz_site_header__col_other .haz_btn {
-  padding: 0.4rem 0.2rem;
-}
-
-@media (min-width: 768px) {
-  .haz_site_header__col_other {
-    gap: 0.15rem;
-  }
-
-  .haz_site_header__col_other .haz_btn {
-    padding: 0.4rem;
-  }
 }
 
 .haz_search {
