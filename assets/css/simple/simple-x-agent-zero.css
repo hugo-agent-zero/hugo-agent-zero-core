@@ -1,0 +1,36 @@
+/* Part of the Simple stack for HAZ (load right after simple.min).
+   Kit opinions / missing pieces — not a separate framework layer.
+   Site-specific chrome belongs in child CSS (theme, site_header, …).
+   Framework-agnostic haz_* utilities live in css/haz/haz.css. */
+
+/* Header nav links are links — undo Simple’s bordered faux-button chrome. */
+header nav a,
+header nav a:visited {
+  display: inline;
+  margin: 0;
+  padding: 0;
+  border: none;
+  border-radius: 0;
+  background: none;
+  color: var(--haz_site_primary);
+  text-decoration: none;
+  font-size: var(--font-size-4);
+  line-height: var(--font-lineheight-2, 1.25);
+}
+
+header nav a:hover,
+header nav a:focus-visible,
+header nav a.current,
+header nav a[aria-current="page"],
+header nav a[aria-current="true"],
+header nav a.haz_is_active {
+  background: none;
+  border: none;
+  color: var(--haz_site_primary_hover);
+  text-decoration: underline;
+  text-underline-offset: 0.12em;
+}
+
+header nav a.haz_is_active {
+  color: var(--haz_site_primary);
+}
