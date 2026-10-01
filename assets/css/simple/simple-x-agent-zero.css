@@ -25,6 +25,10 @@ body > aside {
   border-radius: var(--standard-border-radius);
 }
 
+body > aside summary {
+  color: var(--haz_site_primary);
+}
+
 /* Header nav links are links — undo Simple’s bordered faux-button chrome. */
 header nav a,
 header nav a:visited {
