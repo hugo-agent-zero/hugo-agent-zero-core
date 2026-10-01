@@ -35,9 +35,10 @@ body > aside summary {
   color: var(--haz_site_primary);
 }
 
-/* Simple’s body > footer carries margin-top: 4rem — space from below, not above. */
+/* Simple’s body > footer: drop the 4rem top margin and hide the top hairline. */
 body > footer {
   margin-top: 0;
+  border-top-color: transparent;
 }
 
 /* Header nav links are links — undo Simple’s bordered faux-button chrome. */
@@ -77,7 +78,8 @@ header nav a.haz_is_active {
 .haz_blog_meta {
   margin-bottom: 1.25rem;
   padding-left: 1rem;
-  font-size: 1rem;
+  font-size: 0.9375rem;
+  opacity: 0.9;
 }
 
 .haz_blog_meta dl {
