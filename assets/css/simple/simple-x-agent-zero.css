@@ -11,7 +11,7 @@ body {
 }
 
 /* Landmark asides (FAQ, …): same measure column as main — not Simple’s floated 30% card.
-   Match Simple’s article box (border/padding/radius/margin); drop aside float + accent fill. */
+   Article-like padding/radius; border transparent (article keeps the visible stroke). */
 body > aside {
   float: none;
   width: auto;
@@ -21,12 +21,17 @@ body > aside {
   padding: 1rem;
   font-size: inherit;
   background-color: transparent;
-  border: var(--border-width) solid var(--border);
+  border: var(--border-width) solid transparent;
   border-radius: var(--standard-border-radius);
 }
 
 body > aside summary {
   color: var(--haz_site_primary);
+}
+
+/* Simple’s body > footer carries margin-top: 4rem — space from below, not above. */
+body > footer {
+  margin-top: 0;
 }
 
 /* Header nav links are links — undo Simple’s bordered faux-button chrome. */
