@@ -29,15 +29,9 @@ body > aside summary {
   color: var(--haz_site_primary);
 }
 
-/* Site footer: undo Simple’s centered credit strip (esp. margin-top: 4rem). Full-bleed like header. */
+/* Simple’s body > footer carries margin-top: 4rem — space from below, not above. */
 body > footer {
-  grid-column: 1 / -1;
   margin-top: 0;
-  text-align: inherit;
-  font-size: inherit;
-  color: inherit;
-  padding: 0;
-  background-color: var(--accent-bg);
 }
 
 /* Header nav links are links — undo Simple’s bordered faux-button chrome. */
