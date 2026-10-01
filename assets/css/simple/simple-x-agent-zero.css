@@ -11,8 +11,7 @@ body {
 }
 
 /* Landmark asides (FAQ, …): same measure column as main — not Simple’s floated 30% card.
-   Box matches Simple’s article shell (the bordered block inside main): same margin/padding/
-   radius/border-width; stroke transparent so only main’s article shows a border for now. */
+   Match Simple’s article box (border/padding/radius/margin); drop aside float + accent fill. */
 body > aside {
   float: none;
   width: auto;
@@ -22,7 +21,7 @@ body > aside {
   padding: 1rem;
   font-size: inherit;
   background-color: transparent;
-  border: var(--border-width) solid transparent;
+  border: var(--border-width) solid var(--border);
   border-radius: var(--standard-border-radius);
 }
 
