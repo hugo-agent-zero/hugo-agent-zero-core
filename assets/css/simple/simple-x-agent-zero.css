@@ -17,12 +17,16 @@ body > aside {
   width: auto;
   max-width: none;
   margin-inline-start: 0;
-  margin-bottom: 1rem;
   padding: 1rem;
   font-size: inherit;
   background-color: transparent;
   border: var(--border-width) solid transparent;
   border-radius: var(--standard-border-radius);
+}
+
+/* FAQ-style landmark under main only — don’t zero margin on other asides. */
+body > main + aside {
+  margin-bottom: 0;
 }
 
 body > aside summary {
