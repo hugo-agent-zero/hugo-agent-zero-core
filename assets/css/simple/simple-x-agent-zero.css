@@ -1,13 +1,15 @@
 /* Part of the Simple stack for HAZ (load right after simple.min).
    Kit opinions / missing pieces — not a separate framework layer.
+   Do NOT depend on Open Props here: OP may be absent; child may map OP → Simple/HAZ
+   knobs in theme.css. This file uses Simple vars, HAZ vars, and plain lengths only.
    Site-specific chrome belongs in child CSS (theme, site_header, …).
    Framework-agnostic haz_* utilities live in css/haz/haz.css.
 
-   Child sets --haz_measure (px-based, e.g. min(var(--size-lg), 95%)). */
+   Child sets --haz_measure (px-based, e.g. min(1024px, 95%)). */
 
 /* Page measure: replace Simple’s min(45rem, 90%) column. */
 body {
-  grid-template-columns: 1fr var(--haz_measure, min(var(--size-lg), 95%)) 1fr;
+  grid-template-columns: 1fr var(--haz_measure, min(1024px, 95%)) 1fr;
 }
 
 /* Landmark asides (FAQ, …): same measure column as main — not Simple’s floated 30% card.
@@ -49,8 +51,8 @@ header nav a:visited {
   background: none;
   color: var(--haz_site_primary);
   text-decoration: none;
-  font-size: var(--font-size-4);
-  line-height: var(--font-lineheight-2, 1.25);
+  font-size: 1.25rem;
+  line-height: 1.25;
 }
 
 header nav a:hover,
@@ -74,7 +76,7 @@ header nav a.haz_is_active {
    Simple leaves ul/dl chrome and huge h2 margins; haz.com look needs these. */
 .haz_blog_meta {
   margin-bottom: 1.25rem;
-  padding-left: var(--size-3, 1rem);
+  padding-left: 1rem;
   font-size: 0.9375rem;
   opacity: 0.9;
 }
@@ -94,7 +96,7 @@ header nav a.haz_is_active {
 .haz_blog_meta dl > div > div {
   display: grid;
   grid-template-columns: 5.5rem minmax(0, 1fr);
-  column-gap: var(--size-3, 1rem);
+  column-gap: 1rem;
   align-items: baseline;
 }
 
