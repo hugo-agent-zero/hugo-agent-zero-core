@@ -7,18 +7,23 @@
 
 /* Page measure: replace Simple’s min(45rem, 90%) column. */
 body {
-  grid-template-columns: 1fr var(--haz_measure, min(1024px, 95%)) 1fr;
+  grid-template-columns: 1fr var(--haz_measure, min(var(--size-lg), 95%)) 1fr;
 }
 
-/* Landmark asides (FAQ, …): same measure column as main — not Simple’s floated 30% card. */
+/* Landmark asides (FAQ, …): same measure column as main — not Simple’s floated 30% card.
+   Box matches Simple’s article shell (the bordered block inside main): same margin/padding/
+   radius/border-width; stroke transparent so only main’s article shows a border for now. */
 body > aside {
   float: none;
   width: auto;
   max-width: none;
   margin-inline-start: 0;
-  padding-inline: 0;
-  border: none;
-  border-radius: 0;
+  margin-bottom: 1rem;
+  padding: 1rem;
+  font-size: inherit;
+  background-color: transparent;
+  border: var(--border-width) solid transparent;
+  border-radius: var(--standard-border-radius);
 }
 
 /* Header nav links are links — undo Simple’s bordered faux-button chrome. */
