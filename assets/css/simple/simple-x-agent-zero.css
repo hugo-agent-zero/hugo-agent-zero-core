@@ -42,13 +42,13 @@ body > footer {
 }
 
 /* Headings: Simple is desktop-first (big rem, then max-width:720 shrink).
-   We don’t want that split — use their “mobile” sizes at every width (#70 / #30). */
-h1 { font-size: 2.5rem; }
-h2 { font-size: 2.1rem; }
+   Flat HAZ ladder (+0.25rem steps) at every width — no MQ (#70 / #30). */
+h1 { font-size: 2.25rem; }
+h2 { font-size: 2rem; }
 h3 { font-size: 1.75rem; }
-h4 { font-size: 1.25rem; }
-h5 { font-size: 1.15rem; }
-h6 { font-size: 0.96rem; }
+h4 { font-size: 1.5rem; }
+h5 { font-size: 1.25rem; }
+h6 { font-size: 1rem; }
 
 /* Header nav links are links — undo Simple’s bordered faux-button chrome. */
 header nav a,
