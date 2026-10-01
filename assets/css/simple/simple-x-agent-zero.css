@@ -7,7 +7,7 @@
 
 /* Page measure: replace Simple’s min(45rem, 90%) column. */
 body {
-  grid-template-columns: 1fr var(--haz_measure, min(1024px, 95%)) 1fr;
+  grid-template-columns: 1fr var(--haz_measure, min(var(--size-lg), 95%)) 1fr;
 }
 
 /* Landmark asides (FAQ, …): same measure column as main — not Simple’s floated 30% card. */
