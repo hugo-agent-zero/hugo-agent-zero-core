@@ -1,5 +1,6 @@
 /* HAZ utilities — framework-agnostic. Loaded for Pico, Simple, or any vendor.
-   Framework chrome stays in pico-x-agent-zero.css / simple-extended.css. */
+   Framework element chrome stays in pico-x / simple-x. Kit chrome (search, …) lives here.
+   Tokens: prefer Simple knobs (--bg, --text, --accent, …) + --haz_site_primary. */
 
 .haz_sr_only {
   position: absolute;
@@ -77,4 +78,336 @@
 
 .haz_display_block_inner_svg svg {
   display: block;
+}
+
+/* --- Search (Pagefind Component UI) — was stranded in pico-x after ditch Pico --- */
+
+.haz_search {
+  display: inline-flex;
+  align-items: center;
+}
+
+/* Icon chrome buttons — defeat Simple’s filled button chrome anywhere (modal close, …). */
+.haz_btn {
+  border: none;
+  cursor: pointer;
+  padding: 0.4rem;
+  background: transparent;
+  color: var(--haz_site_primary, var(--accent));
+}
+
+.haz_btn span {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.haz_btn svg {
+  width: 1.5rem;
+  height: 1.5rem;
+  fill: currentColor;
+}
+
+.haz_btn:hover,
+.haz_btn:focus-visible,
+.haz_btn:enabled:hover {
+  background: transparent;
+  border: none;
+  color: var(--haz_site_primary_hover, var(--accent-hover));
+}
+
+/* Pagefind host tokens — bind to Simple/HAZ, not Pico. Do not rename pagefind-* classes. */
+:root {
+  --pf-font: inherit;
+  --pf-text: var(--text);
+  --pf-text-secondary: var(--text-light);
+  --pf-text-muted: var(--text-light);
+  --pf-background: var(--bg);
+  --pf-border: var(--border);
+  --pf-border-focus: var(--haz_site_primary, var(--accent));
+  --pf-hover: var(--accent-bg);
+  --pf-skeleton: var(--accent-bg);
+  --pf-mark: var(--marked);
+  --pf-outline-focus: var(--haz_site_primary, var(--accent));
+  --pf-modal-backdrop: rgba(0, 0, 0, 0.45);
+  --pf-summary-font-size: inherit;
+  --pf-result-title-font-size: inherit;
+  --pf-result-excerpt-font-size: inherit;
+  --pf-border-radius: var(--standard-border-radius, 5px);
+}
+
+html:has(dialog[open]),
+html:has(dialog[open]) body {
+  overflow: hidden;
+}
+
+.haz_search_pagefind_modal,
+.haz_search_pagefind_modal [data-pf-theme] {
+  --pf-font: inherit;
+  --pf-text: var(--text);
+  --pf-text-secondary: var(--text-light);
+  --pf-text-muted: var(--text-light);
+  --pf-background: var(--bg);
+  --pf-border: transparent;
+  --pf-border-focus: var(--haz_site_primary, var(--accent));
+  --pf-hover: var(--accent-bg);
+  --pf-skeleton: var(--accent-bg);
+  --pf-mark: var(--marked);
+  --pf-outline-focus: var(--haz_site_primary, var(--accent));
+  --pf-modal-backdrop: rgba(0, 0, 0, 0.55);
+  --pf-border-radius: var(--standard-border-radius, 5px);
+  --pf-shadow-sm: none;
+  --pf-shadow-md: none;
+  --pf-shadow-lg: none;
+}
+
+.haz_search_pagefind_modal {
+  --haz_search_field_max: 32rem;
+  width: 100%;
+  max-width: 100%;
+  height: 100%;
+  max-height: 100%;
+  margin: 0;
+  padding: 1rem;
+  border: none;
+  overflow: hidden;
+  flex-direction: column;
+  gap: 0.75rem;
+  background-color: var(--bg);
+  color: var(--text);
+  opacity: 0;
+  transition: opacity 0.2s ease, overlay 0.2s ease allow-discrete, display 0.2s ease allow-discrete;
+}
+
+.haz_search_pagefind_modal[open] {
+  display: flex;
+  opacity: 1;
+  line-height: inherit;
+}
+
+@starting-style {
+  .haz_search_pagefind_modal[open] {
+    opacity: 0;
+  }
+}
+
+.haz_search_pagefind_modal::backdrop {
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(8px);
+  opacity: 0;
+  transition: opacity 0.2s ease, overlay 0.2s ease allow-discrete, display 0.2s ease allow-discrete;
+}
+
+.haz_search_pagefind_modal[open]::backdrop {
+  opacity: 1;
+}
+
+@starting-style {
+  .haz_search_pagefind_modal[open]::backdrop {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .haz_search_pagefind_modal,
+  .haz_search_pagefind_modal::backdrop {
+    transition: none;
+  }
+}
+
+.haz_search_pagefind_modal__close {
+  align-self: flex-end;
+  color: var(--haz_site_primary, var(--accent));
+}
+
+.haz_search_pagefind_modal__close:hover,
+.haz_search_pagefind_modal__close:focus-visible {
+  color: var(--haz_site_primary_hover, var(--accent-hover));
+  background: transparent;
+  border: none;
+}
+
+.haz_search_pagefind_modal :is(pagefind-config, pagefind-input, pagefind-summary, pagefind-results) {
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  color: inherit;
+}
+
+.haz_search_pagefind_modal pagefind-input {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  display: block;
+  width: 100%;
+  max-width: var(--haz_search_field_max);
+  margin-inline: auto;
+  --pf-input-font-size: 1.25rem;
+  --pf-input-height: 2.75rem;
+}
+
+.haz_search_pagefind_modal pagefind-summary {
+  display: block;
+  width: 100%;
+  max-width: var(--haz_search_field_max);
+  margin-inline: auto;
+  font-size: 1rem;
+  text-align: center;
+  --pf-summary-font-size: 1rem;
+}
+
+.haz_search_pagefind_modal pagefind-results {
+  overflow: auto;
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+  margin-inline: auto;
+  border-top: 2px solid var(--haz_site_primary, var(--accent));
+  --pf-results-gap: 1.5rem;
+  scrollbar-width: thin;
+  scrollbar-color: var(--text-light) var(--accent-bg);
+}
+
+.haz_search_pagefind_modal pagefind-results::-webkit-scrollbar {
+  width: 0.5rem;
+}
+
+.haz_search_pagefind_modal pagefind-results::-webkit-scrollbar-track {
+  background: var(--accent-bg);
+}
+
+.haz_search_pagefind_modal pagefind-results::-webkit-scrollbar-thumb {
+  background: var(--text-light);
+  border-radius: var(--standard-border-radius, 5px);
+}
+
+.haz_search_pagefind_modal :is(.pf-result-title, .pf-result-excerpt, .pf-heading-link, .pf-heading-excerpt) {
+  line-height: inherit;
+}
+
+/* PF layers :is(*, #\#)×3 on these classes — match that so hide/title stick. */
+:is(*, #\#):is(*, #\#):is(*, #\#) .haz_search_pagefind_modal .pf-result-excerpt {
+  display: none;
+}
+
+:is(*, #\#):is(*, #\#):is(*, #\#) .haz_search_pagefind_modal .pf-result-title {
+  font-size: 1.25rem;
+}
+
+:is(*, #\#):is(*, #\#):is(*, #\#) .haz_search_pagefind_modal .pf-summary {
+  color: var(--haz_site_primary, var(--accent));
+}
+
+:is(*, #\#):is(*, #\#):is(*, #\#) .haz_search_pagefind_modal :is(.pf-heading-chip, .pf-heading-link, .pf-heading-excerpt) {
+  font-size: inherit;
+  line-height: inherit;
+}
+
+:is(*, #\#):is(*, #\#):is(*, #\#) .haz_search_pagefind_modal :is(.pf-result-link, .pf-heading-link) {
+  color: var(--haz_site_primary, var(--accent));
+  text-decoration: underline;
+  text-underline-offset: 0.125em;
+}
+
+:is(*, #\#):is(*, #\#):is(*, #\#) .haz_search_pagefind_modal .pf-heading-link::before {
+  content: none;
+}
+
+:is(*, #\#):is(*, #\#):is(*, #\#) .haz_search_pagefind_modal :is(.pf-result-link, .pf-heading-link):is(:hover, :focus) {
+  color: var(--haz_site_primary_hover, var(--accent-hover));
+}
+
+:is(*, #\#):is(*, #\#):is(*, #\#) .haz_search_pagefind_modal :is(.pf-result-card, .pf-heading-chip) {
+  border: none;
+  border-radius: var(--standard-border-radius, 5px);
+  background: var(--accent-bg);
+  box-shadow: none;
+  color: var(--text);
+}
+
+:is(*, #\#):is(*, #\#):is(*, #\#) .haz_search_pagefind_modal :is(.pf-result-card, .pf-heading-chip):hover {
+  border: none;
+  box-shadow: none;
+}
+
+:is(*, #\#):is(*, #\#):is(*, #\#) .haz_search_pagefind_modal :is(.pf-result-card, .pf-heading-chip):has(:focus-visible) {
+  border: none;
+  box-shadow: 0 0 0 2px var(--haz_site_primary, var(--accent));
+}
+
+:is(*, #\#):is(*, #\#):is(*, #\#) .haz_search_pagefind_modal :is(.pf-result-excerpt, .pf-heading-excerpt) mark {
+  color: inherit;
+  background-color: var(--marked);
+  font-weight: inherit;
+}
+
+:is(*, #\#):is(*, #\#):is(*, #\#) .haz_search_pagefind_modal .pf-heading-chips {
+  padding-inline-start: 1rem;
+}
+
+:is(*, #\#):is(*, #\#):is(*, #\#) .haz_search_pagefind_modal .pf-input-clear {
+  background: var(--haz_site_primary, var(--accent));
+  color: var(--accent-text, #fff);
+  font-size: inherit;
+  border: none;
+  border-radius: inherit;
+  box-shadow: none;
+  background-image: none;
+  inset-inline-end: 5px;
+  height: calc(100% - 10px);
+}
+
+:is(*, #\#):is(*, #\#):is(*, #\#) .haz_search_pagefind_modal .pf-input-clear:hover {
+  background: var(--haz_site_primary_hover, var(--accent-hover));
+  color: var(--accent-text, #fff);
+  box-shadow: none;
+  background-image: none;
+}
+
+:is(*, #\#):is(*, #\#):is(*, #\#) .haz_search_pagefind_modal .pf-input-wrapper::before {
+  width: 1.25rem;
+  height: 1.25rem;
+  top: calc((var(--pf-input-height) - 1.25rem) / 2);
+}
+
+:is(*, #\#):is(*, #\#):is(*, #\#) .haz_search_pagefind_modal .pf-input {
+  padding-inline-start: 2.5rem;
+  padding-inline-end: 3.5rem;
+  font-weight: inherit;
+  border: 3px solid var(--haz_site_primary, var(--accent));
+  border-radius: inherit;
+  background: var(--bg);
+  color: var(--text);
+}
+
+:is(*, #\#):is(*, #\#):is(*, #\#) .haz_search_pagefind_modal .pf-input:is(:focus, :focus-visible) {
+  border-color: var(--haz_site_primary, var(--accent));
+  box-shadow: 0 0 0 2px var(--haz_site_primary, var(--accent));
+  outline: none;
+}
+
+:is(*, #\#):is(*, #\#):is(*, #\#) .haz_search_pagefind_modal .pf-results {
+  padding: 2rem 1rem 1rem 1rem;
+}
+
+/* Grow modal from tablet up — min-width (HAZ), not Simple’s max-width:720. */
+@media (min-width: 768px) {
+  .haz_search_pagefind_modal {
+    width: min(var(--haz_measure, 1024px), 90vw);
+    max-width: min(var(--haz_measure, 1024px), 90vw);
+    height: min(40rem, 90vh);
+    max-height: 90vh;
+    margin: auto;
+  }
+
+  .haz_search_pagefind_modal pagefind-input,
+  .haz_search_pagefind_modal pagefind-summary {
+    max-width: 26rem;
+  }
+
+  :is(*, #\#):is(*, #\#):is(*, #\#) .haz_search_pagefind_modal .pf-results {
+    max-width: 34rem;
+    margin-inline: auto;
+  }
 }
