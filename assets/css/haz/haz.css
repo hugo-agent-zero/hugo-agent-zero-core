@@ -153,7 +153,8 @@ html:has(dialog[open]) body {
   --pf-border-focus: var(--haz_site_primary, var(--accent));
   --pf-hover: var(--accent-bg);
   --pf-skeleton: var(--accent-bg);
-  --pf-mark: var(--marked);
+  /* Fixed chip — light grey / off-black; do not theme-flip with --marked. */
+  --pf-mark: var(--gray-3, #e0e0e0);
   --pf-outline-focus: var(--haz_site_primary, var(--accent));
   --pf-modal-backdrop: rgba(0, 0, 0, 0.55);
   --pf-border-radius: var(--standard-border-radius, 5px);
@@ -351,9 +352,9 @@ html:has(dialog[open]) body {
   box-shadow: 0 0 0 2px var(--haz_site_primary, var(--accent));
 }
 
-:is(*, #\#):is(*, #\#):is(*, #\#) .haz_search_pagefind_modal :is(.pf-result-excerpt, .pf-heading-excerpt) mark {
-  color: inherit;
-  background-color: var(--marked);
+:is(*, #\#):is(*, #\#):is(*, #\#) .haz_search_pagefind_modal mark {
+  color: var(--gray-12, #121212);
+  background-color: var(--pf-mark, var(--gray-3, #e0e0e0));
   font-weight: inherit;
 }
 
@@ -406,11 +407,11 @@ html:has(dialog[open]) body {
   padding: 2rem var(--haz_search_modal_pad_inline) 1rem;
 }
 
-/* Tablet+: full-width panel (base 100%), top-aligned — not a centered measure card. */
+/* Tablet+: full-bleed panel (base width/height 100%), top-aligned — covers the site. */
 @media (min-width: 768px) {
   .haz_search_pagefind_modal {
-    height: min(40rem, 90vh);
-    max-height: 90vh;
+    height: 100%;
+    max-height: 100%;
     margin: 0 auto;
   }
 
