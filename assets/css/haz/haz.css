@@ -153,8 +153,11 @@ html:has(dialog[open]) body {
   --pf-border-focus: var(--haz_site_primary, var(--accent));
   --pf-hover: var(--accent-bg);
   --pf-skeleton: var(--accent-bg);
-  /* Fixed chip — light grey / off-black; do not theme-flip with --marked. */
-  --pf-mark: var(--gray-3, #e0e0e0);
+  /* Search hit chip — mid grey + site off-black ink (not --marked / Pico blue).
+     Same chip both schemes; mid grey reads on light --bg and on dark. */
+  --haz_search_mark: var(--gray-5, #adb5bd);
+  --haz_search_mark_ink: var(--gray-12, #212121);
+  --pf-mark: var(--haz_search_mark);
   --pf-outline-focus: var(--haz_site_primary, var(--accent));
   --pf-modal-backdrop: rgba(0, 0, 0, 0.55);
   --pf-border-radius: var(--standard-border-radius, 5px);
@@ -353,8 +356,8 @@ html:has(dialog[open]) body {
 }
 
 :is(*, #\#):is(*, #\#):is(*, #\#) .haz_search_pagefind_modal mark {
-  color: var(--gray-12, #121212);
-  background-color: var(--pf-mark, var(--gray-3, #e0e0e0));
+  color: var(--haz_search_mark_ink, var(--gray-12, #212121));
+  background-color: var(--haz_search_mark, var(--gray-5, #adb5bd));
   font-weight: inherit;
 }
 
