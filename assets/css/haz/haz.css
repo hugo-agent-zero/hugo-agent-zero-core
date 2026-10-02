@@ -406,14 +406,12 @@ html:has(dialog[open]) body {
   padding: 2rem var(--haz_search_modal_pad_inline) 1rem;
 }
 
-/* Grow modal from tablet up — min-width (HAZ), not Simple’s max-width:720. */
+/* Tablet+: full-width panel (base 100%), top-aligned — not a centered measure card. */
 @media (min-width: 768px) {
   .haz_search_pagefind_modal {
-    width: min(var(--haz_measure, 1024px), 90vw);
-    max-width: min(var(--haz_measure, 1024px), 90vw);
     height: min(40rem, 90vh);
     max-height: 90vh;
-    margin: auto;
+    margin: 0 auto;
   }
 
   .haz_search_pagefind_modal pagefind-input,
