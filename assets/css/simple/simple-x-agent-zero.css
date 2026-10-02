@@ -5,7 +5,9 @@
    Site-specific chrome belongs in child CSS (theme, site_header, …).
    Framework-agnostic haz_* utilities live in css/haz/haz.css.
 
-   Child sets --haz_measure (px-based, e.g. min(1024px, 95%)). */
+   Simple stance: Simple is desktop-first (max-width:720 undos). Do NOT add more
+   max-width:720 patches here — override wrong defaults at every width. Later fork
+   (*SimpleAndSmart*) = mobile-first absorb of this file. Child sets --haz_measure. */
 
 /* Page measure: replace Simple’s min(45rem, 90%) column. */
 body {
