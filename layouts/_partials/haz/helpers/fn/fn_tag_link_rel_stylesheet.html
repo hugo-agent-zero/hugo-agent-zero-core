@@ -5,7 +5,7 @@
 {{- end -}}
 {{- partial "haz/helpers/fn/fn_tag_asset.html" (dict
   "src" (index . "href" | default (index . "src" | default ""))
-  "kind" "style"
+  "type" "style"
   "bust" $bust
   "ver" (index . "ver" | default "")
   "context" (index . "context" | default .)
