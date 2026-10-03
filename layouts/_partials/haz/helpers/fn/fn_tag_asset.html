@@ -1,0 +1,59 @@
+{{/*
+  fn_tag_asset.html
+  Emit one stylesheet or script tag from an enqueue row.
+  Args:
+    - src (string, required): asset path, http URL, or static-…
+    - kind (string): style | script (default style)
+    - bust (bool): fingerprint pipeline assets (default true)
+    - ver (string): query version when bust is false
+    - context (any): ExecuteAsTemplate data (optional)
+*/}}
+{{- $src := index . "src" | default "" -}}
+{{- $kind := index . "kind" | default "style" -}}
+{{- $bust := true -}}
+{{- if isset . "bust" -}}
+  {{- $bust = index . "bust" -}}
+{{- end -}}
+{{- /* YAML may stringify booleans; with false is empty in Go templates */ -}}
+{{- if eq (printf "%v" $bust) "false" -}}
+  {{- $bust = false -}}
+{{- else if eq (printf "%v" $bust) "true" -}}
+  {{- $bust = true -}}
+{{- end -}}
+{{- $ver := index . "ver" | default "" -}}
+{{- $tplCtx := index . "context" | default . -}}
+{{- if $src -}}
+  {{- $href := "" -}}
+  {{- if hasPrefix $src "http" -}}
+    {{- $href = $src -}}
+  {{- else if hasPrefix $src "static-" -}}
+    {{- $href = strings.TrimPrefix "static-" $src | relURL -}}
+  {{- else -}}
+    {{- $res := resources.Get $src -}}
+    {{- if $res -}}
+      {{- if in $res.Content "{{" -}}
+        {{- $res = $res | resources.ExecuteAsTemplate (printf "executed/%s" $src) $tplCtx -}}
+      {{- end -}}
+      {{- if $bust -}}
+        {{- $res = $res | resources.Fingerprint -}}
+      {{- end -}}
+      {{- $href = $res.RelPermalink -}}
+    {{- else -}}
+      {{- warnf "enqueue asset not found: %s" $src -}}
+    {{- end -}}
+  {{- end -}}
+  {{- if and $href (not $bust) (ne $ver "") -}}
+    {{- if in $href "?" -}}
+      {{- $href = printf "%s&v=%s" $href $ver -}}
+    {{- else -}}
+      {{- $href = printf "%s?v=%s" $href $ver -}}
+    {{- end -}}
+  {{- end -}}
+  {{- if $href -}}
+    {{- if eq $kind "script" -}}
+<script src="{{ $href }}"></script>
+    {{- else -}}
+<link rel="stylesheet" href="{{ $href }}">
+    {{- end -}}
+  {{- end -}}
+{{- end -}}

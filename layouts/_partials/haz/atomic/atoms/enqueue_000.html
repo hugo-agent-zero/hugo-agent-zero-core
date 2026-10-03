@@ -1,0 +1,70 @@
+{{/*
+  enqueue_000 — emit stylesheet/script tags from props.collection.
+  Atom props:
+    - location (string): head | footer — filter rows (default head)
+    - collection (map): keyed rows, each string src or { src, kind, location, bust, ver, enabled }
+*/}}
+{{- $source := index . "source" -}}
+{{- $child := index . "child" -}}
+{{- $thisObj := index . "thisObj" | default dict -}}
+{{- $sysManifest := index . "sysManifest" -}}
+{{- $context := index . "context" -}}
+{{- $thisObjProps := index $thisObj "props" | default dict -}}
+{{- $thisChildren := index $thisObj "children" | default dict -}}
+{{- $thisSource := "atoms|enqueue_000" -}}
+{{- $props := index . "props" | default $thisObjProps -}}
+{{- $enabled := true -}}
+{{- if gt (len $thisObj) 0 -}}
+  {{- $enabled = index $thisObj "enabled" | default false -}}
+{{- end -}}
+{{- if $enabled -}}
+  {{- partial "haz/helpers/fn/fn_html_comment.html" (dict "text" $thisSource) -}}
+  {{- $wantLocation := index $props "location" | default "head" -}}
+  {{- $collection := index $props "collection" | default dict -}}
+  {{- /* Legacy: props.css string map */ -}}
+  {{- if not $collection -}}
+    {{- $collection = index $props "css" | default dict -}}
+  {{- end -}}
+  {{- range $key, $entry := $collection -}}
+    {{- $row := dict -}}
+    {{- if reflect.IsMap $entry -}}
+      {{- $row = $entry -}}
+    {{- else -}}
+      {{- $row = dict "src" $entry -}}
+    {{- end -}}
+    {{- $rowEnabled := true -}}
+    {{- if isset $row "enabled" -}}
+      {{- $rowEnabled = index $row "enabled" -}}
+    {{- end -}}
+    {{- if eq (printf "%v" $rowEnabled) "false" -}}
+      {{- $rowEnabled = false -}}
+    {{- else if eq (printf "%v" $rowEnabled) "true" -}}
+      {{- $rowEnabled = true -}}
+    {{- end -}}
+    {{- $rowLocation := index $row "location" | default $wantLocation -}}
+    {{- if and $rowEnabled (eq $rowLocation $wantLocation) -}}
+      {{- $src := index $row "src" | default "" -}}
+      {{- if $src -}}
+        {{- $rowBust := true -}}
+        {{- if isset $row "bust" -}}
+          {{- $rowBust = index $row "bust" -}}
+        {{- end -}}
+        {{- partial "haz/helpers/fn/fn_tag_asset.html" (dict
+          "src" $src
+          "kind" (index $row "kind" | default "style")
+          "bust" $rowBust
+          "ver" (index $row "ver" | default "")
+          "context" $context
+        ) -}}
+      {{- end -}}
+    {{- end -}}
+  {{- end -}}
+{{- else if index $thisChildren "enabled_false" "enabled" -}}
+  {{- partial "haz/helpers/fn/fn_partial.html" (dict
+    "source" $thisSource
+    "child" (index $thisChildren "enabled_false" "child")
+    "thisObj" $thisObj
+    "sysManifest" $sysManifest
+    "context" $context
+  ) -}}
+{{- end -}}
