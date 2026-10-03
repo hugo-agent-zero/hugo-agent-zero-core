@@ -1,20 +1,12 @@
-{{/* layouts/_partials/essentials/utils/fn_tag_link_href.html */}}
-{{- $href := .href -}}
-{{- if $href -}}
-  {{- if hasPrefix $href "http" -}}
-    <link rel="stylesheet" href="{{ $href }}">
-  {{- else if hasPrefix $href "static-" -}}
-    {{- $staticPath := replace $href "static-" "" -}}
-    <link rel="stylesheet" href="{{ $staticPath | relURL }}">
-  {{- else -}}
-    {{- $res := resources.Get $href -}}
-    {{- if $res -}}
-      {{- if in $res.Content "{{" -}}
-        {{- $res = $res | resources.ExecuteAsTemplate (printf "executed/%s" $href) . -}}
-      {{- end -}}
-      <link rel="stylesheet" href="{{ $res.RelPermalink }}">
-    {{- else -}}
-      {{ warnf "CSS asset not found: %s" $href }}
-    {{- end -}}
-  {{- end -}}
+{{/* Thin wrapper — prefer fn_tag_asset for enqueue rows. */}}
+{{- $bust := true -}}
+{{- if isset . "bust" -}}
+  {{- $bust = index . "bust" -}}
 {{- end -}}
+{{- partial "haz/helpers/fn/fn_tag_asset.html" (dict
+  "src" (index . "href" | default (index . "src" | default ""))
+  "kind" "style"
+  "bust" $bust
+  "ver" (index . "ver" | default "")
+  "context" (index . "context" | default .)
+) -}}
