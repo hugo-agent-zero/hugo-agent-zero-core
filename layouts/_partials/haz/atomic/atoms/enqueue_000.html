@@ -1,8 +1,9 @@
 {{/*
   enqueue_000 — emit stylesheet/script tags from props.collection.
   Atom props:
-    - location (string): head | footer — filter rows (default head)
-    - collection (map): keyed rows, each string src or { src, kind, location, bust, ver, enabled }
+    - in_footer (bool): this mount is footer slot (default false = head)
+    - collection (map): keyed rows, each string src or
+      { src, type, in_footer, bust, ver, enabled }
 */}}
 {{- $source := index . "source" -}}
 {{- $child := index . "child" -}}
@@ -19,7 +20,18 @@
 {{- end -}}
 {{- if $enabled -}}
   {{- partial "haz/helpers/fn/fn_html_comment.html" (dict "text" $thisSource) -}}
-  {{- $wantLocation := index $props "location" | default "head" -}}
+  {{- $wantInFooter := false -}}
+  {{- if isset $props "in_footer" -}}
+    {{- $wantInFooter = index $props "in_footer" -}}
+  {{- else if eq (index $props "location" | default "") "footer" -}}
+    {{- /* brief legacy: props.location footer */ -}}
+    {{- $wantInFooter = true -}}
+  {{- end -}}
+  {{- if eq (printf "%v" $wantInFooter) "false" -}}
+    {{- $wantInFooter = false -}}
+  {{- else if eq (printf "%v" $wantInFooter) "true" -}}
+    {{- $wantInFooter = true -}}
+  {{- end -}}
   {{- $collection := index $props "collection" | default dict -}}
   {{- /* Legacy: props.css string map */ -}}
   {{- if not $collection -}}
@@ -41,17 +53,28 @@
     {{- else if eq (printf "%v" $rowEnabled) "true" -}}
       {{- $rowEnabled = true -}}
     {{- end -}}
-    {{- $rowLocation := index $row "location" | default $wantLocation -}}
-    {{- if and $rowEnabled (eq $rowLocation $wantLocation) -}}
+    {{- $rowInFooter := false -}}
+    {{- if isset $row "in_footer" -}}
+      {{- $rowInFooter = index $row "in_footer" -}}
+    {{- else if eq (index $row "location" | default "") "footer" -}}
+      {{- $rowInFooter = true -}}
+    {{- end -}}
+    {{- if eq (printf "%v" $rowInFooter) "false" -}}
+      {{- $rowInFooter = false -}}
+    {{- else if eq (printf "%v" $rowInFooter) "true" -}}
+      {{- $rowInFooter = true -}}
+    {{- end -}}
+    {{- if and $rowEnabled (eq $rowInFooter $wantInFooter) -}}
       {{- $src := index $row "src" | default "" -}}
       {{- if $src -}}
         {{- $rowBust := true -}}
         {{- if isset $row "bust" -}}
           {{- $rowBust = index $row "bust" -}}
         {{- end -}}
+        {{- $rowType := index $row "type" | default (index $row "kind" | default "style") -}}
         {{- partial "haz/helpers/fn/fn_tag_asset.html" (dict
           "src" $src
-          "kind" (index $row "kind" | default "style")
+          "type" $rowType
           "bust" $rowBust
           "ver" (index $row "ver" | default "")
           "context" $context
