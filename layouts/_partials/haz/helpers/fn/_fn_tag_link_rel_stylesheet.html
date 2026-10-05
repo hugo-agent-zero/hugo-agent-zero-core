@@ -1,4 +1,8 @@
-{{/* Thin wrapper — prefer fn_tag_asset for enqueue rows. */}}
+{{/*
+  PARKED — unused style-only shim. Live path: fn_tag_asset via enqueue_000.
+  HQ: https://github.com/hugo-agent-zero/hugo-agent-zero/issues/108
+  Thin wrapper kept only so a revive is one rename; prefer delete when #108 closes.
+*/}}
 {{- $bust := true -}}
 {{- if isset . "bust" -}}
   {{- $bust = index . "bust" -}}
