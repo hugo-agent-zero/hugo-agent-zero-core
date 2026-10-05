@@ -558,7 +558,7 @@ html[data-theme="light"] #haz_btn_color_scheme svg.haz_svg__moon {
   display: none;
 }
 
-/* haz_img_* utilities moved to css/haz/haz.css (OP 480/768). Keep floats/spacer here. */
+/* haz_img_* moved to css/haz/haz_img.css (templated from max_px; enqueue_haz_img). */
 
 .haz_float_left {
   float: left;
