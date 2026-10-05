@@ -13,10 +13,11 @@
   Params:
     name required — settings.haz_img.presets name (a helpful string).
          Preset owns rwd.m|t|d: w (25|50|75|100 % of column),
-         align (left|right|center|none). Omit band/field → inherit above.
-         ratio → --haz_img_ratio. fit cover for v1. class is leftovers.
+         align (left|right|center|none), ratio (e.g. "16/9").
+         Omit band/field → inherit above. ratio → --haz_img_ratio_m|t|d;
+         CSS picks by max_px windows. fit cover for v1 when any ratio.
          sizes= px from width_px.sm|md|lg × w%; when from max_px.
-         Empty ratio = as-is (no frame / cover) and no auto prefix
+         No ratio on any band = as-is (no frame / cover) and no auto prefix
          (auto without a frame pins height at 150).
     lazy optional — false skips loading=lazy (heroes). true forces it.
          Default is settings.haz_img.config.default_lazy (true).
@@ -76,8 +77,11 @@
 {{- $mAlign := index $band "m_align" | default "" -}}
 {{- $tAlign := index $band "t_align" | default "" -}}
 {{- $dAlign := index $band "d_align" | default "" -}}
+{{- $mRatio := index $band "m_ratio" | default "" -}}
+{{- $tRatio := index $band "t_ratio" | default "" -}}
+{{- $dRatio := index $band "d_ratio" | default "" -}}
+{{- $hasFrame := index $band "has_frame" | default false -}}
 {{- $sizesAttr := index $band "sizes_attr" | default "" -}}
-{{- $ratio := index $band "ratio" | default "" -}}
 {{- $extraClass := index $band "extra_class" | default "" -}}
 
 {{- $wM := printf "haz_img_m%d" $mPct -}}
@@ -93,7 +97,7 @@
 {{- if $dAlign -}}
   {{- $layoutClasses = printf "%s haz_img_d_%s" $layoutClasses $dAlign -}}
 {{- end -}}
-{{- if $ratio -}}
+{{- if $hasFrame -}}
   {{- $layoutClasses = printf "%s haz_img_frame haz_img_cover" $layoutClasses -}}
 {{- end -}}
 {{- if $extraClass -}}
@@ -176,8 +180,8 @@
       {{- if $needClassAttr -}}
         {{- $inject = printf "%s class=\"%s\"" $inject $layoutClasses -}}
       {{- end -}}
-      {{- if $ratio -}}
-        {{- $ratioStyle := printf "--haz_img_ratio: %s" $ratio -}}
+      {{- if $hasFrame -}}
+        {{- $ratioStyle := printf "--haz_img_ratio_m: %s; --haz_img_ratio_t: %s; --haz_img_ratio_d: %s" $mRatio $tRatio $dRatio -}}
         {{- if findRE `(?i)\bstyle\s*=\s*"` $imgTag -}}
           {{- $imgTag = replaceRE `(?i)\bstyle\s*=\s*"([^"]*)"` (printf "style=\"$1; %s\"" $ratioStyle) $imgTag 1 -}}
         {{- else if findRE `(?i)\bstyle\s*=\s*'` $imgTag -}}

@@ -457,9 +457,22 @@ html:has(dialog[open]) body {
   .haz_img_d100 { width: 100%; }
 }
 
+/* Frame AR from inline --haz_img_ratio_m|t|d (rwd inherit resolved in shortcode). */
 .haz_img_frame {
-  aspect-ratio: var(--haz_img_ratio);
+  aspect-ratio: var(--haz_img_ratio_m);
   height: auto;
+}
+
+@media (min-width: 480px) {
+  .haz_img_frame {
+    aspect-ratio: var(--haz_img_ratio_t);
+  }
+}
+
+@media (min-width: 768px) {
+  .haz_img_frame {
+    aspect-ratio: var(--haz_img_ratio_d);
+  }
 }
 
 .haz_img_cover {

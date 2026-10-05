@@ -1,8 +1,7 @@
 {{/*
   fn_haz_img_band_resolve.html
-  Resolve preset.rwd m/t/d (w % + align) against config.max_px + width_px.
-  Returns dict: ok, m_pct, t_pct, d_pct, m_align, t_align, d_align,
-  sizes_attr, ratio, extra_class.
+  Resolve preset.rwd m/t/d (w %, align, ratio) against config.max_px + width_px.
+  Inherit omit-up for w/align/ratio. Returns dict with band fields + sizes_attr.
   Args:
     - config (dict) settings.haz_img.config
     - preset (dict) one presets.* entry
@@ -34,6 +33,7 @@
 
 {{- $mPct := 0 -}}
 {{- $mAlign := "" -}}
+{{- $mRatio := "" -}}
 {{- if isset $mBand "w" -}}
   {{- $mPct = int (index $mBand "w") -}}
 {{- end -}}
@@ -43,9 +43,13 @@
     {{- $mAlign = $cand -}}
   {{- end -}}
 {{- end -}}
+{{- with index $mBand "ratio" -}}
+  {{- $mRatio = strings.TrimSpace (printf "%v" .) -}}
+{{- end -}}
 
 {{- $tPct := $mPct -}}
 {{- $tAlign := $mAlign -}}
+{{- $tRatio := $mRatio -}}
 {{- if isset $tBand "w" -}}
   {{- $tPct = int (index $tBand "w") -}}
 {{- end -}}
@@ -55,9 +59,13 @@
     {{- $tAlign = $cand -}}
   {{- end -}}
 {{- end -}}
+{{- with index $tBand "ratio" -}}
+  {{- $tRatio = strings.TrimSpace (printf "%v" .) -}}
+{{- end -}}
 
 {{- $dPct := $tPct -}}
 {{- $dAlign := $tAlign -}}
+{{- $dRatio := $tRatio -}}
 {{- if isset $dBand "w" -}}
   {{- $dPct = int (index $dBand "w") -}}
 {{- end -}}
@@ -67,11 +75,11 @@
     {{- $dAlign = $cand -}}
   {{- end -}}
 {{- end -}}
-
-{{- $ratio := "" -}}
-{{- with index $preset "ratio" -}}
-  {{- $ratio = printf "%v" . -}}
+{{- with index $dBand "ratio" -}}
+  {{- $dRatio = strings.TrimSpace (printf "%v" .) -}}
 {{- end -}}
+
+{{- $hasFrame := or $mRatio $tRatio $dRatio -}}
 {{- $extraClass := "" -}}
 {{- with index $preset "class" -}}
   {{- $extraClass = strings.TrimSpace (printf "%v" .) -}}
@@ -90,7 +98,7 @@
 {{- $tHole := printf "%dpx" $tNeed -}}
 {{- $mHole := printf "min(%dvw, %dpx)" $mPct $mNeed -}}
 {{- $sizesAttr := printf "(min-width: %dpx) %s, (min-width: %dpx) %s, %s" $minDesktopPx $dHole $minTabletPx $tHole $mHole -}}
-{{- if $ratio -}}
+{{- if $hasFrame -}}
   {{- $sizesAttr = printf "auto, %s" $sizesAttr -}}
 {{- end -}}
 
@@ -102,7 +110,10 @@
   "m_align" $mAlign
   "t_align" $tAlign
   "d_align" $dAlign
+  "m_ratio" $mRatio
+  "t_ratio" $tRatio
+  "d_ratio" $dRatio
+  "has_frame" $hasFrame
   "sizes_attr" $sizesAttr
-  "ratio" $ratio
   "extra_class" $extraClass
 ) -}}
