@@ -1,0 +1,108 @@
+{{/*
+  fn_haz_img_band_resolve.html
+  Resolve preset.rwd m/t/d (w % + align) against config.max_px + width_px.
+  Returns dict: ok, m_pct, t_pct, d_pct, m_align, t_align, d_align,
+  sizes_attr, ratio, extra_class.
+  Args:
+    - config (dict) settings.haz_img.config
+    - preset (dict) one presets.* entry
+    - width_px (dict) optional; else read config.width_px via defaults
+*/}}
+{{- $config := index . "config" | default dict -}}
+{{- $preset := index . "preset" | default dict -}}
+{{- $widthPx := index . "width_px" | default dict -}}
+{{- if eq (len $widthPx) 0 -}}
+  {{- $widthPx = partial "haz/helpers/fn/fn_haz_img_variant_widths.html" (dict "config" $config) -}}
+{{- end -}}
+
+{{- $maxPx := index $config "max_px" | default dict -}}
+{{- $maxM := int (index $maxPx "m" | default 479) -}}
+{{- $maxT := int (index $maxPx "t" | default 767) -}}
+{{- /* when t/d bands start = max for previous band + 1 */ -}}
+{{- $minTabletPx := add $maxM 1 -}}
+{{- $minDesktopPx := add $maxT 1 -}}
+
+{{- $smPx := float (index $widthPx "sm" | default $maxM) -}}
+{{- $mdPx := float (index $widthPx "md" | default $maxT) -}}
+{{- $lgPx := float (index $widthPx "lg" | default (index $maxPx "d" | default 1024)) -}}
+
+{{- $rwd := index $preset "rwd" | default dict -}}
+{{- $alignAllowed := slice "left" "right" "center" "none" -}}
+{{- $mBand := index $rwd "m" | default dict -}}
+{{- $tBand := index $rwd "t" | default dict -}}
+{{- $dBand := index $rwd "d" | default dict -}}
+
+{{- $mPct := 0 -}}
+{{- $mAlign := "" -}}
+{{- if isset $mBand "w" -}}
+  {{- $mPct = int (index $mBand "w") -}}
+{{- end -}}
+{{- with index $mBand "align" -}}
+  {{- $cand := lower (strings.TrimSpace (printf "%v" .)) -}}
+  {{- if in $alignAllowed $cand -}}
+    {{- $mAlign = $cand -}}
+  {{- end -}}
+{{- end -}}
+
+{{- $tPct := $mPct -}}
+{{- $tAlign := $mAlign -}}
+{{- if isset $tBand "w" -}}
+  {{- $tPct = int (index $tBand "w") -}}
+{{- end -}}
+{{- with index $tBand "align" -}}
+  {{- $cand := lower (strings.TrimSpace (printf "%v" .)) -}}
+  {{- if in $alignAllowed $cand -}}
+    {{- $tAlign = $cand -}}
+  {{- end -}}
+{{- end -}}
+
+{{- $dPct := $tPct -}}
+{{- $dAlign := $tAlign -}}
+{{- if isset $dBand "w" -}}
+  {{- $dPct = int (index $dBand "w") -}}
+{{- end -}}
+{{- with index $dBand "align" -}}
+  {{- $cand := lower (strings.TrimSpace (printf "%v" .)) -}}
+  {{- if in $alignAllowed $cand -}}
+    {{- $dAlign = $cand -}}
+  {{- end -}}
+{{- end -}}
+
+{{- $ratio := "" -}}
+{{- with index $preset "ratio" -}}
+  {{- $ratio = printf "%v" . -}}
+{{- end -}}
+{{- $extraClass := "" -}}
+{{- with index $preset "class" -}}
+  {{- $extraClass = strings.TrimSpace (printf "%v" .) -}}
+{{- end -}}
+
+{{- $allowed := slice 25 50 75 100 -}}
+{{- $ok := false -}}
+{{- if gt (len $preset) 0 -}}
+  {{- $ok = and (in $allowed $mPct) (in $allowed $tPct) (in $allowed $dPct) -}}
+{{- end -}}
+
+{{- $dNeed := int (math.Round (mul $lgPx (div (float $dPct) 100.0))) -}}
+{{- $tNeed := int (math.Round (mul $mdPx (div (float $tPct) 100.0))) -}}
+{{- $mNeed := int (math.Round (mul $smPx (div (float $mPct) 100.0))) -}}
+{{- $dHole := printf "%dpx" $dNeed -}}
+{{- $tHole := printf "%dpx" $tNeed -}}
+{{- $mHole := printf "min(%dvw, %dpx)" $mPct $mNeed -}}
+{{- $sizesAttr := printf "(min-width: %dpx) %s, (min-width: %dpx) %s, %s" $minDesktopPx $dHole $minTabletPx $tHole $mHole -}}
+{{- if $ratio -}}
+  {{- $sizesAttr = printf "auto, %s" $sizesAttr -}}
+{{- end -}}
+
+{{- return (dict
+  "ok" $ok
+  "m_pct" $mPct
+  "t_pct" $tPct
+  "d_pct" $dPct
+  "m_align" $mAlign
+  "t_align" $tAlign
+  "d_align" $dAlign
+  "sizes_attr" $sizesAttr
+  "ratio" $ratio
+  "extra_class" $extraClass
+) -}}
