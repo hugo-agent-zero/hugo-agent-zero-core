@@ -1,0 +1,26 @@
+{{/*
+  fn_haz_img_variant_widths.html
+  Return config.width_px as key → int px (file menu for srcset w).
+  No ladder / gutter math — stamp only.
+  Args:
+    - config (dict) settings.haz_img.config
+  Swappable via config.helpers.variant_widths_fn.
+*/}}
+{{- $config := index . "config" | default dict -}}
+{{- $raw := index $config "width_px" | default dict -}}
+{{- $out := dict -}}
+{{- range $k, $v := $raw -}}
+  {{- $out = merge $out (dict $k (int $v)) -}}
+{{- end -}}
+{{- /* OP dogfood fallbacks if width_px missing. */ -}}
+{{- if eq (len $out) 0 -}}
+  {{- $out = dict
+    "xs" 240
+    "sm" 479
+    "md" 767
+    "lg" 1024
+    "xl" 1536
+    "xxl" 2048
+  -}}
+{{- end -}}
+{{- return $out -}}

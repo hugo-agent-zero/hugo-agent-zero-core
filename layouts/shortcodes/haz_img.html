@@ -12,16 +12,17 @@
 
   Params:
     name required — settings.haz_img.presets name (a helpful string).
-         Preset owns m/t/d maps: w (25|50|75|100), align (left|right|center|none).
-         Omit a band or field → inherit the previous band.
-         ratio as-is → --haz_img_ratio. fit cover for v1. class is leftovers.
-         sizes is px snapped to the band from those percents.
-         Empty ratio = as-is (no frame / cover) and no auto prefix
+         Preset owns rwd.m|t|d: w (25|33|50|67|75|100 % of column),
+         align (left|right|center|none), ratio (e.g. "16/9").
+         Omit band/field → inherit above. ratio → --haz_img_ratio_m|t|d;
+         CSS picks by max_px windows. fit cover for v1 when any ratio.
+         sizes= px from width_px.sm|md|lg × w%; when from max_px.
+         No ratio on any band = as-is (no frame / cover) and no auto prefix
          (auto without a frame pins height at 150).
     lazy optional — false skips loading=lazy (heroes). true forces it.
          Default is settings.haz_img.config.default_lazy (true).
 
-  Inner: author HTML. Stem from src= → .Page.Resources variants (xs…xxl). Sparse OK.
+  Inner: author HTML. Stem from src= → .Page.Resources variants (width_px keys). Sparse OK.
 */}}
 {{- $page := .Page -}}
 {{- $presetKey := "" -}}
@@ -33,6 +34,7 @@
 {{- $settings := index $sysManifest "settings" | default dict -}}
 {{- $hazImg := index $settings "haz_img" | default dict -}}
 {{- $config := index $hazImg "config" | default dict -}}
+{{- $helpers := index $config "helpers" | default dict -}}
 
 {{- $defaultLazy := true -}}
 {{- if isset $config "default_lazy" -}}
@@ -56,38 +58,10 @@
 {{- end -}}
 
 {{- $variantSep := index $config "variant_sep" | default "_" -}}
-{{- $contentWidth := index $config "content_width" | default "65ch" -}}
-{{- $remPx := float (index $config "rem_px" | default 16) -}}
-{{- $cwStr := replaceRE `[^0-9.]` "" $contentWidth -}}
-{{- $cwNum := float $cwStr -}}
-{{- $cwUnit := strings.TrimSpace (replaceRE `[0-9.]` "" $contentWidth) -}}
-{{- if not $cwUnit -}}
-  {{- $cwUnit = "ch" -}}
-{{- end -}}
-{{- $contentWidthPx := float (index $config "content_width_px" | default 0) -}}
-{{- if not $contentWidthPx -}}
-  {{- if eq $cwUnit "rem" -}}
-    {{- $contentWidthPx = mul $cwNum $remPx -}}
-  {{- end -}}
-{{- end -}}
+{{- $variantWidthsFn := index $helpers "variant_widths_fn" | default "haz/helpers/fn/fn_haz_img_variant_widths.html" -}}
+{{- $rwdResolveFn := index $helpers "rwd_resolve_fn" | default "haz/helpers/fn/fn_haz_img_rwd_resolve.html" -}}
 
-{{- $bps := index $config "breakpoints" | default dict -}}
-{{- $minTabletPx := int (index $bps "min_tablet" | default 768) -}}
-{{- $minDesktopPx := int (index $bps "min_desktop" | default 992) -}}
-{{- /* Column vs viewport above min_tablet (768) matches child --haz_measure 90%. */ -}}
-{{- $gutter := 0.9 -}}
-{{- $lgPx := $contentWidthPx -}}
-{{- $smPx := math.Min $lgPx (mul $gutter (sub (float $minTabletPx) 1.0)) -}}
-{{- $mdPx := math.Min $lgPx (mul $gutter (sub (float $minDesktopPx) 1.0)) -}}
-
-{{- $variantWidths := dict
-  "xs" (int (math.Round (mul $smPx 0.5)))
-  "sm" (int (math.Round $smPx))
-  "md" (int (math.Round $mdPx))
-  "lg" (int (math.Round $lgPx))
-  "xl" (int (math.Round (mul $lgPx 1.5)))
-  "xxl" (int (math.Round (mul $lgPx 2.0)))
--}}
+{{- $variantWidths := partial $variantWidthsFn (dict "config" $config) -}}
 
 {{- $presets := index $hazImg "presets" | default dict -}}
 {{- $preset := dict -}}
@@ -95,77 +69,20 @@
   {{- $preset = index $presets $presetKey -}}
 {{- end -}}
 
-{{- $alignAllowed := slice "left" "right" "center" "none" -}}
-{{- $mBand := index $preset "m" | default dict -}}
-{{- $tBand := index $preset "t" | default dict -}}
-{{- $dBand := index $preset "d" | default dict -}}
-
-{{- $mPct := 0 -}}
-{{- $mAlign := "" -}}
-{{- if isset $mBand "w" -}}
-  {{- $mPct = int (index $mBand "w") -}}
-{{- end -}}
-{{- with index $mBand "align" -}}
-  {{- $cand := lower (strings.TrimSpace (printf "%v" .)) -}}
-  {{- if in $alignAllowed $cand -}}
-    {{- $mAlign = $cand -}}
-  {{- end -}}
-{{- end -}}
-
-{{- $tPct := $mPct -}}
-{{- $tAlign := $mAlign -}}
-{{- if isset $tBand "w" -}}
-  {{- $tPct = int (index $tBand "w") -}}
-{{- end -}}
-{{- with index $tBand "align" -}}
-  {{- $cand := lower (strings.TrimSpace (printf "%v" .)) -}}
-  {{- if in $alignAllowed $cand -}}
-    {{- $tAlign = $cand -}}
-  {{- end -}}
-{{- end -}}
-
-{{- $dPct := $tPct -}}
-{{- $dAlign := $tAlign -}}
-{{- if isset $dBand "w" -}}
-  {{- $dPct = int (index $dBand "w") -}}
-{{- end -}}
-{{- with index $dBand "align" -}}
-  {{- $cand := lower (strings.TrimSpace (printf "%v" .)) -}}
-  {{- if in $alignAllowed $cand -}}
-    {{- $dAlign = $cand -}}
-  {{- end -}}
-{{- end -}}
-
-{{- $keyOK := false -}}
-{{- if gt (len $preset) 0 -}}
-  {{- $keyOK = true -}}
-{{- end -}}
-
-{{- $ratio := "" -}}
-{{- with index $preset "ratio" -}}
-  {{- $ratio = printf "%v" . -}}
-{{- end -}}
-{{- $extraClass := "" -}}
-{{- with index $preset "class" -}}
-  {{- $extraClass = strings.TrimSpace (printf "%v" .) -}}
-{{- end -}}
-
-{{- $allowed := slice 25 50 75 100 -}}
-{{- $pctsOK := false -}}
-{{- if $keyOK -}}
-  {{- $pctsOK = and (in $allowed $mPct) (in $allowed $tPct) (in $allowed $dPct) -}}
-{{- end -}}
-
-{{- $dNeed := int (math.Round (mul $lgPx (div (float $dPct) 100.0))) -}}
-{{- $tNeed := int (math.Round (mul $mdPx (div (float $tPct) 100.0))) -}}
-{{- $mNeed := int (math.Round (mul $smPx (div (float $mPct) 100.0))) -}}
-{{- $dHole := printf "%dpx" $dNeed -}}
-{{- $tHole := printf "%dpx" $tNeed -}}
-{{- $mHole := printf "min(%dvw, %dpx)" $mPct $mNeed -}}
-{{- $sizesAttr := printf "(min-width: %dpx) %s, (min-width: %dpx) %s, %s" $minDesktopPx $dHole $minTabletPx $tHole $mHole -}}
-{{- if $ratio -}}
-  {{- $sizesAttr = printf "auto, %s" $sizesAttr -}}
-{{- end -}}
+{{- $rwd := partial $rwdResolveFn (dict "config" $config "preset" $preset "width_px" $variantWidths) -}}
+{{- $resolved := index $rwd "resolved" | default false -}}
+{{- $mPct := index $rwd "m_pct" | default 0 -}}
+{{- $tPct := index $rwd "t_pct" | default 0 -}}
+{{- $dPct := index $rwd "d_pct" | default 0 -}}
+{{- $mAlign := index $rwd "m_align" | default "" -}}
+{{- $tAlign := index $rwd "t_align" | default "" -}}
+{{- $dAlign := index $rwd "d_align" | default "" -}}
+{{- $mRatio := index $rwd "m_ratio" | default "" -}}
+{{- $tRatio := index $rwd "t_ratio" | default "" -}}
+{{- $dRatio := index $rwd "d_ratio" | default "" -}}
+{{- $hasFrame := index $rwd "has_frame" | default false -}}
+{{- $sizesAttr := index $rwd "sizes_attr" | default "" -}}
+{{- $extraClass := index $rwd "extra_class" | default "" -}}
 
 {{- $wM := printf "haz_img_m%d" $mPct -}}
 {{- $wT := printf "haz_img_t%d" $tPct -}}
@@ -180,7 +97,7 @@
 {{- if $dAlign -}}
   {{- $layoutClasses = printf "%s haz_img_d_%s" $layoutClasses $dAlign -}}
 {{- end -}}
-{{- if $ratio -}}
+{{- if $hasFrame -}}
   {{- $layoutClasses = printf "%s haz_img_frame haz_img_cover" $layoutClasses -}}
 {{- end -}}
 {{- if $extraClass -}}
@@ -190,7 +107,7 @@
 {{- $inner := .Inner | strings.TrimSpace -}}
 {{- $imgMatches := findRE `(?i)<img\b[^>]*>` $inner -}}
 
-{{- if or (not $presetKey) (not $pctsOK) (eq (len $imgMatches) 0) -}}
+{{- if or (not $presetKey) (not $resolved) (eq (len $imgMatches) 0) -}}
 <!-- haz_img: bad/missing name (need a settings.haz_img.presets name), or no img in Inner -->
 {{- else -}}
   {{- range $imgMatches -}}
@@ -263,8 +180,8 @@
       {{- if $needClassAttr -}}
         {{- $inject = printf "%s class=\"%s\"" $inject $layoutClasses -}}
       {{- end -}}
-      {{- if $ratio -}}
-        {{- $ratioStyle := printf "--haz_img_ratio: %s" $ratio -}}
+      {{- if $hasFrame -}}
+        {{- $ratioStyle := printf "--haz_img_ratio_m: %s; --haz_img_ratio_t: %s; --haz_img_ratio_d: %s" $mRatio $tRatio $dRatio -}}
         {{- if findRE `(?i)\bstyle\s*=\s*"` $imgTag -}}
           {{- $imgTag = replaceRE `(?i)\bstyle\s*=\s*"([^"]*)"` (printf "style=\"$1; %s\"" $ratioStyle) $imgTag 1 -}}
         {{- else if findRE `(?i)\bstyle\s*=\s*'` $imgTag -}}
