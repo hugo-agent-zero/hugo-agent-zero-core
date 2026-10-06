@@ -410,6 +410,27 @@ html:has(dialog[open]) body {
   padding: 2rem var(--haz_search_modal_pad_inline) 1rem;
 }
 
+/* Float clear + spacer — used by haz_do and haz_img wrap. Was stranded in pico-x (#95 OP stack). */
+.haz_float_left {
+  float: left;
+  margin-inline-end: 1rem;
+  margin-block-end: 0.5rem;
+}
+
+.haz_float_right {
+  float: right;
+  margin-inline-start: 1rem;
+  margin-block-end: 0.5rem;
+}
+
+.haz_do_spacer {
+  height: 1rem;
+}
+
+.haz_clear {
+  clear: both;
+}
+
 /* Tablet+: full-bleed panel (base width/height 100%), top-aligned — covers the site. */
 @media (min-width: 768px) {
   .haz_search_pagefind_modal {

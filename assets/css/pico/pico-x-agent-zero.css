@@ -558,24 +558,4 @@ html[data-theme="light"] #haz_btn_color_scheme svg.haz_svg__moon {
   display: none;
 }
 
-/* haz_img_* moved to css/haz/haz_img.css (templated from max_px; enqueue_haz_img). */
-
-.haz_float_left {
-  float: left;
-  margin-inline-end: 1rem;
-  margin-block-end: 0.5rem;
-}
-
-.haz_float_right {
-  float: right;
-  margin-inline-start: 1rem;
-  margin-block-end: 0.5rem;
-}
-
-.haz_do_spacer {
-  height: 1rem;
-}
-
-.haz_clear {
-  clear: both;
-}
+/* haz_img_* → css/haz/haz_img.css. haz_clear / haz_do_spacer / haz_float_* → haz.css (#95). */
