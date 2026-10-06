@@ -15,20 +15,26 @@
 }
 
 .haz_img_m25 { width: 25%; height: auto; }
+.haz_img_m33 { width: 33%; height: auto; }
 .haz_img_m50 { width: 50%; height: auto; }
+.haz_img_m67 { width: 67%; height: auto; }
 .haz_img_m75 { width: 75%; height: auto; }
 .haz_img_m100 { width: 100%; height: auto; }
 
 @media (min-width: {{ $minTablet }}px) {
   .haz_img_t25 { width: 25%; }
+  .haz_img_t33 { width: 33%; }
   .haz_img_t50 { width: 50%; }
+  .haz_img_t67 { width: 67%; }
   .haz_img_t75 { width: 75%; }
   .haz_img_t100 { width: 100%; }
 }
 
 @media (min-width: {{ $minDesktop }}px) {
   .haz_img_d25 { width: 25%; }
+  .haz_img_d33 { width: 33%; }
   .haz_img_d50 { width: 50%; }
+  .haz_img_d67 { width: 67%; }
   .haz_img_d75 { width: 75%; }
   .haz_img_d100 { width: 100%; }
 }

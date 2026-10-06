@@ -2,6 +2,7 @@
   fn_haz_img_band_resolve.html
   Resolve preset.rwd m/t/d (w %, align, ratio) against config.max_px + width_px.
   Inherit omit-up for w/align/ratio. Returns dict with band fields + sizes_attr.
+  resolved = true when preset exists and each band w ∈ 25|33|50|67|75|100.
   Args:
     - config (dict) settings.haz_img.config
     - preset (dict) one presets.* entry
@@ -85,10 +86,10 @@
   {{- $extraClass = strings.TrimSpace (printf "%v" .) -}}
 {{- end -}}
 
-{{- $allowed := slice 25 50 75 100 -}}
-{{- $ok := false -}}
+{{- $allowed := slice 25 33 50 67 75 100 -}}
+{{- $resolved := false -}}
 {{- if gt (len $preset) 0 -}}
-  {{- $ok = and (in $allowed $mPct) (in $allowed $tPct) (in $allowed $dPct) -}}
+  {{- $resolved = and (in $allowed $mPct) (in $allowed $tPct) (in $allowed $dPct) -}}
 {{- end -}}
 
 {{- $dNeed := int (math.Round (mul $lgPx (div (float $dPct) 100.0))) -}}
@@ -103,7 +104,7 @@
 {{- end -}}
 
 {{- return (dict
-  "ok" $ok
+  "resolved" $resolved
   "m_pct" $mPct
   "t_pct" $tPct
   "d_pct" $dPct
