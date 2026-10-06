@@ -1,12 +1,13 @@
 {{/*
-  fn_haz_img_band_resolve.html
+  fn_haz_img_rwd_resolve.html
   Resolve preset.rwd m/t/d (w %, align, ratio) against config.max_px + width_px.
-  Inherit omit-up for w/align/ratio. Returns dict with band fields + sizes_attr.
+  Inherit omit-up for w/align/ratio. Returns dict with rwd fields + sizes_attr.
   resolved = true when preset exists and each band w ∈ 25|33|50|67|75|100.
   Args:
     - config (dict) settings.haz_img.config
     - preset (dict) one presets.* entry
     - width_px (dict) optional; else read config.width_px via defaults
+  Swappable via config.helpers.rwd_resolve_fn (same pattern as variant_widths_fn).
 */}}
 {{- $config := index . "config" | default dict -}}
 {{- $preset := index . "preset" | default dict -}}

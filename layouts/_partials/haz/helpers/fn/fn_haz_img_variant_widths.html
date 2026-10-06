@@ -4,6 +4,7 @@
   No ladder / gutter math — stamp only.
   Args:
     - config (dict) settings.haz_img.config
+  Swappable via config.helpers.variant_widths_fn.
 */}}
 {{- $config := index . "config" | default dict -}}
 {{- $raw := index $config "width_px" | default dict -}}

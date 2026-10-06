@@ -59,7 +59,7 @@
 
 {{- $variantSep := index $config "variant_sep" | default "_" -}}
 {{- $variantWidthsFn := index $helpers "variant_widths_fn" | default "haz/helpers/fn/fn_haz_img_variant_widths.html" -}}
-{{- $bandResolveFn := index $helpers "band_resolve_fn" | default "haz/helpers/fn/fn_haz_img_band_resolve.html" -}}
+{{- $rwdResolveFn := index $helpers "rwd_resolve_fn" | default "haz/helpers/fn/fn_haz_img_rwd_resolve.html" -}}
 
 {{- $variantWidths := partial $variantWidthsFn (dict "config" $config) -}}
 
@@ -69,20 +69,20 @@
   {{- $preset = index $presets $presetKey -}}
 {{- end -}}
 
-{{- $band := partial $bandResolveFn (dict "config" $config "preset" $preset "width_px" $variantWidths) -}}
-{{- $resolved := index $band "resolved" | default false -}}
-{{- $mPct := index $band "m_pct" | default 0 -}}
-{{- $tPct := index $band "t_pct" | default 0 -}}
-{{- $dPct := index $band "d_pct" | default 0 -}}
-{{- $mAlign := index $band "m_align" | default "" -}}
-{{- $tAlign := index $band "t_align" | default "" -}}
-{{- $dAlign := index $band "d_align" | default "" -}}
-{{- $mRatio := index $band "m_ratio" | default "" -}}
-{{- $tRatio := index $band "t_ratio" | default "" -}}
-{{- $dRatio := index $band "d_ratio" | default "" -}}
-{{- $hasFrame := index $band "has_frame" | default false -}}
-{{- $sizesAttr := index $band "sizes_attr" | default "" -}}
-{{- $extraClass := index $band "extra_class" | default "" -}}
+{{- $rwd := partial $rwdResolveFn (dict "config" $config "preset" $preset "width_px" $variantWidths) -}}
+{{- $resolved := index $rwd "resolved" | default false -}}
+{{- $mPct := index $rwd "m_pct" | default 0 -}}
+{{- $tPct := index $rwd "t_pct" | default 0 -}}
+{{- $dPct := index $rwd "d_pct" | default 0 -}}
+{{- $mAlign := index $rwd "m_align" | default "" -}}
+{{- $tAlign := index $rwd "t_align" | default "" -}}
+{{- $dAlign := index $rwd "d_align" | default "" -}}
+{{- $mRatio := index $rwd "m_ratio" | default "" -}}
+{{- $tRatio := index $rwd "t_ratio" | default "" -}}
+{{- $dRatio := index $rwd "d_ratio" | default "" -}}
+{{- $hasFrame := index $rwd "has_frame" | default false -}}
+{{- $sizesAttr := index $rwd "sizes_attr" | default "" -}}
+{{- $extraClass := index $rwd "extra_class" | default "" -}}
 
 {{- $wM := printf "haz_img_m%d" $mPct -}}
 {{- $wT := printf "haz_img_t%d" $tPct -}}
