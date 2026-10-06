@@ -95,6 +95,13 @@
 {{- $dNeed := int (math.Round (mul $lgPx (div (float $dPct) 100.0))) -}}
 {{- $tNeed := int (math.Round (mul $mdPx (div (float $tPct) 100.0))) -}}
 {{- $mNeed := int (math.Round (mul $smPx (div (float $mPct) 100.0))) -}}
+{{- /* settings w: 33|67 → true thirds for sizes= holes (match CSS 33.333% / 66.667%) */ -}}
+{{- if eq $dPct 33 -}}{{- $dNeed = int (math.Round (mul $lgPx (div 100.0 3.0))) -}}{{- end -}}
+{{- if eq $dPct 67 -}}{{- $dNeed = int (math.Round (mul $lgPx (div 200.0 3.0))) -}}{{- end -}}
+{{- if eq $tPct 33 -}}{{- $tNeed = int (math.Round (mul $mdPx (div 100.0 3.0))) -}}{{- end -}}
+{{- if eq $tPct 67 -}}{{- $tNeed = int (math.Round (mul $mdPx (div 200.0 3.0))) -}}{{- end -}}
+{{- if eq $mPct 33 -}}{{- $mNeed = int (math.Round (mul $smPx (div 100.0 3.0))) -}}{{- end -}}
+{{- if eq $mPct 67 -}}{{- $mNeed = int (math.Round (mul $smPx (div 200.0 3.0))) -}}{{- end -}}
 {{- $dHole := printf "%dpx" $dNeed -}}
 {{- $tHole := printf "%dpx" $tNeed -}}
 {{- $mHole := printf "min(%dvw, %dpx)" $mPct $mNeed -}}
