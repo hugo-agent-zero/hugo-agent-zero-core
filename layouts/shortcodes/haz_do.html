@@ -3,19 +3,19 @@
 
   Usage (MD → markup):
 
-    {{< haz_do add="spacer" >}}
+    {{< haz_do add="spacer" />}}
     → <div class="haz_do haz_do_spacer haz_clear"></div>
 
-    {{< haz_do add="spacer" height="2" >}}
+    {{< haz_do add="spacer" height="2" />}}
     → <div class="haz_do haz_do_spacer haz_clear" style="height: 2rem"></div>
 
-    {{< haz_do add="spacer" height="24" height_unit="px" >}}
+    {{< haz_do add="spacer" height="24" height_unit="px" />}}
     → <div class="haz_do haz_do_spacer haz_clear" style="height: 24px"></div>
 
-    {{< haz_do add="spacer" clear=false >}}
+    {{< haz_do add="spacer" clear=false />}}
     → <div class="haz_do haz_do_spacer"></div>
 
-    {{< haz_do add="spacer" class="haz_my_gap" >}}
+    {{< haz_do add="spacer" class="haz_my_gap" />}}
     → <div class="haz_do haz_do_spacer haz_clear haz_my_gap"></div>
 
     {{< haz_do add="callout" type="tip" title="Pro tip" >}}
@@ -34,7 +34,8 @@
 
   Blades: layouts/_partials/haz/shortcodes/haz_do/
 
-  .Inner is read here, not only in a blade. Hugo rejects a closing tag otherwise.
+  .Inner is read here, not only in a blade. Hugo then requires every call to
+  be closed or self-closed. Blades with no body use />. Callout uses a closing tag.
 */}}
 {{- $inner := .Inner -}}
 {{- $add := "" -}}
