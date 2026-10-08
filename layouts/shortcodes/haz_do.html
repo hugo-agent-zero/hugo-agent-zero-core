@@ -23,8 +23,11 @@
     {{< /haz_do >}}
 
   add          verb. Allowlist: spacer, callout.
-  callout      type note|tip|info|warning|caution (default note). title optional.
-               Inner is Markdown (markdownify). Icons and colors live in haz.css.
+  callout      type is a CSS token (default note). Letters, digits, hyphen, underscore.
+               Kit CSS covers note, tip, info, important, warning, caution, cancel, happy,
+               sad, love, peace, calendar, deadline. Any other type still renders.
+               Add .haz_do_callout--{type} to set --haz_callout_accent and --haz_callout_icon.
+               title optional. Inner is Markdown (markdownify).
   height       spacer: number. Omitted → CSS default (.haz_do_spacer).
   height_unit  spacer: CSS length unit. Default rem. Allowlist: rem em px vh vw %.
   clear        spacer: default true. false skips haz_clear (float utility).

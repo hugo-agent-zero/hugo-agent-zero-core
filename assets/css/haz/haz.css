@@ -432,10 +432,12 @@ html:has(dialog[open]) body {
 }
 
 /* haz_do callout. Icon urls below are Go templates, so this file is ExecuteAsTemplate.
-   Col 1 is a large icon. Col 2 is title + body. No accent bar. */
+   Col 1 is a large icon. Col 2 is title + body. No accent bar.
+   The base rule is the fallback (note). A type token adds haz_do_callout--{type}.
+   The modifiers below are the default set. A site can add its own. */
 .haz_do_callout {
   --haz_callout_accent: var(--text-light, var(--border));
-  --haz_callout_icon: url("{{ "third_party/fontawesome-free/svgs/solid/note-sticky.svg" | relURL }}");
+  --haz_callout_icon: url("{{ "third_party/fontawesome-free/svgs/solid/pen-to-square.svg" | relURL }}");
   display: grid;
   grid-template-columns: auto 1fr;
   column-gap: 1rem;
@@ -482,11 +484,11 @@ html:has(dialog[open]) body {
 
 .haz_do_callout--note {
   --haz_callout_accent: var(--text-light, var(--border));
-  --haz_callout_icon: url("{{ "third_party/fontawesome-free/svgs/solid/note-sticky.svg" | relURL }}");
+  --haz_callout_icon: url("{{ "third_party/fontawesome-free/svgs/solid/pen-to-square.svg" | relURL }}");
 }
 
 .haz_do_callout--tip {
-  --haz_callout_accent: var(--green-7, var(--haz_site_primary, var(--accent)));
+  --haz_callout_accent: var(--yellow-7, var(--marked));
   --haz_callout_icon: url("{{ "third_party/fontawesome-free/svgs/solid/lightbulb.svg" | relURL }}");
 }
 
@@ -496,13 +498,54 @@ html:has(dialog[open]) body {
 }
 
 .haz_do_callout--warning {
-  --haz_callout_accent: var(--orange-7, var(--marked));
+  --haz_callout_accent: var(--red-7, var(--code));
   --haz_callout_icon: url("{{ "third_party/fontawesome-free/svgs/solid/triangle-exclamation.svg" | relURL }}");
 }
 
 .haz_do_callout--caution {
-  --haz_callout_accent: var(--red-7, var(--code));
+  --haz_callout_accent: var(--yellow-7, var(--marked));
   --haz_callout_icon: url("{{ "third_party/fontawesome-free/svgs/solid/circle-exclamation.svg" | relURL }}");
+}
+
+.haz_do_callout--cancel {
+  --haz_callout_accent: var(--red-7, var(--code));
+  --haz_callout_icon: url("{{ "third_party/fontawesome-free/svgs/solid/cancel.svg" | relURL }}");
+}
+
+/* Placeholders. Colors are for the lineup comparison, not a locked palette. */
+.haz_do_callout--important {
+  --haz_callout_accent: var(--blue-6, var(--haz_site_primary, var(--accent)));
+  --haz_callout_icon: url("{{ "third_party/fontawesome-free/svgs/solid/star.svg" | relURL }}");
+}
+
+.haz_do_callout--happy {
+  --haz_callout_accent: var(--yellow-7, var(--marked));
+  --haz_callout_icon: url("{{ "third_party/fontawesome-free/svgs/solid/face-smile.svg" | relURL }}");
+}
+
+.haz_do_callout--sad {
+  --haz_callout_accent: var(--yellow-7, var(--marked));
+  --haz_callout_icon: url("{{ "third_party/fontawesome-free/svgs/solid/face-frown.svg" | relURL }}");
+}
+
+.haz_do_callout--love {
+  --haz_callout_accent: var(--red-7, var(--code));
+  --haz_callout_icon: url("{{ "third_party/fontawesome-free/svgs/solid/heart.svg" | relURL }}");
+}
+
+.haz_do_callout--peace {
+  --haz_callout_accent: var(--blue-6, var(--haz_site_primary, var(--accent)));
+  --haz_callout_icon: url("{{ "third_party/fontawesome-free/svgs/solid/peace.svg" | relURL }}");
+}
+
+.haz_do_callout--calendar {
+  --haz_callout_accent: var(--text-light, var(--border));
+  --haz_callout_icon: url("{{ "third_party/fontawesome-free/svgs/solid/calendar-check.svg" | relURL }}");
+}
+
+.haz_do_callout--deadline {
+  --haz_callout_accent: var(--text-light, var(--border));
+  --haz_callout_icon: url("{{ "third_party/fontawesome-free/svgs/solid/alarm-clock.svg" | relURL }}");
 }
 
 /* Tablet+: full-bleed panel (base width/height 100%), top-aligned — covers the site. */

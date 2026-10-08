@@ -1,12 +1,14 @@
 {{/*
   haz_do callout blade. Receives the shortcode context (.).
-  type → data-haz_callout. CSS owns the icon mask and accent color.
+  type is a CSS token, not an allowlist. Omitted or empty → note.
+  Letters, digits, hyphen, and underscore are kept. Anything else is stripped.
+  Kit CSS styles the default set. Any other type renders with the note icon
+  and color until a .haz_do_callout--{type} rule sets the accent and icon.
 */}}
-{{- $types := slice "note" "tip" "info" "warning" "caution" -}}
 {{- $type := "note" -}}
 {{- with .Get "type" -}}
-  {{- $cand := lower (strings.TrimSpace .) -}}
-  {{- if in $types $cand -}}
+  {{- $cand := lower (strings.TrimSpace .) | replaceRE "[^a-z0-9_-]+" "" -}}
+  {{- if $cand -}}
     {{- $type = $cand -}}
   {{- end -}}
 {{- end -}}
