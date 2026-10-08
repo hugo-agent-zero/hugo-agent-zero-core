@@ -18,7 +18,13 @@
     {{< haz_do add="spacer" class="haz_my_gap" >}}
     → <div class="haz_do haz_do_spacer haz_clear haz_my_gap"></div>
 
-  add          verb. Allowlist: spacer.
+    {{< haz_do add="callout" type="tip" title="Pro tip" >}}
+    One or two sentences.
+    {{< /haz_do >}}
+
+  add          verb. Allowlist: spacer, callout.
+  callout      type note|tip|info|warning|caution (default note). title optional.
+               Inner is Markdown (markdownify). Icons and colors live in haz.css.
   height       spacer: number. Omitted → CSS default (.haz_do_spacer).
   height_unit  spacer: CSS length unit. Default rem. Allowlist: rem em px vh vw %.
   clear        spacer: default true. false skips haz_clear (float utility).
@@ -33,9 +39,11 @@
   {{- $add = lower (strings.TrimSpace .) -}}
 {{- end -}}
 
-{{- $allowedAdds := slice "spacer" -}}
+{{- $allowedAdds := slice "spacer" "callout" -}}
 {{- if not (in $allowedAdds $add) -}}
-<!-- haz_do: need add (spacer) -->
+<!-- haz_do: need add (spacer, callout) -->
 {{- else if eq $add "spacer" -}}
   {{- partial "haz/shortcodes/haz_do/haz_do_spacer.html" . -}}
+{{- else if eq $add "callout" -}}
+  {{- partial "haz/shortcodes/haz_do/haz_do_callout.html" . -}}
 {{- end -}}
