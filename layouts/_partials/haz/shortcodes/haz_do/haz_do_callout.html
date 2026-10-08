@@ -23,10 +23,12 @@
 {{- end -}}
 {{- $body := strings.TrimSpace .Inner | markdownify -}}
 <div class="{{ $class }}" data-haz_callout="{{ $type }}">
-  {{- with $title }}
-  <p class="haz_do_callout__title">{{ . }}</p>
-  {{- end }}
-  {{- with $body }}
-  <div class="haz_do_callout__body">{{ . }}</div>
-  {{- end }}
+  <div class="haz_do_callout__copy">
+    {{- with $title }}
+    <p class="haz_do_callout__title">{{ . }}</p>
+    {{- end }}
+    {{- with $body }}
+    <div class="haz_do_callout__body">{{ . }}</div>
+    {{- end }}
+  </div>
 </div>
