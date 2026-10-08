@@ -1,0 +1,32 @@
+{{/*
+  haz_do callout blade. Receives the shortcode context (.).
+  type → data-haz_callout. CSS owns the icon mask and accent color.
+*/}}
+{{- $types := slice "note" "tip" "info" "warning" "caution" -}}
+{{- $type := "note" -}}
+{{- with .Get "type" -}}
+  {{- $cand := lower (strings.TrimSpace .) -}}
+  {{- if in $types $cand -}}
+    {{- $type = $cand -}}
+  {{- end -}}
+{{- end -}}
+{{- $class := printf "haz_do haz_do_callout haz_do_callout--%s" $type -}}
+{{- with .Get "class" -}}
+  {{- $extra := strings.TrimSpace . | htmlEscape -}}
+  {{- if $extra -}}
+    {{- $class = printf "%s %s" $class $extra -}}
+  {{- end -}}
+{{- end -}}
+{{- $title := "" -}}
+{{- with .Get "title" -}}
+  {{- $title = strings.TrimSpace . -}}
+{{- end -}}
+{{- $body := strings.TrimSpace .Inner | markdownify -}}
+<div class="{{ $class }}" data-haz_callout="{{ $type }}">
+  {{- with $title }}
+  <p class="haz_do_callout__title">{{ . }}</p>
+  {{- end }}
+  {{- with $body }}
+  <div class="haz_do_callout__body">{{ . }}</div>
+  {{- end }}
+</div>
