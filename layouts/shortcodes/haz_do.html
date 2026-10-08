@@ -33,7 +33,10 @@
   Blank line between stacked calls or Goldmark wraps the bunch in <p>.
 
   Blades: layouts/_partials/haz/shortcodes/haz_do/
+
+  .Inner is read here, not only in a blade. Hugo rejects a closing tag otherwise.
 */}}
+{{- $inner := .Inner -}}
 {{- $add := "" -}}
 {{- with .Get "add" -}}
   {{- $add = lower (strings.TrimSpace .) -}}
