@@ -431,7 +431,7 @@ html:has(dialog[open]) body {
   clear: both;
 }
 
-/* haz_do callout. {{ relURL }} below makes this file ExecuteAsTemplate.
+/* haz_do callout. Icon urls below are Go templates, so this file is ExecuteAsTemplate.
    Col 1 is a large icon. Col 2 is title + body. No accent bar. */
 .haz_do_callout {
   --haz_callout_accent: var(--text-light, var(--border));
