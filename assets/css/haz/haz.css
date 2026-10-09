@@ -464,9 +464,13 @@ html:has(dialog[open]) body {
   min-width: 0;
 }
 
+.haz_do_callout__title,
+.haz_do_list__title {
+  font-weight: var(--haz_do_title_weight, 700);
+}
+
 .haz_do_callout__title {
   margin: 0;
-  font-weight: 700;
   color: var(--haz_callout_accent);
 }
 
@@ -558,7 +562,6 @@ html:has(dialog[open]) body {
 
 .haz_do_list__title {
   margin: 0 0 0.5rem;
-  font-weight: 700;
 }
 
 .haz_do_list__body > :first-child {
