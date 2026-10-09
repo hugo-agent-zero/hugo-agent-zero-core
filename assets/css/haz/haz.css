@@ -548,6 +548,38 @@ html:has(dialog[open]) body {
   --haz_callout_icon: url("{{ "third_party/fontawesome-free/svgs/solid/alarm-clock.svg" | relURL }}");
 }
 
+/* haz_do list. Chrome around a Markdown ul or ol. A plain list is untouched. */
+.haz_do_list {
+  margin-block: 1rem;
+  padding: 0.7rem 1rem;
+  border: 1px solid var(--haz_do_list_box_border, transparent);
+  border-radius: var(--standard-border-radius, 5px);
+}
+
+.haz_do_list__title {
+  margin: 0 0 0.5rem;
+  font-weight: 700;
+}
+
+.haz_do_list__body > :first-child {
+  margin-top: 0;
+}
+
+.haz_do_list__body > :last-child {
+  margin-bottom: 0;
+}
+
+.haz_do_list__body > :is(ol, ul) {
+  margin: 0;
+  margin-inline-start: 0.5rem;
+  padding-inline-start: 1.75rem;
+  border-inline-start: 2px solid var(--haz_do_list_border, var(--haz_site_primary, var(--accent)));
+}
+
+.haz_do_list__body li + li {
+  margin-top: 0.5rem;
+}
+
 /* Tablet+: full-bleed panel (base width/height 100%), top-aligned — covers the site. */
 @media (min-width: 768px) {
   .haz_search_pagefind_modal {
