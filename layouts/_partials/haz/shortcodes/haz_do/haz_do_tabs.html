@@ -1,0 +1,17 @@
+{{/*
+  haz_do tabs blade. Receives the shortcode context (.).
+  Inner is the rendered tab panels. Nested tab shortcodes run.
+  CSS radios switch panels. No script.
+*/}}
+{{- $class := "haz_do haz_do_tabs" -}}
+{{- with .Get "class" -}}
+  {{- $extra := strings.TrimSpace . | htmlEscape -}}
+  {{- if $extra -}}
+    {{- $class = printf "%s %s" $class $extra -}}
+  {{- end -}}
+{{- end -}}
+<div class="{{ $class }}">
+  {{- .Inner -}}
+</div>
+{{- /* Children already counted. Zero the key so the next render starts on the first tab. */ -}}
+{{- .Page.Store.Set (printf "haz_do_tabs_%d" .Ordinal) 0 -}}
