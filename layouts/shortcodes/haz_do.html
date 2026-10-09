@@ -22,12 +22,14 @@
     One or two sentences.
     {{< /haz_do >}}
 
-  add          verb. Allowlist: spacer, callout.
+  add          verb. Allowlist: spacer, callout, list.
   callout      type is a CSS token (default note). Letters, digits, hyphen, underscore.
                Kit CSS covers note, tip, info, important, warning, caution, cancel, happy,
                sad, love, peace, calendar, deadline. Any other type still renders.
                Add .haz_do_callout--{type} to set --haz_callout_accent and --haz_callout_icon.
                title optional. Inner is Markdown (markdownify).
+  list         optional title. Inner is Markdown, a ul or an ol.
+               Chrome only. A plain ul or ol outside haz_do stays plain.
   height       spacer: number. Omitted → CSS default (.haz_do_spacer).
   height_unit  spacer: CSS length unit. Default rem. Allowlist: rem em px vh vw %.
   clear        spacer: default true. false skips haz_clear (float utility).
@@ -38,7 +40,7 @@
   Blades: layouts/_partials/haz/shortcodes/haz_do/
 
   .Inner is read here, not only in a blade. Hugo then requires every call to
-  be closed or self-closed. Blades with no body use />. Callout uses a closing tag.
+  be closed or self-closed. Blades with no body use />. Callout and list use a closing tag.
 */}}
 {{- $inner := .Inner -}}
 {{- $add := "" -}}
@@ -46,11 +48,13 @@
   {{- $add = lower (strings.TrimSpace .) -}}
 {{- end -}}
 
-{{- $allowedAdds := slice "spacer" "callout" -}}
+{{- $allowedAdds := slice "spacer" "callout" "list" -}}
 {{- if not (in $allowedAdds $add) -}}
-<!-- haz_do: need add (spacer, callout) -->
+<!-- haz_do: need add (spacer, callout, list) -->
 {{- else if eq $add "spacer" -}}
   {{- partial "haz/shortcodes/haz_do/haz_do_spacer.html" . -}}
 {{- else if eq $add "callout" -}}
   {{- partial "haz/shortcodes/haz_do/haz_do_callout.html" . -}}
+{{- else if eq $add "list" -}}
+  {{- partial "haz/shortcodes/haz_do/haz_do_list.html" . -}}
 {{- end -}}

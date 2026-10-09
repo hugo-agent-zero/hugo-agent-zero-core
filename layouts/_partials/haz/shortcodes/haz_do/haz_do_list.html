@@ -1,0 +1,25 @@
+{{/*
+  haz_do list blade. Receives the shortcode context (.).
+  Optional title. Inner is Markdown, meant to be a ul or an ol.
+  Chrome only. A plain ul or ol outside this shortcode stays plain.
+*/}}
+{{- $class := "haz_do haz_do_list" -}}
+{{- with .Get "class" -}}
+  {{- $extra := strings.TrimSpace . | htmlEscape -}}
+  {{- if $extra -}}
+    {{- $class = printf "%s %s" $class $extra -}}
+  {{- end -}}
+{{- end -}}
+{{- $title := "" -}}
+{{- with .Get "title" -}}
+  {{- $title = strings.TrimSpace . -}}
+{{- end -}}
+{{- $body := strings.TrimSpace .Inner | markdownify -}}
+<div class="{{ $class }}">
+  {{- with $title }}
+  <p class="haz_do_list__title">{{ . }}</p>
+  {{- end }}
+  {{- with $body }}
+  <div class="haz_do_list__body">{{ . }}</div>
+  {{- end }}
+</div>
