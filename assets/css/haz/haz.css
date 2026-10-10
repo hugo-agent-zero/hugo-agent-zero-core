@@ -609,6 +609,14 @@ html:has(dialog[open]) body {
   display: none;
 }
 
+/* The bar is the Embla viewport. Flex here shrinks the container to the viewport, so a drag settles back to the start. */
+.haz_do_tabs__bar.haz_embla__viewport {
+  display: block;
+  overflow: hidden;
+  gap: 0;
+  scroll-snap-type: none;
+}
+
 .haz_do_tabs__bar--swipe,
 .haz_do_tabs__bar--swipe .haz_do_tab__label {
   cursor: grab;
