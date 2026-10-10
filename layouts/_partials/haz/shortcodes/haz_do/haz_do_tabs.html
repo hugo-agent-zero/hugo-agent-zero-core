@@ -13,9 +13,21 @@
 {{- end -}}
 {{- $tabsID := printf "haz_do_tabs_%d" .Ordinal -}}
 {{- $panelKey := printf "haz_do_tabs_panels_%d" .Ordinal -}}
-<div class="{{ $class }}" id="{{ $tabsID }}">
-  <div class="haz_do_tabs__bar">
+{{- $embla := false -}}
+{{- if isset .Params "embla" -}}
+  {{- $emblaValue := .Get "embla" -}}
+  {{- if eq (printf "%T" $emblaValue) "bool" -}}
+    {{- $embla = $emblaValue -}}
+  {{- else -}}
+    {{- $emblaLow := lower (printf "%v" $emblaValue) -}}
+    {{- $embla = or (eq $emblaLow "true") (eq $emblaLow "1") (eq $emblaLow "yes") (eq $emblaLow "on") -}}
+  {{- end -}}
+{{- end -}}
+<div class="{{ $class }}" id="{{ $tabsID }}"{{ if $embla }} data-haz_embla="tabs"{{ end }}>
+  <div class="haz_do_tabs__bar{{ if $embla }} haz_embla__viewport{{ end }}">
+    {{- if $embla }}<div class="haz_embla__container">{{ end -}}
     {{- .Inner -}}
+    {{- if $embla }}</div>{{ end -}}
   </div>
   <div class="haz_do_tabs__stage">
     {{- with .Page.Store.Get $panelKey -}}
@@ -26,7 +38,11 @@
   <style>
     {{- range $i, $_ := . -}}
       {{- $n := add $i 1 -}}
+{{- if $embla -}}
+#{{ $tabsID }}:has(.haz_embla__container>:nth-child({{ $n }}) .haz_do_tab__radio:checked)>.haz_do_tabs__stage>.haz_do_tab__panel:nth-child({{ $n }}){display:block}
+{{- else -}}
 #{{ $tabsID }}:has(.haz_do_tabs__bar>.haz_do_tab__radio:nth-of-type({{ $n }}):checked)>.haz_do_tabs__stage>.haz_do_tab__panel:nth-child({{ $n }}){display:block}
+{{- end -}}
     {{- end -}}
   </style>
   {{- end -}}
@@ -37,6 +53,7 @@
 <script>
   document.addEventListener("DOMContentLoaded", () => {
     document.querySelectorAll(".haz_do_tabs__bar").forEach((bar) => {
+      if (bar.classList.contains("haz_embla__viewport")) return;
       if (bar.dataset.hazDrag) return;
       bar.dataset.hazDrag = "1";
       let pointerId = null;

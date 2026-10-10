@@ -643,6 +643,21 @@ html:has(dialog[open]) body {
   content: none;
 }
 
+.haz_do_tabs .haz_embla__container {
+  gap: 0.5rem;
+}
+
+.haz_do_tabs .haz_embla__slide {
+  flex: 0 0 auto;
+  min-width: max-content;
+}
+
+.haz_do_tabs .haz_embla__slide .haz_do_tab__label {
+  flex: none;
+  width: auto;
+  cursor: grab;
+}
+
 .haz_do_tab__label {
   flex: 1 0 0%;
   min-width: max-content;
@@ -707,4 +722,19 @@ html:has(dialog[open]) body {
     max-width: 34rem;
     margin-inline: auto;
   }
+}
+
+/* Embla 8.6.0. Structural only. Skin stays out of this file's job. */
+.haz_embla__viewport {
+  overflow: hidden;
+}
+
+.haz_embla__container {
+  display: flex;
+  touch-action: pan-y pinch-zoom;
+}
+
+.haz_embla__slide {
+  flex: 0 0 100%;
+  min-width: 0;
 }

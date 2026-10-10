@@ -1,0 +1,34 @@
+{{- $source := index . "source" -}}
+{{- $child := index . "child" -}}
+{{- $thisObj := index . "thisObj" -}}
+{{- $sysManifest := index . "sysManifest" -}}
+{{- $context := index . "context" -}}
+{{- $thisChildren := index $thisObj "children" -}}
+{{- $thisSource := "atoms|script_embla_000" -}}
+{{- if index $thisObj "enabled" -}}
+<script src="{{ "third_party/embla-carousel/embla-carousel.umd.js" | relURL }}"></script>
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    if (typeof EmblaCarousel !== "function") return;
+    document.querySelectorAll("[data-haz_embla]").forEach((root) => {
+      const viewport = root.querySelector(".haz_embla__viewport");
+      if (!viewport) return;
+      const mode = root.getAttribute("data-haz_embla");
+      EmblaCarousel(viewport, {
+        align: "start",
+        containScroll: "trimSnaps",
+        dragFree: mode === "tabs",
+        loop: mode === "loop"
+      });
+    });
+  });
+</script>
+{{- else if index $thisChildren "enabled_false" "enabled" -}}
+{{- partial "haz/helpers/fn/fn_partial.html" (dict
+  "source" $thisSource
+  "child" (index $thisChildren "enabled_false" "child")
+  "thisObj" $thisObj
+  "sysManifest" $sysManifest
+  "context" $context
+) -}}
+{{ end }}

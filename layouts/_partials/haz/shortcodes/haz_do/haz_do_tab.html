@@ -45,8 +45,22 @@
   {{- $labelClass = printf "%s %s" $labelClass $extra -}}
   {{- $panelClass = printf "%s %s" $panelClass $extra -}}
 {{- end -}}
+{{- $embla := false -}}
+{{- with .Parent -}}
+  {{- if isset .Params "embla" -}}
+    {{- $emblaValue := .Get "embla" -}}
+    {{- if eq (printf "%T" $emblaValue) "bool" -}}
+      {{- $embla = $emblaValue -}}
+    {{- else -}}
+      {{- $emblaLow := lower (printf "%v" $emblaValue) -}}
+      {{- $embla = or (eq $emblaLow "true") (eq $emblaLow "1") (eq $emblaLow "yes") (eq $emblaLow "on") -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
+{{- if $embla }}<div class="haz_embla__slide">{{ end -}}
 <input class="haz_do_tab__radio" type="radio" name="{{ $rname }}" id="{{ $rid }}"{{ if eq $n 0 }} checked{{ end }}>
 <label class="{{ $labelClass }}" for="{{ $rid }}">{{ $title }}</label>
+{{- if $embla }}</div>{{ end -}}
 {{- $panelKey := printf "haz_do_tabs_panels_%d" $group -}}
 {{- $panels := .Page.Store.Get $panelKey | default slice -}}
 {{- $panel := print (printf "<div class=\"%s\">" $panelClass) $body "</div>" | safeHTML -}}
