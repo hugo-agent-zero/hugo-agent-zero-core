@@ -4,12 +4,9 @@
   html=true prints Inner as markup (safeHTML), same pass-through as haz_img.
   CSS radios switch panels. No script.
 */}}
-{{- $class := "haz_do haz_do_tab" -}}
+{{- $extra := "" -}}
 {{- with .Get "class" -}}
-  {{- $extra := strings.TrimSpace . | htmlEscape -}}
-  {{- if $extra -}}
-    {{- $class = printf "%s %s" $class $extra -}}
-  {{- end -}}
+  {{- $extra = strings.TrimSpace . | htmlEscape -}}
 {{- end -}}
 {{- $group := .Ordinal -}}
 {{- with .Parent -}}
@@ -42,10 +39,15 @@
 {{- if $wantHTML -}}
   {{- $body = $raw | safeHTML -}}
 {{- end -}}
-<div class="{{ $class }}">
-  <input class="haz_do_tab__radio" type="radio" name="{{ $rname }}" id="{{ $rid }}"{{ if eq $n 0 }} checked{{ end }}>
-  <label class="haz_do_tab__label" for="{{ $rid }}">{{ $title }}</label>
-  {{- with $body }}
-  <div class="haz_do_tab__panel">{{ . }}</div>
-  {{- end }}
-</div>
+{{- $labelClass := "haz_do_tab__label" -}}
+{{- $panelClass := "haz_do_tab__panel" -}}
+{{- if $extra -}}
+  {{- $labelClass = printf "%s %s" $labelClass $extra -}}
+  {{- $panelClass = printf "%s %s" $panelClass $extra -}}
+{{- end -}}
+<input class="haz_do_tab__radio" type="radio" name="{{ $rname }}" id="{{ $rid }}"{{ if eq $n 0 }} checked{{ end }}>
+<label class="{{ $labelClass }}" for="{{ $rid }}">{{ $title }}</label>
+{{- $panelKey := printf "haz_do_tabs_panels_%d" $group -}}
+{{- $panels := .Page.Store.Get $panelKey | default slice -}}
+{{- $panel := print (printf "<div class=\"%s\">" $panelClass) $body "</div>" | safeHTML -}}
+{{- .Page.Store.Set $panelKey ($panels | append $panel) -}}

@@ -585,18 +585,43 @@ html:has(dialog[open]) body {
 }
 
 /* haz_do tabs. CSS radios switch panels. No script.
-   Labels are buttons. The active button and the panel share one fill. */
+   Labels are buttons in one scrolling row. The panel stays full width below.
+   The active button and the panel share one fill. */
 .haz_do_tabs {
   display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
+  flex-direction: column;
   gap: 0.5rem;
   position: relative;
   margin-block: 1rem;
 }
 
-.haz_do_tab {
-  display: contents;
+.haz_do_tabs__bar {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 0.5rem;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x proximity;
+  scrollbar-width: none;
+}
+
+.haz_do_tabs__bar::-webkit-scrollbar {
+  display: none;
+}
+
+.haz_do_tabs__bar--swipe,
+.haz_do_tabs__bar--swipe .haz_do_tab__label {
+  cursor: grab;
+}
+
+.haz_do_tabs__bar--dragging {
+  scroll-snap-type: none;
+}
+
+.haz_do_tabs__bar--dragging,
+.haz_do_tabs__bar--dragging .haz_do_tab__label {
+  cursor: grabbing;
+  user-select: none;
 }
 
 /* Beat Simple's input[type=radio] (position, width). A radio left in the flex row eats a gap and indents the first button. */
@@ -619,8 +644,10 @@ html:has(dialog[open]) body {
 }
 
 .haz_do_tab__label {
-  order: 1;
-  flex: 1 1 0;
+  flex: 1 0 0%;
+  min-width: max-content;
+  scroll-snap-align: start;
+  white-space: nowrap;
   margin: 0;
   cursor: pointer;
   padding: 0.5rem 1rem;
@@ -632,7 +659,7 @@ html:has(dialog[open]) body {
 }
 
 .haz_do_tab__radio:checked + .haz_do_tab__label,
-.haz_do_tabs:not(:has(.haz_do_tab__radio:checked)) > .haz_do_tab:first-of-type .haz_do_tab__label {
+.haz_do_tabs:not(:has(.haz_do_tab__radio:checked)) > .haz_do_tabs__bar > .haz_do_tab__label:first-of-type {
   background: var(--haz_do_tab_fill, var(--accent-bg));
   border-color: var(--border);
 }
@@ -644,8 +671,6 @@ html:has(dialog[open]) body {
 
 .haz_do_tab__panel {
   display: none;
-  order: 2;
-  flex: 1 1 100%;
   margin: 0;
   padding: 0.7rem 1rem;
   background: var(--haz_do_tab_fill, var(--accent-bg));
@@ -653,8 +678,7 @@ html:has(dialog[open]) body {
   border-radius: var(--standard-border-radius, 5px);
 }
 
-.haz_do_tab__radio:checked + .haz_do_tab__label + .haz_do_tab__panel,
-.haz_do_tabs:not(:has(.haz_do_tab__radio:checked)) > .haz_do_tab:first-of-type .haz_do_tab__panel {
+.haz_do_tabs:not(:has(.haz_do_tab__radio:checked)) > .haz_do_tabs__stage > .haz_do_tab__panel:first-child {
   display: block;
 }
 
@@ -664,13 +688,6 @@ html:has(dialog[open]) body {
 
 .haz_do_tab__panel > :last-child {
   margin-bottom: 0;
-}
-
-/* Mobile: one full-width button per row, then the panel. */
-@media (max-width: 767px) {
-  .haz_do_tab__label {
-    flex-basis: 100%;
-  }
 }
 
 /* Tablet+: full-bleed panel (base width/height 100%), top-aligned — covers the site. */
