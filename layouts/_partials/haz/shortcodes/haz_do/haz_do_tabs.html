@@ -1,0 +1,81 @@
+{{/*
+  haz_do tabs blade. Receives the shortcode context (.).
+  Inner is the label row. Each tab stashes its panel on the page store.
+  The row scrolls when the buttons do not fit. The panel stays full width.
+  CSS radios switch panels. A mouse drag scrolls the row. No scrollbar.
+*/}}
+{{- $class := "haz_do haz_do_tabs" -}}
+{{- with .Get "class" -}}
+  {{- $extra := strings.TrimSpace . | htmlEscape -}}
+  {{- if $extra -}}
+    {{- $class = printf "%s %s" $class $extra -}}
+  {{- end -}}
+{{- end -}}
+{{- $tabsID := printf "haz_do_tabs_%d" .Ordinal -}}
+{{- $panelKey := printf "haz_do_tabs_panels_%d" .Ordinal -}}
+<div class="{{ $class }}" id="{{ $tabsID }}">
+  <div class="haz_do_tabs__bar">
+    {{- .Inner -}}
+  </div>
+  <div class="haz_do_tabs__stage">
+    {{- with .Page.Store.Get $panelKey -}}
+      {{- range . }}{{ . }}{{ end -}}
+    {{- end -}}
+  </div>
+  {{- with .Page.Store.Get $panelKey -}}
+  <style>
+    {{- range $i, $_ := . -}}
+      {{- $n := add $i 1 -}}
+#{{ $tabsID }}:has(.haz_do_tabs__bar>.haz_do_tab__radio:nth-of-type({{ $n }}):checked)>.haz_do_tabs__stage>.haz_do_tab__panel:nth-child({{ $n }}){display:block}
+    {{- end -}}
+  </style>
+  {{- end -}}
+</div>
+{{- /* Children already counted. Zero the keys so the next render starts clean. */ -}}
+{{- .Page.Store.Set $panelKey slice -}}
+{{- .Page.Store.Set $tabsID 0 -}}
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    document.querySelectorAll(".haz_do_tabs__bar").forEach((bar) => {
+      if (bar.dataset.hazDrag) return;
+      bar.dataset.hazDrag = "1";
+      let pointerId = null;
+      let startX = 0;
+      let startScroll = 0;
+      let dragged = false;
+      const overflowing = () => bar.scrollWidth > bar.clientWidth + 1;
+      const mark = () => bar.classList.toggle("haz_do_tabs__bar--swipe", overflowing());
+      mark();
+      if (typeof ResizeObserver === "function") new ResizeObserver(mark).observe(bar);
+      bar.addEventListener("pointerdown", (event) => {
+        if (event.pointerType !== "mouse" || event.button !== 0 || !overflowing()) return;
+        pointerId = event.pointerId;
+        startX = event.clientX;
+        startScroll = bar.scrollLeft;
+        dragged = false;
+        try { bar.setPointerCapture(event.pointerId); } catch (err) {}
+      });
+      bar.addEventListener("pointermove", (event) => {
+        if (pointerId !== event.pointerId) return;
+        const dx = event.clientX - startX;
+        if (!dragged && Math.abs(dx) < 5) return;
+        dragged = true;
+        bar.classList.add("haz_do_tabs__bar--dragging");
+        bar.scrollLeft = startScroll - dx;
+      });
+      const endDrag = (event) => {
+        if (pointerId !== event.pointerId) return;
+        pointerId = null;
+        bar.classList.remove("haz_do_tabs__bar--dragging");
+      };
+      bar.addEventListener("pointerup", endDrag);
+      bar.addEventListener("pointercancel", endDrag);
+      bar.addEventListener("click", (event) => {
+        if (!dragged) return;
+        event.preventDefault();
+        event.stopPropagation();
+        dragged = false;
+      }, true);
+    });
+  });
+</script>
