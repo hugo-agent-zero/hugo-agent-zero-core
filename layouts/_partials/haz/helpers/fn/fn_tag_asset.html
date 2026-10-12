@@ -5,6 +5,7 @@
     - src (string, required): asset path, http URL, or static-…
     - type (string): style | script (default style; legacy: kind)
     - bust (bool): fingerprint pipeline assets (default true)
+    - defer (bool): script tags only. true prints defer. Default false.
     - ver (string): query fragment e.g. "ver=XYZ" — stacked after bust (?/$ver or &/$ver)
     - context (any): ExecuteAsTemplate data (optional)
 */}}
@@ -19,6 +20,15 @@
   {{- $bust = false -}}
 {{- else if eq (printf "%v" $bust) "true" -}}
   {{- $bust = true -}}
+{{- end -}}
+{{- $defer := false -}}
+{{- if isset . "defer" -}}
+  {{- $defer = index . "defer" -}}
+{{- end -}}
+{{- if eq (printf "%v" $defer) "false" -}}
+  {{- $defer = false -}}
+{{- else if eq (printf "%v" $defer) "true" -}}
+  {{- $defer = true -}}
 {{- end -}}
 {{- $ver := index . "ver" | default "" -}}
 {{- $tplCtx := index . "context" | default . -}}
@@ -51,7 +61,7 @@
   {{- end -}}
   {{- if $href -}}
     {{- if eq $type "script" -}}
-<script src="{{ $href }}"></script>
+<script src="{{ $href }}"{{ if $defer }} defer{{ end }}></script>
     {{- else -}}
 <link rel="stylesheet" href="{{ $href }}">
     {{- end -}}

@@ -3,7 +3,7 @@
   Atom props:
     - in_footer (bool): this mount is footer slot (default false = head)
     - collection (map): keyed rows, each string src or
-      { src, type, in_footer, bust, ver, enabled }
+      { src, type, in_footer, bust, defer, ver, enabled }
 */}}
 {{- $source := index . "source" -}}
 {{- $child := index . "child" -}}
@@ -76,6 +76,7 @@
           "src" $src
           "type" $rowType
           "bust" $rowBust
+          "defer" (index $row "defer" | default false)
           "ver" (index $row "ver" | default "")
           "context" $context
         ) -}}

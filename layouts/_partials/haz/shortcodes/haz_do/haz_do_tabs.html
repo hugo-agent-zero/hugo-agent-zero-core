@@ -42,12 +42,11 @@
   {{- print "</div>" | safeHTML -}}
 {{- print "</div>" | safeHTML -}}
 {{- if $swipe -}}
-  {{- partial "haz/helpers/fn/fn_tag_tag_open.html" (dict
-    "tag" "script"
-    "fn" "relURL"
-    "attrs" (dict "src" "third_party/embla-carousel/embla-carousel.umd.js" "defer" "defer")
+  {{- partial "haz/helpers/fn/fn_tag_asset.html" (dict
+    "src" "static-third_party/embla-carousel/embla-carousel.umd.js"
+    "type" "script"
+    "defer" true
   ) -}}
-  {{- print "</script>" | safeHTML -}}
 {{- end -}}
 {{- /* Children already counted. Zero the keys so the next render starts clean. */ -}}
 {{- .Page.Store.Set $panelKey slice -}}
