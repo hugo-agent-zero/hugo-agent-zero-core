@@ -11,7 +11,7 @@
     {{- $class = printf "%s %s" $class $extra -}}
   {{- end -}}
 {{- end -}}
-{{- $tabsID := printf "haz_do_tabs_%d" .Ordinal -}}
+{{- $groupKey := printf "haz_do_tabs_%d" .Ordinal -}}
 {{- $panelKey := printf "haz_do_tabs_panels_%d" .Ordinal -}}
 {{- $swipe := false -}}
 {{- if isset .Params "swipe" -}}
@@ -23,10 +23,12 @@
     {{- $swipe = or (eq $swipeLow "true") (eq $swipeLow "1") (eq $swipeLow "yes") (eq $swipeLow "on") -}}
   {{- end -}}
 {{- end -}}
-{{- $rootAttrs := dict "class" $class "id" $tabsID -}}
+{{- $swipeClass := "haz_do_tabs_swipe_false" -}}
 {{- if $swipe -}}
-  {{- $rootAttrs = merge $rootAttrs (dict "data" (dict "haz_swipe" "true")) -}}
+  {{- $swipeClass = "haz_do_tabs_swipe_true" -}}
 {{- end -}}
+{{- $class = printf "%s %s" $class $swipeClass -}}
+{{- $rootAttrs := dict "class" $class -}}
 {{- partial "haz/helpers/fn/fn_tag_tag_open.html" (dict "tag" "div" "attrs" $rootAttrs) -}}
   {{- partial "haz/helpers/fn/fn_tag_tag_open.html" (dict "tag" "div" "attrs" (dict "class" "haz_do_tabs__bar")) -}}
     {{- partial "haz/helpers/fn/fn_tag_tag_open.html" (dict "tag" "div" "attrs" (dict "class" "haz_do_tabs__tabs")) -}}
@@ -38,22 +40,14 @@
       {{- range . }}{{ . }}{{ end -}}
     {{- end -}}
   {{- print "</div>" | safeHTML -}}
-  {{- with .Page.Store.Get $panelKey -}}
-  <style>
-    {{- range $i, $_ := . -}}
-      {{- $n := add $i 1 -}}
-#{{ $tabsID }}:has(.haz_do_tabs__tabs>.haz_do_tab:nth-child({{ $n }}) .haz_do_tab__radio:checked)>.haz_do_tabs__panels>.haz_do_tab__panel:nth-child({{ $n }}){display:block}
-    {{- end -}}
-  </style>
-  {{- end -}}
 {{- print "</div>" | safeHTML -}}
 {{- /* Children already counted. Zero the keys so the next render starts clean. */ -}}
 {{- .Page.Store.Set $panelKey slice -}}
-{{- .Page.Store.Set $tabsID 0 -}}
+{{- .Page.Store.Set $groupKey 0 -}}
 <script>
   document.addEventListener("DOMContentLoaded", () => {
     document.querySelectorAll(".haz_do_tabs__bar").forEach((bar) => {
-      if (bar.closest("[data-haz_swipe]")) return;
+      if (bar.closest(".haz_do_tabs_swipe_true")) return;
       if (bar.dataset.hazDrag) return;
       bar.dataset.hazDrag = "1";
       let pointerId = null;

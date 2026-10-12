@@ -593,10 +593,14 @@ html:has(dialog[open]) body {
   gap: 0.5rem;
   position: relative;
   margin-block: 1rem;
+  min-width: 0;
+  max-width: 100%;
 }
 
 .haz_do_tabs__bar {
   display: block;
+  width: 100%;
+  min-width: 0;
   overflow-x: auto;
   overscroll-behavior-x: contain;
   scroll-snap-type: x proximity;
@@ -607,7 +611,7 @@ html:has(dialog[open]) body {
   display: none;
 }
 
-.haz_do_tabs[data-haz_swipe] > .haz_do_tabs__bar {
+.haz_do_tabs_swipe_true > .haz_do_tabs__bar {
   overflow: hidden;
   scroll-snap-type: none;
 }
@@ -659,7 +663,7 @@ html:has(dialog[open]) body {
   content: none;
 }
 
-.haz_do_tabs[data-haz_swipe] .haz_do_tab__label {
+.haz_do_tabs_swipe_true .haz_do_tab__label {
   cursor: grab;
 }
 
@@ -700,6 +704,21 @@ html:has(dialog[open]) body {
 }
 
 .haz_do_tabs:not(:has(.haz_do_tab__radio:checked)) > .haz_do_tabs__panels > .haz_do_tab__panel:first-child {
+  display: block;
+}
+
+.haz_do_tabs:has(.haz_do_tabs__tabs > .haz_do_tab:nth-child(1) .haz_do_tab__radio:checked) > .haz_do_tabs__panels > .haz_do_tab__panel:nth-child(1),
+.haz_do_tabs:has(.haz_do_tabs__tabs > .haz_do_tab:nth-child(2) .haz_do_tab__radio:checked) > .haz_do_tabs__panels > .haz_do_tab__panel:nth-child(2),
+.haz_do_tabs:has(.haz_do_tabs__tabs > .haz_do_tab:nth-child(3) .haz_do_tab__radio:checked) > .haz_do_tabs__panels > .haz_do_tab__panel:nth-child(3),
+.haz_do_tabs:has(.haz_do_tabs__tabs > .haz_do_tab:nth-child(4) .haz_do_tab__radio:checked) > .haz_do_tabs__panels > .haz_do_tab__panel:nth-child(4),
+.haz_do_tabs:has(.haz_do_tabs__tabs > .haz_do_tab:nth-child(5) .haz_do_tab__radio:checked) > .haz_do_tabs__panels > .haz_do_tab__panel:nth-child(5),
+.haz_do_tabs:has(.haz_do_tabs__tabs > .haz_do_tab:nth-child(6) .haz_do_tab__radio:checked) > .haz_do_tabs__panels > .haz_do_tab__panel:nth-child(6),
+.haz_do_tabs:has(.haz_do_tabs__tabs > .haz_do_tab:nth-child(7) .haz_do_tab__radio:checked) > .haz_do_tabs__panels > .haz_do_tab__panel:nth-child(7),
+.haz_do_tabs:has(.haz_do_tabs__tabs > .haz_do_tab:nth-child(8) .haz_do_tab__radio:checked) > .haz_do_tabs__panels > .haz_do_tab__panel:nth-child(8),
+.haz_do_tabs:has(.haz_do_tabs__tabs > .haz_do_tab:nth-child(9) .haz_do_tab__radio:checked) > .haz_do_tabs__panels > .haz_do_tab__panel:nth-child(9),
+.haz_do_tabs:has(.haz_do_tabs__tabs > .haz_do_tab:nth-child(10) .haz_do_tab__radio:checked) > .haz_do_tabs__panels > .haz_do_tab__panel:nth-child(10),
+.haz_do_tabs:has(.haz_do_tabs__tabs > .haz_do_tab:nth-child(11) .haz_do_tab__radio:checked) > .haz_do_tabs__panels > .haz_do_tab__panel:nth-child(11),
+.haz_do_tabs:has(.haz_do_tabs__tabs > .haz_do_tab:nth-child(12) .haz_do_tab__radio:checked) > .haz_do_tabs__panels > .haz_do_tab__panel:nth-child(12) {
   display: block;
 }
 
