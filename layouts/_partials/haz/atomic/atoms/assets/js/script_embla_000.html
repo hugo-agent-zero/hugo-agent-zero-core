@@ -10,16 +10,19 @@
 <script>
   document.addEventListener("DOMContentLoaded", () => {
     if (typeof EmblaCarousel !== "function") return;
-    document.querySelectorAll("[data-haz_embla]").forEach((root) => {
-      const viewport = root.querySelector(".haz_embla__viewport");
+    const swipeMap = [
+      {
+        match: ".haz_do_tabs",
+        viewport: ".haz_do_tabs__bar",
+        options: { align: "start", containScroll: "trimSnaps", dragFree: true }
+      }
+    ];
+    document.querySelectorAll("[data-haz_swipe]").forEach((root) => {
+      const spec = swipeMap.find((item) => root.matches(item.match));
+      if (!spec) return;
+      const viewport = root.querySelector(spec.viewport);
       if (!viewport) return;
-      const mode = root.getAttribute("data-haz_embla");
-      EmblaCarousel(viewport, {
-        align: "start",
-        containScroll: "trimSnaps",
-        dragFree: mode === "tabs",
-        loop: mode === "loop"
-      });
+      EmblaCarousel(viewport, spec.options);
     });
   });
 </script>

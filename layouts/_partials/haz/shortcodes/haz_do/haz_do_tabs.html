@@ -13,47 +13,47 @@
 {{- end -}}
 {{- $tabsID := printf "haz_do_tabs_%d" .Ordinal -}}
 {{- $panelKey := printf "haz_do_tabs_panels_%d" .Ordinal -}}
-{{- $embla := false -}}
-{{- if isset .Params "embla" -}}
-  {{- $emblaValue := .Get "embla" -}}
-  {{- if eq (printf "%T" $emblaValue) "bool" -}}
-    {{- $embla = $emblaValue -}}
+{{- $swipe := false -}}
+{{- if isset .Params "swipe" -}}
+  {{- $swipeValue := .Get "swipe" -}}
+  {{- if eq (printf "%T" $swipeValue) "bool" -}}
+    {{- $swipe = $swipeValue -}}
   {{- else -}}
-    {{- $emblaLow := lower (printf "%v" $emblaValue) -}}
-    {{- $embla = or (eq $emblaLow "true") (eq $emblaLow "1") (eq $emblaLow "yes") (eq $emblaLow "on") -}}
+    {{- $swipeLow := lower (printf "%v" $swipeValue) -}}
+    {{- $swipe = or (eq $swipeLow "true") (eq $swipeLow "1") (eq $swipeLow "yes") (eq $swipeLow "on") -}}
   {{- end -}}
 {{- end -}}
-<div class="{{ $class }}" id="{{ $tabsID }}"{{ if $embla }} data-haz_embla="tabs"{{ end }}>
-  <div class="haz_do_tabs__bar{{ if $embla }} haz_embla__viewport{{ end }}">
-    {{- if $embla }}<div class="haz_embla__container">{{ end -}}
+{{- $rootAttrs := dict "class" $class "id" $tabsID -}}
+{{- if $swipe -}}
+  {{- $rootAttrs = merge $rootAttrs (dict "data" (dict "haz_swipe" "true")) -}}
+{{- end -}}
+{{- partial "haz/helpers/fn/fn_tag_tag_open.html" (dict "tag" "div" "attrs" $rootAttrs) -}}
+  {{- partial "haz/helpers/fn/fn_tag_tag_open.html" (dict "tag" "div" "attrs" (dict "class" "haz_do_tabs__bar")) -}}
+    {{- partial "haz/helpers/fn/fn_tag_tag_open.html" (dict "tag" "div" "attrs" (dict "class" "haz_do_tabs__tabs")) -}}
     {{- .Inner -}}
-    {{- if $embla }}</div>{{ end -}}
-  </div>
-  <div class="haz_do_tabs__stage">
+    {{- print "</div>" | safeHTML -}}
+  {{- print "</div>" | safeHTML -}}
+  {{- partial "haz/helpers/fn/fn_tag_tag_open.html" (dict "tag" "div" "attrs" (dict "class" "haz_do_tabs__panels")) -}}
     {{- with .Page.Store.Get $panelKey -}}
       {{- range . }}{{ . }}{{ end -}}
     {{- end -}}
-  </div>
+  {{- print "</div>" | safeHTML -}}
   {{- with .Page.Store.Get $panelKey -}}
   <style>
     {{- range $i, $_ := . -}}
       {{- $n := add $i 1 -}}
-{{- if $embla -}}
-#{{ $tabsID }}:has(.haz_embla__container>:nth-child({{ $n }}) .haz_do_tab__radio:checked)>.haz_do_tabs__stage>.haz_do_tab__panel:nth-child({{ $n }}){display:block}
-{{- else -}}
-#{{ $tabsID }}:has(.haz_do_tabs__bar>.haz_do_tab__radio:nth-of-type({{ $n }}):checked)>.haz_do_tabs__stage>.haz_do_tab__panel:nth-child({{ $n }}){display:block}
-{{- end -}}
+#{{ $tabsID }}:has(.haz_do_tabs__tabs>.haz_do_tab:nth-child({{ $n }}) .haz_do_tab__radio:checked)>.haz_do_tabs__panels>.haz_do_tab__panel:nth-child({{ $n }}){display:block}
     {{- end -}}
   </style>
   {{- end -}}
-</div>
+{{- print "</div>" | safeHTML -}}
 {{- /* Children already counted. Zero the keys so the next render starts clean. */ -}}
 {{- .Page.Store.Set $panelKey slice -}}
 {{- .Page.Store.Set $tabsID 0 -}}
 <script>
   document.addEventListener("DOMContentLoaded", () => {
     document.querySelectorAll(".haz_do_tabs__bar").forEach((bar) => {
-      if (bar.classList.contains("haz_embla__viewport")) return;
+      if (bar.closest("[data-haz_swipe]")) return;
       if (bar.dataset.hazDrag) return;
       bar.dataset.hazDrag = "1";
       let pointerId = null;

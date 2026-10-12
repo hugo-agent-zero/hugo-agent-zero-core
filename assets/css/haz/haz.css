@@ -596,9 +596,7 @@ html:has(dialog[open]) body {
 }
 
 .haz_do_tabs__bar {
-  display: flex;
-  flex-wrap: nowrap;
-  gap: 0.5rem;
+  display: block;
   overflow-x: auto;
   overscroll-behavior-x: contain;
   scroll-snap-type: x proximity;
@@ -609,12 +607,22 @@ html:has(dialog[open]) body {
   display: none;
 }
 
-/* The bar is the Embla viewport. Flex here shrinks the container to the viewport, so a drag settles back to the start. */
-.haz_do_tabs__bar.haz_embla__viewport {
-  display: block;
+.haz_do_tabs[data-haz_swipe] > .haz_do_tabs__bar {
   overflow: hidden;
-  gap: 0;
   scroll-snap-type: none;
+}
+
+.haz_do_tabs__tabs {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 0.5rem;
+  width: max-content;
+  touch-action: pan-y pinch-zoom;
+}
+
+.haz_do_tab {
+  flex: 0 0 auto;
+  min-width: max-content;
 }
 
 .haz_do_tabs__bar--swipe,
@@ -651,23 +659,13 @@ html:has(dialog[open]) body {
   content: none;
 }
 
-.haz_do_tabs .haz_embla__container {
-  gap: 0.5rem;
-}
-
-.haz_do_tabs .haz_embla__slide {
-  flex: 0 0 auto;
-  min-width: max-content;
-}
-
-.haz_do_tabs .haz_embla__slide .haz_do_tab__label {
-  flex: none;
-  width: auto;
+.haz_do_tabs[data-haz_swipe] .haz_do_tab__label {
   cursor: grab;
 }
 
 .haz_do_tab__label {
-  flex: 1 0 0%;
+  flex: none;
+  width: auto;
   min-width: max-content;
   scroll-snap-align: start;
   white-space: nowrap;
@@ -682,7 +680,7 @@ html:has(dialog[open]) body {
 }
 
 .haz_do_tab__radio:checked + .haz_do_tab__label,
-.haz_do_tabs:not(:has(.haz_do_tab__radio:checked)) > .haz_do_tabs__bar > .haz_do_tab__label:first-of-type {
+.haz_do_tabs:not(:has(.haz_do_tab__radio:checked)) .haz_do_tabs__tabs > .haz_do_tab:first-child > .haz_do_tab__label {
   background: var(--haz_do_tab_fill, var(--accent-bg));
   border-color: var(--border);
 }
@@ -701,7 +699,7 @@ html:has(dialog[open]) body {
   border-radius: var(--standard-border-radius, 5px);
 }
 
-.haz_do_tabs:not(:has(.haz_do_tab__radio:checked)) > .haz_do_tabs__stage > .haz_do_tab__panel:first-child {
+.haz_do_tabs:not(:has(.haz_do_tab__radio:checked)) > .haz_do_tabs__panels > .haz_do_tab__panel:first-child {
   display: block;
 }
 
@@ -732,17 +730,3 @@ html:has(dialog[open]) body {
   }
 }
 
-/* Embla 8.6.0. Structural only. Skin stays out of this file's job. */
-.haz_embla__viewport {
-  overflow: hidden;
-}
-
-.haz_embla__container {
-  display: flex;
-  touch-action: pan-y pinch-zoom;
-}
-
-.haz_embla__slide {
-  flex: 0 0 100%;
-  min-width: 0;
-}
