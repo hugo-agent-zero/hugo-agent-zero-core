@@ -584,9 +584,9 @@ html:has(dialog[open]) body {
   margin-top: 0.5rem;
 }
 
-/* haz_do tabs. CSS radios switch panels. No script.
-   Labels are buttons in one scrolling row. The panel stays full width below.
-   The active button and the panel share one fill. */
+/* haz_do tabs. CSS radios switch panels.
+   A swipe row prints the library tag. Labels sit in one scrolling row.
+   The panel stays full width below. The active button and the panel share one fill. */
 .haz_do_tabs {
   display: flex;
   flex-direction: column;
@@ -628,21 +628,6 @@ html:has(dialog[open]) body {
   flex: 0 0 auto;
   width: max-content;
   max-width: none;
-}
-
-.haz_do_tabs__bar--swipe,
-.haz_do_tabs__bar--swipe .haz_do_tab__label {
-  cursor: grab;
-}
-
-.haz_do_tabs__bar--dragging {
-  scroll-snap-type: none;
-}
-
-.haz_do_tabs__bar--dragging,
-.haz_do_tabs__bar--dragging .haz_do_tab__label {
-  cursor: grabbing;
-  user-select: none;
 }
 
 /* Beat Simple's input[type=radio] (position, width). A radio left in the flex row eats a gap and indents the first button. */
