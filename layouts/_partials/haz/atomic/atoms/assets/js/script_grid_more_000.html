@@ -1,0 +1,22 @@
+{{- $source := index . "source" -}}
+{{- $child := index . "child" -}}
+{{- $thisObj := index . "thisObj" -}}
+{{- $sysManifest := index . "sysManifest" -}}
+{{- $context := index . "context" -}}
+{{- $thisChildren := index $thisObj "children" -}}
+{{- $thisSource := "atoms|script_grid_more_000" -}}
+{{- if index $thisObj "enabled" -}}
+{{- partial "haz/helpers/fn/fn_tag_asset.html" (dict
+  "src" "static-haz/js/haz_grid_more.js"
+  "type" "script"
+  "defer" true
+) -}}
+{{- else if index $thisChildren "enabled_false" "enabled" -}}
+{{- partial "haz/helpers/fn/fn_partial.html" (dict
+  "source" $thisSource
+  "child" (index $thisChildren "enabled_false" "child")
+  "thisObj" $thisObj
+  "sysManifest" $sysManifest
+  "context" $context
+) -}}
+{{ end }}

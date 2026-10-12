@@ -1,0 +1,50 @@
+{{/*
+  haz_do grid blade. Receives the shortcode context (.).
+  Inner is markup. Each element is a cell. There is no html attr.
+  more_after defaults to 4. 0 prints no button. 1 through 12 is the phone cutoff.
+  more_button is the label. It does not turn the button on.
+  This pass always prints haz_do_grid_swipe_false.
+*/}}
+{{- $class := "haz_do haz_do_grid haz_do_grid_swipe_false" -}}
+{{- with .Get "class" -}}
+  {{- $extra := strings.TrimSpace . | htmlEscape -}}
+  {{- if $extra -}}
+    {{- $class = printf "%s %s" $class $extra -}}
+  {{- end -}}
+{{- end -}}
+{{- $moreAfter := 4 -}}
+{{- $moreNote := "" -}}
+{{- if isset .Params "more_after" -}}
+  {{- $raw := printf "%v" (.Get "more_after") | strings.TrimSpace -}}
+  {{- if findRE `^[0-9]+$` $raw -}}
+    {{- $moreAfter = int $raw -}}
+    {{- if gt $moreAfter 12 -}}
+      {{- $moreNote = "<!-- haz_do: more_after is 0 through 12 -->" -}}
+      {{- $moreAfter = 0 -}}
+    {{- end -}}
+  {{- else -}}
+    {{- $moreNote = "<!-- haz_do: more_after is 0 through 12 -->" -}}
+    {{- $moreAfter = 0 -}}
+  {{- end -}}
+{{- end -}}
+{{- $moreLabel := "Show All" -}}
+{{- with .Get "more_button" -}}
+  {{- $label := strings.TrimSpace . -}}
+  {{- if $label -}}
+    {{- $moreLabel = $label -}}
+  {{- end -}}
+{{- end -}}
+{{- if ge $moreAfter 1 -}}
+  {{- $class = printf "%s haz_do_grid_more_%d" $class $moreAfter -}}
+{{- end -}}
+{{- $moreNote | safeHTML -}}
+{{- partial "haz/helpers/fn/fn_tag_tag_open.html" (dict "tag" "div" "attrs" (dict "class" $class)) -}}
+  {{- partial "haz/helpers/fn/fn_tag_tag_open.html" (dict "tag" "div" "attrs" (dict "class" "haz_do_grid__cells")) -}}
+    {{- strings.TrimSpace .Inner | safeHTML -}}
+  {{- print "</div>" | safeHTML -}}
+  {{- if ge $moreAfter 1 -}}
+    {{- partial "haz/helpers/fn/fn_tag_tag_open.html" (dict "tag" "button" "attrs" (dict "class" "haz_do_grid__more" "type" "button")) -}}
+    {{- $moreLabel -}}
+    {{- print "</button>" | safeHTML -}}
+  {{- end -}}
+{{- print "</div>" | safeHTML -}}
