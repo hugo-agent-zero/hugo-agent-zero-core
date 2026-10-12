@@ -4,7 +4,7 @@
 {{- $sysManifest := index . "sysManifest" -}}
 {{- $context := index . "context" -}}
 {{- $thisChildren := index $thisObj "children" -}}
-{{- $thisSource := "atoms|script_embla_000" -}}
+{{- $thisSource := "atoms|script_embla_init_000" -}}
 {{- if index $thisObj "enabled" -}}
 {{- partial "haz/helpers/fn/fn_tag_asset.html" (dict
   "src" "static-haz/js/haz_embla_init.js"
