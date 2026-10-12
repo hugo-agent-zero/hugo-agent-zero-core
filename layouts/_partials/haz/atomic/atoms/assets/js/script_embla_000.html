@@ -17,7 +17,7 @@
         options: { align: "start", containScroll: "trimSnaps", dragFree: true }
       }
     ];
-    document.querySelectorAll("[data-haz_swipe]").forEach((root) => {
+    document.querySelectorAll(".haz_do_tabs_swipe_true").forEach((root) => {
       const spec = swipeMap.find((item) => root.matches(item.match));
       if (!spec) return;
       const viewport = root.querySelector(spec.viewport);
