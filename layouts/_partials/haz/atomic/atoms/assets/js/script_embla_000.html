@@ -6,26 +6,12 @@
 {{- $thisChildren := index $thisObj "children" -}}
 {{- $thisSource := "atoms|script_embla_000" -}}
 {{- if index $thisObj "enabled" -}}
-<script src="{{ "third_party/embla-carousel/embla-carousel.umd.js" | relURL }}"></script>
-<script>
-  document.addEventListener("DOMContentLoaded", () => {
-    if (typeof EmblaCarousel !== "function") return;
-    const swipeMap = [
-      {
-        match: ".haz_do_tabs",
-        viewport: ".haz_do_tabs__bar",
-        options: { align: "start", containScroll: "trimSnaps", dragFree: true }
-      }
-    ];
-    document.querySelectorAll(".haz_do_tabs_swipe_true").forEach((root) => {
-      const spec = swipeMap.find((item) => root.matches(item.match));
-      if (!spec) return;
-      const viewport = root.querySelector(spec.viewport);
-      if (!viewport) return;
-      EmblaCarousel(viewport, spec.options);
-    });
-  });
-</script>
+{{- partial "haz/helpers/fn/fn_tag_tag_open.html" (dict
+  "tag" "script"
+  "fn" "relURL"
+  "attrs" (dict "src" "haz/js/haz_embla_init.js" "defer" "defer")
+) -}}
+{{- print "</script>" | safeHTML -}}
 {{- else if index $thisChildren "enabled_false" "enabled" -}}
 {{- partial "haz/helpers/fn/fn_partial.html" (dict
   "source" $thisSource
