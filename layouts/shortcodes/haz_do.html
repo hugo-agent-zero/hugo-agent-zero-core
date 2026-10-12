@@ -22,7 +22,7 @@
     One or two sentences.
     {{< /haz_do >}}
 
-  add          verb. Allowlist: spacer, callout, list, tabs, tab.
+  add          verb. Allowlist: spacer, callout, list, tabs, tab, grid.
   callout      type is a CSS token (default note). Letters, digits, hyphen, underscore.
                Kit CSS covers note, tip, info, important, warning, caution, cancel, happy,
                sad, love, peace, calendar, deadline. Any other type still renders.
@@ -35,6 +35,10 @@
                swipe    optional. true prints the swipe library tag for that row.
   tab          nested in tabs. title is the label. Blank line between tabs.
                Inner is Markdown unless html=true, then Inner is markup (safeHTML).
+  grid         wrapper. Inner is markup. Each element is a cell. No html attr.
+               more_after   optional. Default 4. 0 prints no Show All button.
+                            1 through 12 is how many cells show on a phone before the button.
+               more_button  optional label. Default "Show All". Does not turn the button on.
   height       spacer: number. Omitted → CSS default (.haz_do_spacer).
   height_unit  spacer: CSS length unit. Default rem. Allowlist: rem em px vh vw %.
   clear        spacer: default true. false skips haz_clear (float utility).
@@ -45,7 +49,7 @@
   Blades: layouts/_partials/haz/shortcodes/haz_do/
 
   .Inner is read here, not only in a blade. Hugo then requires every call to
-  be closed or self-closed. Blades with no body use />. Callout, list, tabs, and tab use a closing tag.
+  be closed or self-closed. Blades with no body use />. Callout, list, tabs, tab, and grid use a closing tag.
 */}}
 {{- $inner := .Inner -}}
 {{- $add := "" -}}
@@ -53,9 +57,9 @@
   {{- $add = lower (strings.TrimSpace .) -}}
 {{- end -}}
 
-{{- $allowedAdds := slice "spacer" "callout" "list" "tabs" "tab" -}}
+{{- $allowedAdds := slice "spacer" "callout" "list" "tabs" "tab" "grid" -}}
 {{- if not (in $allowedAdds $add) -}}
-<!-- haz_do: need add (spacer, callout, list, tabs, tab) -->
+<!-- haz_do: need add (spacer, callout, list, tabs, tab, grid) -->
 {{- else if eq $add "spacer" -}}
   {{- partial "haz/shortcodes/haz_do/haz_do_spacer.html" . -}}
 {{- else if eq $add "callout" -}}
@@ -66,4 +70,6 @@
   {{- partial "haz/shortcodes/haz_do/haz_do_tabs.html" . -}}
 {{- else if eq $add "tab" -}}
   {{- partial "haz/shortcodes/haz_do/haz_do_tab.html" . -}}
+{{- else if eq $add "grid" -}}
+  {{- partial "haz/shortcodes/haz_do/haz_do_grid.html" . -}}
 {{- end -}}

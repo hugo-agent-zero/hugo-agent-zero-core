@@ -716,6 +716,146 @@ html:has(dialog[open]) body {
   margin-bottom: 0;
 }
 
+/* haz_do grid. Columns come from how many cells there are.
+   Phone is one column. Tablet is two. Desktop is the wide count.
+   haz_do_grid_swipe_false owns these rules. swipe_true is a later pass.
+   Whitespace between pasted cells is a text node, so counts use `of *`. */
+.haz_do_grid {
+  margin-block: 1rem;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.haz_do_grid_swipe_false .haz_do_grid__cells {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1rem;
+}
+
+.haz_do_grid__item {
+  display: block;
+  min-width: 0;
+  padding: 0.7rem 1rem;
+  color: var(--text);
+  background: var(--bg);
+  border: var(--border-width, 1px) solid var(--border);
+  border-radius: var(--standard-border-radius, 5px);
+  text-decoration: none;
+}
+
+.haz_do_grid__item > :first-child {
+  margin-top: 0;
+}
+
+.haz_do_grid__item > :last-child {
+  margin-bottom: 0;
+}
+
+.haz_do_grid__more {
+  display: none;
+  margin-top: 0.75rem;
+  cursor: pointer;
+}
+
+/* Phone is the base. Show All hides the tail here. The tablet min-width below puts those cells back. */
+.haz_do_grid_more_1:not(.haz_do_grid_more_open) .haz_do_grid__cells > :nth-child(n + 2 of *),
+.haz_do_grid_more_2:not(.haz_do_grid_more_open) .haz_do_grid__cells > :nth-child(n + 3 of *),
+.haz_do_grid_more_3:not(.haz_do_grid_more_open) .haz_do_grid__cells > :nth-child(n + 4 of *),
+.haz_do_grid_more_4:not(.haz_do_grid_more_open) .haz_do_grid__cells > :nth-child(n + 5 of *),
+.haz_do_grid_more_5:not(.haz_do_grid_more_open) .haz_do_grid__cells > :nth-child(n + 6 of *),
+.haz_do_grid_more_6:not(.haz_do_grid_more_open) .haz_do_grid__cells > :nth-child(n + 7 of *),
+.haz_do_grid_more_7:not(.haz_do_grid_more_open) .haz_do_grid__cells > :nth-child(n + 8 of *),
+.haz_do_grid_more_8:not(.haz_do_grid_more_open) .haz_do_grid__cells > :nth-child(n + 9 of *),
+.haz_do_grid_more_9:not(.haz_do_grid_more_open) .haz_do_grid__cells > :nth-child(n + 10 of *),
+.haz_do_grid_more_10:not(.haz_do_grid_more_open) .haz_do_grid__cells > :nth-child(n + 11 of *),
+.haz_do_grid_more_11:not(.haz_do_grid_more_open) .haz_do_grid__cells > :nth-child(n + 12 of *),
+.haz_do_grid_more_12:not(.haz_do_grid_more_open) .haz_do_grid__cells > :nth-child(n + 13 of *) {
+  display: none;
+}
+
+.haz_do_grid_more_1:not(.haz_do_grid_more_open):has(.haz_do_grid__cells > :nth-child(2 of *)) .haz_do_grid__more,
+.haz_do_grid_more_2:not(.haz_do_grid_more_open):has(.haz_do_grid__cells > :nth-child(3 of *)) .haz_do_grid__more,
+.haz_do_grid_more_3:not(.haz_do_grid_more_open):has(.haz_do_grid__cells > :nth-child(4 of *)) .haz_do_grid__more,
+.haz_do_grid_more_4:not(.haz_do_grid_more_open):has(.haz_do_grid__cells > :nth-child(5 of *)) .haz_do_grid__more,
+.haz_do_grid_more_5:not(.haz_do_grid_more_open):has(.haz_do_grid__cells > :nth-child(6 of *)) .haz_do_grid__more,
+.haz_do_grid_more_6:not(.haz_do_grid_more_open):has(.haz_do_grid__cells > :nth-child(7 of *)) .haz_do_grid__more,
+.haz_do_grid_more_7:not(.haz_do_grid_more_open):has(.haz_do_grid__cells > :nth-child(8 of *)) .haz_do_grid__more,
+.haz_do_grid_more_8:not(.haz_do_grid_more_open):has(.haz_do_grid__cells > :nth-child(9 of *)) .haz_do_grid__more,
+.haz_do_grid_more_9:not(.haz_do_grid_more_open):has(.haz_do_grid__cells > :nth-child(10 of *)) .haz_do_grid__more,
+.haz_do_grid_more_10:not(.haz_do_grid_more_open):has(.haz_do_grid__cells > :nth-child(11 of *)) .haz_do_grid__more,
+.haz_do_grid_more_11:not(.haz_do_grid_more_open):has(.haz_do_grid__cells > :nth-child(12 of *)) .haz_do_grid__more,
+.haz_do_grid_more_12:not(.haz_do_grid_more_open):has(.haz_do_grid__cells > :nth-child(13 of *)) .haz_do_grid__more {
+  display: block;
+  inline-size: 100%;
+}
+
+{{- /* Same cuts as haz_img.css: settings max_px.m|t + 1. A custom property cannot sit inside @media. */ -}}
+{{- $sysManifest := partial "haz/helpers/fn/fn_get_sys_manifest.html" . -}}
+{{- $settings := index $sysManifest "settings" | default dict -}}
+{{- $hazImg := index $settings "haz_img" | default dict -}}
+{{- $config := index $hazImg "config" | default dict -}}
+{{- $maxPx := index $config "max_px" | default dict -}}
+{{- $minTablet := add (int (index $maxPx "m" | default 479)) 1 -}}
+{{- $minDesktop := add (int (index $maxPx "t" | default 767)) 1 -}}
+@media (min-width: {{ $minTablet }}px) {
+  .haz_do_grid_swipe_false .haz_do_grid__cells {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .haz_do_grid_swipe_false:has(.haz_do_grid__cells > :nth-child(1 of *):nth-last-child(1 of *)) .haz_do_grid__cells {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .haz_do_grid_more_1:not(.haz_do_grid_more_open) .haz_do_grid__cells > :nth-child(n + 2 of *),
+  .haz_do_grid_more_2:not(.haz_do_grid_more_open) .haz_do_grid__cells > :nth-child(n + 3 of *),
+  .haz_do_grid_more_3:not(.haz_do_grid_more_open) .haz_do_grid__cells > :nth-child(n + 4 of *),
+  .haz_do_grid_more_4:not(.haz_do_grid_more_open) .haz_do_grid__cells > :nth-child(n + 5 of *),
+  .haz_do_grid_more_5:not(.haz_do_grid_more_open) .haz_do_grid__cells > :nth-child(n + 6 of *),
+  .haz_do_grid_more_6:not(.haz_do_grid_more_open) .haz_do_grid__cells > :nth-child(n + 7 of *),
+  .haz_do_grid_more_7:not(.haz_do_grid_more_open) .haz_do_grid__cells > :nth-child(n + 8 of *),
+  .haz_do_grid_more_8:not(.haz_do_grid_more_open) .haz_do_grid__cells > :nth-child(n + 9 of *),
+  .haz_do_grid_more_9:not(.haz_do_grid_more_open) .haz_do_grid__cells > :nth-child(n + 10 of *),
+  .haz_do_grid_more_10:not(.haz_do_grid_more_open) .haz_do_grid__cells > :nth-child(n + 11 of *),
+  .haz_do_grid_more_11:not(.haz_do_grid_more_open) .haz_do_grid__cells > :nth-child(n + 12 of *),
+  .haz_do_grid_more_12:not(.haz_do_grid_more_open) .haz_do_grid__cells > :nth-child(n + 13 of *) {
+    display: block;
+  }
+
+  .haz_do_grid_more_1:not(.haz_do_grid_more_open):has(.haz_do_grid__cells > :nth-child(2 of *)) .haz_do_grid__more,
+  .haz_do_grid_more_2:not(.haz_do_grid_more_open):has(.haz_do_grid__cells > :nth-child(3 of *)) .haz_do_grid__more,
+  .haz_do_grid_more_3:not(.haz_do_grid_more_open):has(.haz_do_grid__cells > :nth-child(4 of *)) .haz_do_grid__more,
+  .haz_do_grid_more_4:not(.haz_do_grid_more_open):has(.haz_do_grid__cells > :nth-child(5 of *)) .haz_do_grid__more,
+  .haz_do_grid_more_5:not(.haz_do_grid_more_open):has(.haz_do_grid__cells > :nth-child(6 of *)) .haz_do_grid__more,
+  .haz_do_grid_more_6:not(.haz_do_grid_more_open):has(.haz_do_grid__cells > :nth-child(7 of *)) .haz_do_grid__more,
+  .haz_do_grid_more_7:not(.haz_do_grid_more_open):has(.haz_do_grid__cells > :nth-child(8 of *)) .haz_do_grid__more,
+  .haz_do_grid_more_8:not(.haz_do_grid_more_open):has(.haz_do_grid__cells > :nth-child(9 of *)) .haz_do_grid__more,
+  .haz_do_grid_more_9:not(.haz_do_grid_more_open):has(.haz_do_grid__cells > :nth-child(10 of *)) .haz_do_grid__more,
+  .haz_do_grid_more_10:not(.haz_do_grid_more_open):has(.haz_do_grid__cells > :nth-child(11 of *)) .haz_do_grid__more,
+  .haz_do_grid_more_11:not(.haz_do_grid_more_open):has(.haz_do_grid__cells > :nth-child(12 of *)) .haz_do_grid__more,
+  .haz_do_grid_more_12:not(.haz_do_grid_more_open):has(.haz_do_grid__cells > :nth-child(13 of *)) .haz_do_grid__more {
+    display: none;
+  }
+}
+
+@media (min-width: {{ $minDesktop }}px) {
+  .haz_do_grid_swipe_false .haz_do_grid__cells {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .haz_do_grid_swipe_false:has(.haz_do_grid__cells > :nth-child(1 of *):nth-last-child(1 of *)) .haz_do_grid__cells {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .haz_do_grid_swipe_false:has(.haz_do_grid__cells > :nth-child(2 of *):nth-last-child(1 of *)) .haz_do_grid__cells {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .haz_do_grid_swipe_false:has(.haz_do_grid__cells > :nth-child(4 of *):nth-last-child(1 of *)) .haz_do_grid__cells,
+  .haz_do_grid_swipe_false:has(.haz_do_grid__cells > :nth-child(8 of *):nth-last-child(1 of *)) .haz_do_grid__cells {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
 /* Tablet+: full-bleed panel (base width/height 100%), top-aligned — covers the site. */
 @media (min-width: 768px) {
   .haz_search_pagefind_modal {
