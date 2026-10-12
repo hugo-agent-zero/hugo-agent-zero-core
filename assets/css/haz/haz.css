@@ -757,7 +757,55 @@ html:has(dialog[open]) body {
   cursor: pointer;
 }
 
-@media (max-width: 39.99rem) {
+/* Phone is the base. Show All hides the tail here. The tablet min-width below puts those cells back. */
+.haz_do_grid_more_1:not(.haz_do_grid_more_open) .haz_do_grid__cells > :nth-child(n + 2 of *),
+.haz_do_grid_more_2:not(.haz_do_grid_more_open) .haz_do_grid__cells > :nth-child(n + 3 of *),
+.haz_do_grid_more_3:not(.haz_do_grid_more_open) .haz_do_grid__cells > :nth-child(n + 4 of *),
+.haz_do_grid_more_4:not(.haz_do_grid_more_open) .haz_do_grid__cells > :nth-child(n + 5 of *),
+.haz_do_grid_more_5:not(.haz_do_grid_more_open) .haz_do_grid__cells > :nth-child(n + 6 of *),
+.haz_do_grid_more_6:not(.haz_do_grid_more_open) .haz_do_grid__cells > :nth-child(n + 7 of *),
+.haz_do_grid_more_7:not(.haz_do_grid_more_open) .haz_do_grid__cells > :nth-child(n + 8 of *),
+.haz_do_grid_more_8:not(.haz_do_grid_more_open) .haz_do_grid__cells > :nth-child(n + 9 of *),
+.haz_do_grid_more_9:not(.haz_do_grid_more_open) .haz_do_grid__cells > :nth-child(n + 10 of *),
+.haz_do_grid_more_10:not(.haz_do_grid_more_open) .haz_do_grid__cells > :nth-child(n + 11 of *),
+.haz_do_grid_more_11:not(.haz_do_grid_more_open) .haz_do_grid__cells > :nth-child(n + 12 of *),
+.haz_do_grid_more_12:not(.haz_do_grid_more_open) .haz_do_grid__cells > :nth-child(n + 13 of *) {
+  display: none;
+}
+
+.haz_do_grid_more_1:not(.haz_do_grid_more_open):has(.haz_do_grid__cells > :nth-child(2 of *)) .haz_do_grid__more,
+.haz_do_grid_more_2:not(.haz_do_grid_more_open):has(.haz_do_grid__cells > :nth-child(3 of *)) .haz_do_grid__more,
+.haz_do_grid_more_3:not(.haz_do_grid_more_open):has(.haz_do_grid__cells > :nth-child(4 of *)) .haz_do_grid__more,
+.haz_do_grid_more_4:not(.haz_do_grid_more_open):has(.haz_do_grid__cells > :nth-child(5 of *)) .haz_do_grid__more,
+.haz_do_grid_more_5:not(.haz_do_grid_more_open):has(.haz_do_grid__cells > :nth-child(6 of *)) .haz_do_grid__more,
+.haz_do_grid_more_6:not(.haz_do_grid_more_open):has(.haz_do_grid__cells > :nth-child(7 of *)) .haz_do_grid__more,
+.haz_do_grid_more_7:not(.haz_do_grid_more_open):has(.haz_do_grid__cells > :nth-child(8 of *)) .haz_do_grid__more,
+.haz_do_grid_more_8:not(.haz_do_grid_more_open):has(.haz_do_grid__cells > :nth-child(9 of *)) .haz_do_grid__more,
+.haz_do_grid_more_9:not(.haz_do_grid_more_open):has(.haz_do_grid__cells > :nth-child(10 of *)) .haz_do_grid__more,
+.haz_do_grid_more_10:not(.haz_do_grid_more_open):has(.haz_do_grid__cells > :nth-child(11 of *)) .haz_do_grid__more,
+.haz_do_grid_more_11:not(.haz_do_grid_more_open):has(.haz_do_grid__cells > :nth-child(12 of *)) .haz_do_grid__more,
+.haz_do_grid_more_12:not(.haz_do_grid_more_open):has(.haz_do_grid__cells > :nth-child(13 of *)) .haz_do_grid__more {
+  display: block;
+  inline-size: 100%;
+}
+
+{{- /* Same cuts as haz_img.css: settings max_px.m|t + 1. A custom property cannot sit inside @media. */ -}}
+{{- $sysManifest := partial "haz/helpers/fn/fn_get_sys_manifest.html" . -}}
+{{- $settings := index $sysManifest "settings" | default dict -}}
+{{- $hazImg := index $settings "haz_img" | default dict -}}
+{{- $config := index $hazImg "config" | default dict -}}
+{{- $maxPx := index $config "max_px" | default dict -}}
+{{- $minTablet := add (int (index $maxPx "m" | default 479)) 1 -}}
+{{- $minDesktop := add (int (index $maxPx "t" | default 767)) 1 -}}
+@media (min-width: {{ $minTablet }}px) {
+  .haz_do_grid_swipe_false .haz_do_grid__cells {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .haz_do_grid_swipe_false:has(.haz_do_grid__cells > :nth-child(1 of *):nth-last-child(1 of *)) .haz_do_grid__cells {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
   .haz_do_grid_more_1:not(.haz_do_grid_more_open) .haz_do_grid__cells > :nth-child(n + 2 of *),
   .haz_do_grid_more_2:not(.haz_do_grid_more_open) .haz_do_grid__cells > :nth-child(n + 3 of *),
   .haz_do_grid_more_3:not(.haz_do_grid_more_open) .haz_do_grid__cells > :nth-child(n + 4 of *),
@@ -770,7 +818,7 @@ html:has(dialog[open]) body {
   .haz_do_grid_more_10:not(.haz_do_grid_more_open) .haz_do_grid__cells > :nth-child(n + 11 of *),
   .haz_do_grid_more_11:not(.haz_do_grid_more_open) .haz_do_grid__cells > :nth-child(n + 12 of *),
   .haz_do_grid_more_12:not(.haz_do_grid_more_open) .haz_do_grid__cells > :nth-child(n + 13 of *) {
-    display: none;
+    display: block;
   }
 
   .haz_do_grid_more_1:not(.haz_do_grid_more_open):has(.haz_do_grid__cells > :nth-child(2 of *)) .haz_do_grid__more,
@@ -785,22 +833,11 @@ html:has(dialog[open]) body {
   .haz_do_grid_more_10:not(.haz_do_grid_more_open):has(.haz_do_grid__cells > :nth-child(11 of *)) .haz_do_grid__more,
   .haz_do_grid_more_11:not(.haz_do_grid_more_open):has(.haz_do_grid__cells > :nth-child(12 of *)) .haz_do_grid__more,
   .haz_do_grid_more_12:not(.haz_do_grid_more_open):has(.haz_do_grid__cells > :nth-child(13 of *)) .haz_do_grid__more {
-    display: block;
-    inline-size: 100%;
+    display: none;
   }
 }
 
-@media (min-width: 40rem) {
-  .haz_do_grid_swipe_false .haz_do_grid__cells {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .haz_do_grid_swipe_false:has(.haz_do_grid__cells > :nth-child(1 of *):nth-last-child(1 of *)) .haz_do_grid__cells {
-    grid-template-columns: minmax(0, 1fr);
-  }
-}
-
-@media (min-width: 768px) {
+@media (min-width: {{ $minDesktop }}px) {
   .haz_do_grid_swipe_false .haz_do_grid__cells {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
