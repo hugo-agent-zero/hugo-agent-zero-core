@@ -616,17 +616,18 @@ html:has(dialog[open]) body {
   scroll-snap-type: none;
 }
 
+/* The track stays the width of the bar. Slides overflow it. A max-content width here grows the viewport to the whole row, Embla's limit is 0, and a drag springs home. */
 .haz_do_tabs__tabs {
   display: flex;
   flex-wrap: nowrap;
   gap: 0.5rem;
-  width: max-content;
   touch-action: pan-y pinch-zoom;
 }
 
 .haz_do_tab {
   flex: 0 0 auto;
-  min-width: max-content;
+  width: max-content;
+  max-width: none;
 }
 
 .haz_do_tabs__bar--swipe,
