@@ -143,7 +143,7 @@ header nav a.haz_is_active {
 .haz_pages_list {
   padding: 0;
   margin: 0;
-  margin-bottom: 1rem;
+  margin-bottom: var(--size-4);
 }
 
 .haz_pages_list > li > article > :first-child {

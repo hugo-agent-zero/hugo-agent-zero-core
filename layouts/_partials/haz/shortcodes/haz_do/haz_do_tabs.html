@@ -13,10 +13,7 @@
 {{- end -}}
 {{- $groupKey := printf "haz_do_tabs_%d" .Ordinal -}}
 {{- $panelKey := printf "haz_do_tabs_panels_%d" .Ordinal -}}
-{{- $swipe := false -}}
-{{- if isset .Params "swipe" -}}
-  {{- $swipe = partial "haz/helpers/fn/fn_haz_bool.html" (dict "value" (.Get "swipe")) -}}
-{{- end -}}
+{{- $swipe := partial "haz/helpers/fn/fn_haz_bool.html" (dict "value" (.Get "swipe") "default" false) -}}
 {{- $swipeClass := "haz_do_tabs_swipe_false" -}}
 {{- $barClass := "haz_do_tabs__bar" -}}
 {{- if $swipe -}}

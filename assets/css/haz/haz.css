@@ -900,8 +900,8 @@ html:has(dialog[open]) body {
   box-sizing: border-box;
   padding: 0.35rem 0.85rem;
   text-decoration: none;
-  color: var(--haz_site_primary, var(--pink-6));
-  border: var(--border-width, 1px) solid var(--pink-6);
+  color: var(--haz_site_primary, var(--accent));
+  border: var(--border-width, 1px) solid var(--haz_site_primary, var(--accent));
   border-radius: var(--standard-border-radius, 5px);
 }
 
@@ -944,8 +944,8 @@ html:has(dialog[open]) body {
   padding: 0.35rem 0.85rem;
   text-align: center;
   text-decoration: none;
-  color: var(--haz_site_primary, var(--pink-6));
-  border: var(--border-width, 1px) solid var(--pink-6);
+  color: var(--haz_site_primary, var(--accent));
+  border: var(--border-width, 1px) solid var(--haz_site_primary, var(--accent));
   border-radius: var(--standard-border-radius, 5px);
 }
 

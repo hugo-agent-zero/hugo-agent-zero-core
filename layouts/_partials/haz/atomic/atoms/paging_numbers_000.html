@@ -27,9 +27,9 @@
 {{- if isset $thisObjProps "pager_pages" -}}
 {{- $pagerPages = int (index $thisObjProps "pager_pages") -}}
 {{- end -}}
-{{- $swipe := partial "haz/helpers/fn/fn_haz_bool.html" (dict "value" (index $paging "pager_pages_swipe")) -}}
+{{- $swipe := partial "haz/helpers/fn/fn_haz_bool.html" (dict "value" (index $paging "pager_pages_swipe") "default" false) -}}
 {{- if isset $thisObjProps "pager_pages_swipe" -}}
-  {{- $swipe = partial "haz/helpers/fn/fn_haz_bool.html" (dict "value" (index $thisObjProps "pager_pages_swipe")) -}}
+  {{- $swipe = partial "haz/helpers/fn/fn_haz_bool.html" (dict "value" (index $thisObjProps "pager_pages_swipe") "default" false) -}}
 {{- end -}}
 {{- $start := 1 -}}
 {{- $end := $total -}}
