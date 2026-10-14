@@ -1,0 +1,18 @@
+{{/*
+  fn_taxonomy_singular.html
+  Display singular for the current term page from settings.taxonomies.<plural>.singular.
+  Empty when Kind is not term, or the key is missing.
+  Args: context, sysManifest
+  Returns: string
+*/}}
+{{- $context := index . "context" -}}
+{{- $sysManifest := index . "sysManifest" -}}
+{{- $singular := "" -}}
+{{- if eq $context.Kind "term" -}}
+{{- $plural := lower (trim (printf "%s" $context.Data.Plural) " \t\n\r") -}}
+{{- $tax := index (index $sysManifest "settings" | default dict) "taxonomies" | default dict -}}
+{{- if and (ne $plural "") (isset $tax $plural) -}}
+{{- $singular = trim (printf "%s" (index (index $tax $plural) "singular" | default "")) " \t\n\r" -}}
+{{- end -}}
+{{- end -}}
+{{- return $singular -}}

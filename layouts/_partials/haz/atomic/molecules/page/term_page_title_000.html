@@ -1,0 +1,36 @@
+{{- $source := index . "source" -}}
+{{- $child := index . "child" -}}
+{{- $thisObj := index . "thisObj" -}}
+{{- $sysManifest := index . "sysManifest" -}}
+{{- $context := index . "context" -}}
+{{- $thisObjProps := index $thisObj "props" | default dict -}}
+{{- $thisChildren := index $thisObj "children" | default dict -}}
+{{- $thisSource := "molecules|term_page_title_000" -}}
+{{- if index $thisObj "enabled" -}}
+{{- partial "haz/helpers/fn/fn_html_comment.html" (dict "text" $thisSource) -}}
+{{- $separator := ": " -}}
+{{- if isset $thisObjProps "separator" -}}
+{{- $separator = index $thisObjProps "separator" -}}
+{{- end -}}
+{{- $prefix := partial "haz/helpers/fn/fn_partial.html" (dict
+  "source" $thisSource
+  "child" "prefix"
+  "thisObj" $thisObj
+  "sysManifest" $sysManifest
+  "context" $context
+) -}}
+{{- $title := partial "haz/helpers/fn/fn_partial.html" (dict
+  "source" $thisSource
+  "child" "title"
+  "thisObj" $thisObj
+  "sysManifest" $sysManifest
+  "context" $context
+) -}}
+{{- if ne (trim (printf "%s" $prefix) " \t\n\r") "" -}}
+{{- $prefix -}}{{- $separator -}}{{- $title -}}
+{{- else -}}
+{{- $title -}}
+{{- end -}}
+{{- else if index $thisChildren "enabled_false" "enabled" -}}
+{{- partial "haz/helpers/fn/fn_partial.html" (dict "source" $thisSource "child" (index $thisChildren "enabled_false" "child") "thisObj" $thisObj "sysManifest" $sysManifest "context" $context) -}}
+{{- end -}}
