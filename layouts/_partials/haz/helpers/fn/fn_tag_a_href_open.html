@@ -7,8 +7,6 @@
   {{- $href = partial "haz/helpers/fn/fn_href_trim_host_root.html" (dict "href" $href) | absURL -}}
 {{- else if eq $fn "safeURL" -}}
   {{- $href = $href | safeURL -}}
-{{- else -}}
-  {{- $href = partial "haz/helpers/fn/fn_href_build.html" (dict "href_base" $href) -}}
 {{- end -}}
 {{- $whiteListedKey := slice "aria-hidden" "aria-label" "rel" -}}
 <a href="{{ $href }}"

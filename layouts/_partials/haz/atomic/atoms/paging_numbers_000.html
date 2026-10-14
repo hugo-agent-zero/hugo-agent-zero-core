@@ -122,8 +122,9 @@
         {{- $gapN := add $lastShown 1 -}}
         {{- $gapPager := index $paginator.Pagers (sub $gapN 1) -}}
         {{- partial "haz/helpers/fn/fn_tag_tag_open.html" (dict "tag" "li" "attrs" (dict "class" "haz_pager__item")) -}}
+        {{- $gapHref := partial "haz/helpers/fn/fn_href_build.html" (dict "href_base" $gapPager.URL) -}}
         {{- partial "haz/helpers/fn/fn_tag_a_href_open.html" (dict
-          "href" $gapPager.URL
+          "href" $gapHref
           "pairs" (dict "class" $pageClass "aria-label" (printf "Page %d" $gapN))
         ) -}}
         {{- $gapN -}}
@@ -142,8 +143,9 @@
       {{- print "</span></li>" | safeHTML -}}
     {{- else -}}
       {{- partial "haz/helpers/fn/fn_tag_tag_open.html" (dict "tag" "li" "attrs" (dict "class" "haz_pager__item")) -}}
+      {{- $pageHref := partial "haz/helpers/fn/fn_href_build.html" (dict "href_base" $pager.URL) -}}
       {{- partial "haz/helpers/fn/fn_tag_a_href_open.html" (dict
-        "href" $pager.URL
+        "href" $pageHref
         "pairs" (dict "class" $pageClass "aria-label" (printf "Page %d" $n))
       ) -}}
       {{- $n -}}
