@@ -26,11 +26,15 @@
   "sysManifest" $sysManifest
   "context" $context
 ) -}}
-{{- if ne (trim (printf "%s" $prefix) " \t\n\r") "" -}}
-{{- $prefix -}}{{- $separator -}}{{- $title -}}
-{{- else -}}
-{{- $title -}}
-{{- end -}}
+{{- $out := partial "haz/helpers/fn/page/fn_page_title_prefixed.html" (dict
+  "context" $context
+  "sysManifest" $sysManifest
+  "title" $title
+  "prefix" $prefix
+  "separator" $separator
+  "prefix_singular" (index $thisObjProps "prefix_singular")
+) -}}
+{{- $out -}}
 {{- else if index $thisChildren "enabled_false" "enabled" -}}
 {{- partial "haz/helpers/fn/fn_partial.html" (dict "source" $thisSource "child" (index $thisChildren "enabled_false" "child") "thisObj" $thisObj "sysManifest" $sysManifest "context" $context) -}}
 {{- end -}}
