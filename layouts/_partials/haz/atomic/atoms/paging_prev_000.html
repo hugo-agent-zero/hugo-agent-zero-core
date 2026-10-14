@@ -19,6 +19,7 @@
 {{- $href := partial "haz/helpers/fn/fn_href_build.html" (dict "href_base" $paginator.Prev.URL) -}}
 {{- partial "haz/helpers/fn/fn_tag_a_href_open.html" (dict
   "href" $href
+  "fn" "safeURL"
   "pairs" (dict "class" $class "rel" "prev" "aria-label" "Previous page")
 ) -}}
 {{- $label -}}

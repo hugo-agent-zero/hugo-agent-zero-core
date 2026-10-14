@@ -7,6 +7,10 @@
   {{- $href = partial "haz/helpers/fn/fn_href_trim_host_root.html" (dict "href" $href) | absURL -}}
 {{- else if eq $fn "safeURL" -}}
   {{- $href = $href | safeURL -}}
+{{- else -}}
+  {{- if not (strings.HasPrefix $href "http") -}}
+    {{- $href = partial "haz/helpers/fn/fn_href_trim_host_root.html" (dict "href" $href) | relURL -}}
+  {{- end -}}
 {{- end -}}
 {{- $whiteListedKey := slice "aria-hidden" "aria-label" "rel" -}}
 <a href="{{ $href }}"
