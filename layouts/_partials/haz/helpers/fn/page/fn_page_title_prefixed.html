@@ -1,7 +1,9 @@
 {{/*
   fn_page_title_prefixed.html
-  Term page: settings singular + separator + title. Else title only.
-  Args: context, sysManifest, title (optional, default context.Title), separator (optional, default ": ")
+  Join optional taxonomy singular + title. One SOT for h1 and head.
+  prefix_singular false → title only (default true).
+  prefix optional; if omitted, settings.taxonomies.*.singular for term pages.
+  Args: context, sysManifest, title (default context.Title), separator (default ": "), prefix_singular, prefix
   Returns: string
 */}}
 {{- $context := index . "context" -}}
@@ -11,9 +13,20 @@
 {{- if isset . "separator" -}}
 {{- $separator = index . "separator" -}}
 {{- end -}}
-{{- $singular := partial "haz/helpers/fn/page/fn_taxonomy_singular.html" (dict "context" $context "sysManifest" $sysManifest) -}}
+{{- $prefixSingular := partial "haz/helpers/fn/fn_haz_bool.html" (dict
+  "value" (index . "prefix_singular")
+  "default" true
+) -}}
 {{- $out := $title -}}
-{{- if ne (trim (printf "%s" $singular) " \t\n\r") "" -}}
-{{- $out = printf "%s%s%s" $singular $separator $title -}}
+{{- if $prefixSingular -}}
+  {{- $prefix := "" -}}
+  {{- if isset . "prefix" -}}
+    {{- $prefix = index . "prefix" -}}
+  {{- else -}}
+    {{- $prefix = partial "haz/helpers/fn/page/fn_taxonomy_singular.html" (dict "context" $context "sysManifest" $sysManifest) -}}
+  {{- end -}}
+  {{- if ne (trim (printf "%s" $prefix) " \t\n\r") "" -}}
+    {{- $out = printf "%s%s%s" $prefix $separator $title -}}
+  {{- end -}}
 {{- end -}}
 {{- return $out -}}

@@ -9,20 +9,17 @@
 {{- if isset $localValues $prop -}}
 {{- $returnValue = index $localValues $prop -}}
 {{- end -}}
-{{- $raw := $returnValue -}}
 {{- $returnValue = partial "haz/helpers/fn/fn_get_page_value_from_string.html" (dict
   "context" $context
   "value" $returnValue
 ) -}}
-{{- $prefixSingular := partial "haz/helpers/fn/fn_haz_bool.html" (dict
-  "value" (index $defaults "prefix_singular")
-  "default" true
-) -}}
-{{- if and $prefixSingular (gt (len $sysManifest) 0) (eq (trim (printf "%s" $raw) " \t\n\r") ".Title") -}}
+{{- $isTitleProp := or (eq $prop "title") (strings.HasSuffix $prop ":title") -}}
+{{- if and $isTitleProp (gt (len $sysManifest) 0) -}}
 {{- $returnValue = partial "haz/helpers/fn/page/fn_page_title_prefixed.html" (dict
   "context" $context
   "sysManifest" $sysManifest
   "title" $returnValue
+  "prefix_singular" (index $defaults "prefix_singular")
 ) -}}
 {{- end -}}
 {{- end -}}
