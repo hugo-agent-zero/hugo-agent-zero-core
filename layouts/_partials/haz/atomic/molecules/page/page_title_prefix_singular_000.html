@@ -5,7 +5,7 @@
 {{- $context := index . "context" -}}
 {{- $thisObjProps := index $thisObj "props" | default dict -}}
 {{- $thisChildren := index $thisObj "children" | default dict -}}
-{{- $thisSource := "molecules|page_title_prefix_term_000" -}}
+{{- $thisSource := "molecules|page_title_prefix_singular_000" -}}
 {{- if index $thisObj "enabled" -}}
 {{- partial "haz/helpers/fn/fn_html_comment.html" (dict "text" $thisSource) -}}
 {{- $separator := ": " -}}
