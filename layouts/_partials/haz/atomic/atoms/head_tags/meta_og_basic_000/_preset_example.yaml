@@ -7,3 +7,4 @@ preset:
   _og:description: og description
   _title_prefix: ""
   _title_suffix: ""
+  _prefix_singular: false

@@ -17,6 +17,7 @@
     {{- $tagList := index . "tag_white_list" | default slice -}}
     {{- partial "haz/helpers/fn/fn_head_tags_taglist.html" (dict
       "context" $context
+      "sysManifest" $sysManifest
       "defaults" $props
       "localValues" dict
       "tagList" $tagList
@@ -24,6 +25,7 @@
     {{- if isset $props "canonical" -}}
       {{- $temp := partial "haz/helpers/fn/fn_get_meta_value_rules.html" (dict
         "context" $context
+        "sysManifest" $sysManifest
         "prop" "canonical"
         "defaults" $props
         "localValues" dict

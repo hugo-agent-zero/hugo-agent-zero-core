@@ -1,4 +1,5 @@
 {{- $context := index . "context" -}}
+{{- $sysManifest := index . "sysManifest" | default dict -}}
 {{- $prop := index . "prop" -}}
 {{- $defaults := index . "defaults" | default dict -}}
 {{- $localValues := index . "localValues" | default dict -}}
@@ -8,9 +9,21 @@
 {{- if isset $localValues $prop -}}
 {{- $returnValue = index $localValues $prop -}}
 {{- end -}}
+{{- $raw := $returnValue -}}
 {{- $returnValue = partial "haz/helpers/fn/fn_get_page_value_from_string.html" (dict
   "context" $context
   "value" $returnValue
 ) -}}
+{{- $prefixSingular := partial "haz/helpers/fn/fn_haz_bool.html" (dict
+  "value" (index $defaults "prefix_singular")
+  "default" true
+) -}}
+{{- if and $prefixSingular (gt (len $sysManifest) 0) (eq (trim (printf "%s" $raw) " \t\n\r") ".Title") -}}
+{{- $returnValue = partial "haz/helpers/fn/page/fn_page_title_prefixed.html" (dict
+  "context" $context
+  "sysManifest" $sysManifest
+  "title" $returnValue
+) -}}
+{{- end -}}
 {{- end -}}
 {{- return $returnValue -}}

@@ -3,6 +3,7 @@ defaults:
   twitter:site: "@site_handle"
   twitter:creator: "@author_handle"
   twitter:title: ".Title"
+  prefix_singular: true
   twitter:description: default description text
   twitter:image: /defaults/meta_tag_default_image.png
   twitter:image:alt: twitter image alt

@@ -6,6 +6,7 @@ defaults:
   og:description: og description
   title_prefix: ""
   title_suffix: ""
+  prefix_singular: true
 tag_white_list:
   - key: og:description
     compare: basic

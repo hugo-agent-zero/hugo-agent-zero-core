@@ -4,3 +4,4 @@ preset:
   _title_prefix: ""
   _title_suffix: ""
   _delimiter: " | "
+  _prefix_singular: false
