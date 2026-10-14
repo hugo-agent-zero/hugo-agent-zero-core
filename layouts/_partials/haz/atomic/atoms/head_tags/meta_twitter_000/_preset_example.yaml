@@ -4,6 +4,7 @@ preset:
   _twitter:site: "@site_handle"
   _twitter:creator: "@author_handle"
   _twitter:title: ".Title"
+  _prefix_singular: false
   _twitter:description: default description text
   _twitter:image: /defaults/meta_tag_default_image.png
   _twitter:image:alt: twitter image alt
