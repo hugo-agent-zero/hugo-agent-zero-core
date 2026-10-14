@@ -56,7 +56,7 @@
 {{- $author := index $resolved "author" -}}
 {{- $authorId := index $resolved "author_id" -}}
 {{- $name := index $author "name" | default "" -}}
-{{- $href := printf "/authors/%s/" $authorId -}}
+{{- $href := partial "haz/helpers/fn/fn_href_build.html" (dict "href_base" (printf "/authors/%s/" $authorId)) -}}
     <a rel="author" href="{{ $href }}">{{ $name }}</a>
 {{- end -}}
   </dd>
