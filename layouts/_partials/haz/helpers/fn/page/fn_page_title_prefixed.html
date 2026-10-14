@@ -1,0 +1,18 @@
+{{/*
+  fn_page_title_prefixed.html
+  Term page: settings singular + separator + title. Else title only.
+  Args: context, sysManifest, title (optional, default context.Title), separator (optional, default ": ")
+  Returns: string
+*/}}
+{{- $context := index . "context" -}}
+{{- $sysManifest := index . "sysManifest" -}}
+{{- $title := index . "title" | default $context.Title -}}
+{{- $separator := ": " -}}
+{{- if isset . "separator" -}}
+{{- $separator = index . "separator" -}}
+{{- end -}}
+{{- $singular := partial "haz/helpers/fn/page/fn_taxonomy_singular.html" (dict "context" $context "sysManifest" $sysManifest) -}}
+{{- if ne (trim (printf "%s" $singular) " \t\n\r") "" -}}
+{{- return (printf "%s%s%s" $singular $separator $title) -}}
+{{- end -}}
+{{- return $title -}}

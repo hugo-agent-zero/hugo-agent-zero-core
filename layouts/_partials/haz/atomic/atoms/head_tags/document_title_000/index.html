@@ -22,6 +22,13 @@
       "context" $context
       "value" $titleRaw
     ) -}}
+    {{- if eq $titleRaw ".Title" -}}
+      {{- $titleValue = partial "haz/helpers/fn/page/fn_page_title_prefixed.html" (dict
+        "context" $context
+        "sysManifest" $sysManifest
+        "title" $titleValue
+      ) -}}
+    {{- end -}}
     {{- if ne $titleValue "" -}}
       {{- $parts := slice -}}
       {{- if ne $prefix "" -}}{{- $parts = $parts | append $prefix -}}{{- end -}}

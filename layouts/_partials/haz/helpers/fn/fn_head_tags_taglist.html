@@ -9,6 +9,7 @@
     - tagList (slice of {key, compare, tag})
 */}}
 {{- $context := index . "context" -}}
+{{- $sysManifest := index . "sysManifest" | default dict -}}
 {{- $defaults := index . "defaults" | default dict -}}
 {{- $localValues := index . "localValues" | default dict -}}
 {{- $tagList := index . "tagList" -}}
@@ -20,6 +21,7 @@
 {{- if eq $compare "basic" -}}
 {{- $temp = partial "haz/helpers/fn/fn_get_meta_value_rules.html" (dict
   "context" $context
+  "sysManifest" $sysManifest
   "prop" $key
   "defaults" $defaults
   "localValues" $localValues
