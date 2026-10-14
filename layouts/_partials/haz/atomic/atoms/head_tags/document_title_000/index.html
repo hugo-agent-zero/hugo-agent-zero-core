@@ -26,7 +26,7 @@
       "value" (index $props "prefix_singular")
       "default" true
     ) -}}
-    {{- if and $prefixSingular (eq $titleRaw ".Title") -}}
+    {{- if $prefixSingular -}}
       {{- $titleValue = partial "haz/helpers/fn/page/fn_page_title_prefixed.html" (dict
         "context" $context
         "sysManifest" $sysManifest
