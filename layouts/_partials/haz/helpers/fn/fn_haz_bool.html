@@ -1,0 +1,42 @@
+{{/*
+  fn_haz_bool.html
+  YAML and shortcode attrs stringify booleans.
+  Native bool as-is. true / 1 / yes / on (any case) → true.
+  Absent / empty / nil → default (false if omitted).
+  A present false / 0 / no / off (or any other string) wins over default.
+  Do not `with` a false — empty in Go templates.
+  Args: value, default (optional bool or same string ladder)
+  Returns: bool
+*/}}
+{{- $ok := false -}}
+{{- if isset . "default" -}}
+  {{- $d := index . "default" -}}
+  {{- if eq (printf "%T" $d) "bool" -}}
+    {{- $ok = $d -}}
+  {{- else -}}
+    {{- $dLow := lower (printf "%v" $d) -}}
+    {{- $ok = or (eq $dLow "true") (eq $dLow "1") (eq $dLow "yes") (eq $dLow "on") -}}
+  {{- end -}}
+{{- end -}}
+{{- $present := false -}}
+{{- if isset . "value" -}}
+  {{- $raw := index . "value" -}}
+  {{- if eq (printf "%T" $raw) "bool" -}}
+    {{- $present = true -}}
+  {{- else -}}
+    {{- $s := trim (printf "%v" $raw) " \t\n\r" -}}
+    {{- if and (ne $s "") (ne $s "<nil>") -}}
+      {{- $present = true -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
+{{- if $present -}}
+  {{- $raw := index . "value" -}}
+  {{- if eq (printf "%T" $raw) "bool" -}}
+    {{- $ok = $raw -}}
+  {{- else -}}
+    {{- $low := lower (trim (printf "%v" $raw) " \t\n\r") -}}
+    {{- $ok = or (eq $low "true") (eq $low "1") (eq $low "yes") (eq $low "on") -}}
+  {{- end -}}
+{{- end -}}
+{{- return $ok -}}

@@ -1,0 +1,31 @@
+{{/*
+  Next page link. Empty when there is no next page.
+*/}}
+{{- $source := index . "source" -}}
+{{- $child := index . "child" -}}
+{{- $thisObj := index . "thisObj" -}}
+{{- $sysManifest := index . "sysManifest" -}}
+{{- $context := index . "context" -}}
+{{- $thisObjProps := index $thisObj "props" | default dict -}}
+{{- $thisChildren := index $thisObj "children" | default dict -}}
+{{- $thisSource := "atoms|paging_next_000" -}}
+{{- $paginator := $context.Paginator -}}
+{{- if and (index $thisObj "enabled") $paginator $paginator.HasNext -}}
+{{- partial "haz/helpers/fn/fn_html_comment.html" (dict "text" $thisSource) -}}
+{{- $class := index $thisObjProps "class" | default "haz_pager__next" -}}
+{{- $label := index $thisObjProps "label" | default "Next" -}}
+{{- partial "haz/helpers/fn/fn_tag_a_href_open.html" (dict
+  "href" $paginator.Next.URL
+  "pairs" (dict "class" $class "rel" "next" "aria-label" "Next page")
+) -}}
+{{- $label -}}
+{{- print "</a>" | safeHTML -}}
+{{- else if index $thisChildren "enabled_false" "enabled" -}}
+{{- partial "haz/helpers/fn/fn_partial.html" (dict
+  "source" $thisSource
+  "child" (index $thisChildren "enabled_false" "child")
+  "thisObj" $thisObj
+  "sysManifest" $sysManifest
+  "context" $context
+) -}}
+{{- end -}}

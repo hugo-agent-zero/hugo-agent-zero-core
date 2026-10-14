@@ -1,0 +1,172 @@
+{{/*
+  pager_pages is the <ol> slot count (links + ellipses), held constant when
+  total pages is higher. 5+ is recommended (first, last, current, ellipses)
+  but not enforced. Grow a consecutive run around current; add first/last
+  (and their ellipses) only if they fit the budget. A one-page hole is that
+  page as a link. Two or more holes collapse to one ellipsis.
+  Current page is text, not a link.
+*/}}
+{{- $source := index . "source" -}}
+{{- $child := index . "child" -}}
+{{- $thisObj := index . "thisObj" -}}
+{{- $sysManifest := index . "sysManifest" -}}
+{{- $context := index . "context" -}}
+{{- $thisObjProps := index $thisObj "props" | default dict -}}
+{{- $thisChildren := index $thisObj "children" | default dict -}}
+{{- $thisSource := "atoms|paging_numbers_000" -}}
+{{- $paginator := $context.Paginator -}}
+{{- if and (index $thisObj "enabled") $paginator (gt $paginator.TotalPages 1) -}}
+{{- partial "haz/helpers/fn/fn_html_comment.html" (dict "text" $thisSource) -}}
+{{- $listClass := index $thisObjProps "class" | default "haz_pager__numbers" -}}
+{{- $pageClass := index $thisObjProps "page_class" | default "haz_pager__page" -}}
+{{- $current := $paginator.PageNumber -}}
+{{- $total := $paginator.TotalPages -}}
+{{- $settings := index $sysManifest "settings" | default dict -}}
+{{- $paging := index $settings "paging" | default dict -}}
+{{- $pagerPages := int (index $paging "pager_pages" | default 8) -}}
+{{- if isset $thisObjProps "pager_pages" -}}
+{{- $pagerPages = int (index $thisObjProps "pager_pages") -}}
+{{- end -}}
+{{- $swipe := partial "haz/helpers/fn/fn_haz_bool.html" (dict "value" (index $paging "pager_pages_swipe") "default" false) -}}
+{{- if isset $thisObjProps "pager_pages_swipe" -}}
+  {{- $swipe = partial "haz/helpers/fn/fn_haz_bool.html" (dict "value" (index $thisObjProps "pager_pages_swipe") "default" false) -}}
+{{- end -}}
+{{- $start := 1 -}}
+{{- $end := $total -}}
+{{- $includeFirst := true -}}
+{{- $includeLast := true -}}
+{{- if gt $total $pagerPages -}}
+  {{- $start = $current -}}
+  {{- $end = $current -}}
+  {{- range seq (int $total) -}}
+    {{- $count := add (sub $end $start) 1 -}}
+    {{- $leftExtra := 0 -}}
+    {{- if gt $start 1 -}}
+      {{- if eq $start 2 -}}{{- $leftExtra = 1 -}}{{- else -}}{{- $leftExtra = 2 -}}{{- end -}}
+    {{- end -}}
+    {{- $rightExtra := 0 -}}
+    {{- if lt $end $total -}}
+      {{- if eq $end (sub $total 1) -}}{{- $rightExtra = 1 -}}{{- else -}}{{- $rightExtra = 2 -}}{{- end -}}
+    {{- end -}}
+    {{- $used := $count -}}
+    {{- if le (add $used $leftExtra) $pagerPages -}}{{- $used = add $used $leftExtra -}}{{- end -}}
+    {{- if le (add $used $rightExtra) $pagerPages -}}{{- $used = add $used $rightExtra -}}{{- end -}}
+    {{- if ge $used $pagerPages -}}
+      {{- break -}}
+    {{- end -}}
+    {{- $hiddenL := sub $start 1 -}}
+    {{- $hiddenR := sub $total $end -}}
+    {{- $tryStart := $start -}}
+    {{- $tryEnd := $end -}}
+    {{- if and (gt $start 1) (gt $hiddenL $hiddenR) -}}
+      {{- $tryStart = sub $start 1 -}}
+    {{- else if lt $end $total -}}
+      {{- $tryEnd = add $end 1 -}}
+    {{- else if gt $start 1 -}}
+      {{- $tryStart = sub $start 1 -}}
+    {{- else -}}
+      {{- break -}}
+    {{- end -}}
+    {{- $tryCount := add (sub $tryEnd $tryStart) 1 -}}
+    {{- $tryLeft := 0 -}}
+    {{- if gt $tryStart 1 -}}
+      {{- if eq $tryStart 2 -}}{{- $tryLeft = 1 -}}{{- else -}}{{- $tryLeft = 2 -}}{{- end -}}
+    {{- end -}}
+    {{- $tryRight := 0 -}}
+    {{- if lt $tryEnd $total -}}
+      {{- if eq $tryEnd (sub $total 1) -}}{{- $tryRight = 1 -}}{{- else -}}{{- $tryRight = 2 -}}{{- end -}}
+    {{- end -}}
+    {{- $tryUsed := $tryCount -}}
+    {{- if le (add $tryUsed $tryLeft) $pagerPages -}}{{- $tryUsed = add $tryUsed $tryLeft -}}{{- end -}}
+    {{- if le (add $tryUsed $tryRight) $pagerPages -}}{{- $tryUsed = add $tryUsed $tryRight -}}{{- end -}}
+    {{- if gt $tryUsed $pagerPages -}}
+      {{- break -}}
+    {{- end -}}
+    {{- $start = $tryStart -}}
+    {{- $end = $tryEnd -}}
+  {{- end -}}
+  {{- $count := add (sub $end $start) 1 -}}
+  {{- $includeFirst = eq $start 1 -}}
+  {{- $includeLast = eq $end $total -}}
+  {{- if not $includeFirst -}}
+    {{- $leftExtra := 2 -}}
+    {{- if eq $start 2 -}}{{- $leftExtra = 1 -}}{{- end -}}
+    {{- if le (add $count $leftExtra) $pagerPages -}}
+      {{- $includeFirst = true -}}
+      {{- $count = add $count $leftExtra -}}
+    {{- end -}}
+  {{- end -}}
+  {{- if not $includeLast -}}
+    {{- $rightExtra := 2 -}}
+    {{- if eq $end (sub $total 1) -}}{{- $rightExtra = 1 -}}{{- end -}}
+    {{- if le (add $count $rightExtra) $pagerPages -}}
+      {{- $includeLast = true -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
+{{- if lt $start 1 -}}{{- $start = 1 -}}{{- end -}}
+{{- if gt $end $total -}}{{- $end = $total -}}{{- end -}}
+{{- $lastShown := 0 -}}
+{{- $wrapClass := "haz_pager__swipe haz_swipe_false" -}}
+{{- if $swipe -}}
+  {{- $wrapClass = "haz_pager__swipe haz_swipe_true haz_swipe__viewport" -}}
+{{- end -}}
+{{- partial "haz/helpers/fn/fn_tag_tag_open.html" (dict "tag" "div" "attrs" (dict "class" $wrapClass)) -}}
+{{- partial "haz/helpers/fn/fn_tag_tag_open.html" (dict "tag" "ol" "attrs" (dict "class" $listClass "aria" (dict "label" "Pages"))) -}}
+{{- range $pager := $paginator.Pagers -}}
+  {{- $n := $pager.PageNumber -}}
+  {{- $inWindow := or (and $includeFirst (eq $n 1)) (and $includeLast (eq $n $total)) (and (ge $n $start) (le $n $end)) -}}
+  {{- if $inWindow -}}
+    {{- if and (gt $lastShown 0) (gt (sub $n $lastShown) 1) -}}
+      {{- if eq (sub $n $lastShown) 2 -}}
+        {{- $gapN := add $lastShown 1 -}}
+        {{- $gapPager := index $paginator.Pagers (sub $gapN 1) -}}
+        {{- partial "haz/helpers/fn/fn_tag_tag_open.html" (dict "tag" "li" "attrs" (dict "class" "haz_pager__item")) -}}
+        {{- partial "haz/helpers/fn/fn_tag_a_href_open.html" (dict
+          "href" $gapPager.URL
+          "pairs" (dict "class" $pageClass "aria-label" (printf "Page %d" $gapN))
+        ) -}}
+        {{- $gapN -}}
+        {{- print "</a></li>" | safeHTML -}}
+      {{- else -}}
+        {{- partial "haz/helpers/fn/fn_tag_tag_open.html" (dict "tag" "li" "attrs" (dict "class" "haz_pager__gap")) -}}
+        {{- partial "haz/helpers/fn/fn_tag_tag_open.html" (dict "tag" "span" "attrs" (dict "aria" (dict "hidden" "true"))) -}}
+        …
+        {{- print "</span></li>" | safeHTML -}}
+      {{- end -}}
+    {{- end -}}
+    {{- if eq $n $current -}}
+      {{- partial "haz/helpers/fn/fn_tag_tag_open.html" (dict "tag" "li" "attrs" (dict "class" "haz_pager__item")) -}}
+      {{- partial "haz/helpers/fn/fn_tag_tag_open.html" (dict "tag" "span" "attrs" (dict "class" $pageClass "aria" (dict "current" "page"))) -}}
+      {{- $n -}}
+      {{- print "</span></li>" | safeHTML -}}
+    {{- else -}}
+      {{- partial "haz/helpers/fn/fn_tag_tag_open.html" (dict "tag" "li" "attrs" (dict "class" "haz_pager__item")) -}}
+      {{- partial "haz/helpers/fn/fn_tag_a_href_open.html" (dict
+        "href" $pager.URL
+        "pairs" (dict "class" $pageClass "aria-label" (printf "Page %d" $n))
+      ) -}}
+      {{- $n -}}
+      {{- print "</a></li>" | safeHTML -}}
+    {{- end -}}
+    {{- $lastShown = $n -}}
+  {{- end -}}
+{{- end -}}
+{{- print "</ol>" | safeHTML -}}
+{{- print "</div>" | safeHTML -}}
+{{- if $swipe -}}
+{{- partial "haz/helpers/fn/fn_tag_asset.html" (dict
+  "src" "static-third_party/embla-carousel/embla-carousel.umd.js"
+  "type" "script"
+  "defer" true
+) -}}
+{{- end -}}
+{{- else if index $thisChildren "enabled_false" "enabled" -}}
+{{- partial "haz/helpers/fn/fn_partial.html" (dict
+  "source" $thisSource
+  "child" (index $thisChildren "enabled_false" "child")
+  "thisObj" $thisObj
+  "sysManifest" $sysManifest
+  "context" $context
+) -}}
+{{- end -}}

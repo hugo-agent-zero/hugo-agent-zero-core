@@ -13,24 +13,17 @@
 {{- end -}}
 {{- $groupKey := printf "haz_do_tabs_%d" .Ordinal -}}
 {{- $panelKey := printf "haz_do_tabs_panels_%d" .Ordinal -}}
-{{- $swipe := false -}}
-{{- if isset .Params "swipe" -}}
-  {{- $swipeValue := .Get "swipe" -}}
-  {{- if eq (printf "%T" $swipeValue) "bool" -}}
-    {{- $swipe = $swipeValue -}}
-  {{- else -}}
-    {{- $swipeLow := lower (printf "%v" $swipeValue) -}}
-    {{- $swipe = or (eq $swipeLow "true") (eq $swipeLow "1") (eq $swipeLow "yes") (eq $swipeLow "on") -}}
-  {{- end -}}
-{{- end -}}
+{{- $swipe := partial "haz/helpers/fn/fn_haz_bool.html" (dict "value" (.Get "swipe") "default" false) -}}
 {{- $swipeClass := "haz_do_tabs_swipe_false" -}}
+{{- $barClass := "haz_do_tabs__bar" -}}
 {{- if $swipe -}}
-  {{- $swipeClass = "haz_do_tabs_swipe_true" -}}
+  {{- $swipeClass = "haz_do_tabs_swipe_true haz_swipe_true" -}}
+  {{- $barClass = "haz_do_tabs__bar haz_swipe__viewport" -}}
 {{- end -}}
 {{- $class = printf "%s %s" $class $swipeClass -}}
 {{- $rootAttrs := dict "class" $class -}}
 {{- partial "haz/helpers/fn/fn_tag_tag_open.html" (dict "tag" "div" "attrs" $rootAttrs) -}}
-  {{- partial "haz/helpers/fn/fn_tag_tag_open.html" (dict "tag" "div" "attrs" (dict "class" "haz_do_tabs__bar")) -}}
+  {{- partial "haz/helpers/fn/fn_tag_tag_open.html" (dict "tag" "div" "attrs" (dict "class" $barClass)) -}}
     {{- partial "haz/helpers/fn/fn_tag_tag_open.html" (dict "tag" "div" "attrs" (dict "class" "haz_do_tabs__tabs")) -}}
     {{- .Inner -}}
     {{- print "</div>" | safeHTML -}}
