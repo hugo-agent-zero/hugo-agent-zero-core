@@ -12,7 +12,8 @@
 {{- $separator = index . "separator" -}}
 {{- end -}}
 {{- $singular := partial "haz/helpers/fn/page/fn_taxonomy_singular.html" (dict "context" $context "sysManifest" $sysManifest) -}}
+{{- $out := $title -}}
 {{- if ne (trim (printf "%s" $singular) " \t\n\r") "" -}}
-{{- return (printf "%s%s%s" $singular $separator $title) -}}
+{{- $out = printf "%s%s%s" $singular $separator $title -}}
 {{- end -}}
-{{- return $title -}}
+{{- return $out -}}
