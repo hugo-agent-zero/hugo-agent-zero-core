@@ -3,4 +3,6 @@ defaults:
   title_prefix: ""
   title_suffix: ""
   delimiter: " | "
+  # Term pages: prefix .Title with settings.taxonomies.*.singular. false skips it.
+  singular_prefix: true
 merge_paths: []

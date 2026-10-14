@@ -22,7 +22,11 @@
       "context" $context
       "value" $titleRaw
     ) -}}
-    {{- if eq $titleRaw ".Title" -}}
+    {{- $singularPrefix := partial "haz/helpers/fn/fn_haz_bool.html" (dict
+      "value" (index $props "singular_prefix")
+      "default" true
+    ) -}}
+    {{- if and $singularPrefix (eq $titleRaw ".Title") -}}
       {{- $titleValue = partial "haz/helpers/fn/page/fn_page_title_prefixed.html" (dict
         "context" $context
         "sysManifest" $sysManifest

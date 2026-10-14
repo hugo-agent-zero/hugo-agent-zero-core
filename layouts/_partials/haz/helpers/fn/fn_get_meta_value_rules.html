@@ -14,7 +14,11 @@
   "context" $context
   "value" $returnValue
 ) -}}
-{{- if and (gt (len $sysManifest) 0) (eq (trim (printf "%s" $raw) " \t\n\r") ".Title") -}}
+{{- $singularPrefix := partial "haz/helpers/fn/fn_haz_bool.html" (dict
+  "value" (index $defaults "singular_prefix")
+  "default" true
+) -}}
+{{- if and $singularPrefix (gt (len $sysManifest) 0) (eq (trim (printf "%s" $raw) " \t\n\r") ".Title") -}}
 {{- $returnValue = partial "haz/helpers/fn/page/fn_page_title_prefixed.html" (dict
   "context" $context
   "sysManifest" $sysManifest
