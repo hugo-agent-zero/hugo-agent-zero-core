@@ -1,0 +1,27 @@
+{{- $source := index . "source" -}}
+{{- $child := index . "child" -}}
+{{- $thisObj := index . "thisObj" -}}
+{{- $sysManifest := index . "sysManifest" -}}
+{{- $context := index . "context" -}}
+{{- $thisObjProps := index $thisObj "props" | default dict -}}
+{{- $thisChildren := index $thisObj "children" -}}
+{{- $thisSource := "atoms|hugo_pagination_list_000" -}}
+{{- if index $thisObj "enabled" -}}
+{{- $settings := index $sysManifest "settings" | default dict -}}
+{{- $paging := index $settings "paging" | default dict -}}
+{{- $pageSize := int (index $paging "posts_per_page" | default 10) -}}
+{{- if isset $thisObjProps "posts_per_page" -}}
+{{- $pageSize = int (index $thisObjProps "posts_per_page") -}}
+{{- end -}}
+{{- if lt $pageSize 1 -}}{{- $pageSize = 10 -}}{{- end -}}
+{{- $paginator := $context.Paginate $context.Pages $pageSize -}}
+{{- partial "haz/helpers/fn/fn_html_comment.html" (dict "text" $thisSource) -}}
+{{- partial "haz/helpers/parents/pages_list_parent.html" (dict
+  "thisObj" $thisObj
+  "sysManifest" $sysManifest
+  "pages" $paginator.Pages
+  "templateSource" $thisSource
+) -}}
+{{- else if index $thisChildren "enabled_false" "enabled" -}}
+{{- partial "haz/helpers/fn/fn_partial.html" (dict "source" $thisSource "child" (index $thisChildren "enabled_false" "child") "thisObj" $thisObj "sysManifest" $sysManifest "context" $context) -}}
+{{- end -}}

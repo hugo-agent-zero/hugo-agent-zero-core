@@ -1,0 +1,17 @@
+{{/*
+  fn_haz_bool.html
+  YAML and shortcode attrs stringify booleans.
+  Native bool as-is. true / 1 / yes / on (any case) → true. Else false.
+  Do not `with` a false — empty in Go templates.
+  Args: value
+  Returns: bool
+*/}}
+{{- $raw := index . "value" -}}
+{{- $ok := false -}}
+{{- if eq (printf "%T" $raw) "bool" -}}
+  {{- $ok = $raw -}}
+{{- else -}}
+  {{- $low := lower (printf "%v" $raw) -}}
+  {{- $ok = or (eq $low "true") (eq $low "1") (eq $low "yes") (eq $low "on") -}}
+{{- end -}}
+{{- return $ok -}}

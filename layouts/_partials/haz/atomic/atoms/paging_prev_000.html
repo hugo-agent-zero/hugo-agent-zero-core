@@ -1,0 +1,38 @@
+{{/*
+  Previous page link. An empty slot when there is no previous page, so the
+  numbers column stays centered (page 1). Next can omit; the right 1fr holds.
+*/}}
+{{- $source := index . "source" -}}
+{{- $child := index . "child" -}}
+{{- $thisObj := index . "thisObj" -}}
+{{- $sysManifest := index . "sysManifest" -}}
+{{- $context := index . "context" -}}
+{{- $thisObjProps := index $thisObj "props" | default dict -}}
+{{- $thisChildren := index $thisObj "children" | default dict -}}
+{{- $thisSource := "atoms|paging_prev_000" -}}
+{{- $paginator := $context.Paginator -}}
+{{- if and (index $thisObj "enabled") $paginator (or $paginator.HasPrev (gt $paginator.TotalPages 1)) -}}
+{{- partial "haz/helpers/fn/fn_html_comment.html" (dict "text" $thisSource) -}}
+{{- $class := index $thisObjProps "class" | default "haz_pager__prev" -}}
+{{- $label := index $thisObjProps "label" | default "Prev" -}}
+{{- if $paginator.HasPrev -}}
+{{- partial "haz/helpers/fn/fn_tag_a_href_open.html" (dict
+  "href" $paginator.Prev.URL
+  "pairs" (dict "class" $class "rel" "prev" "aria-label" "Previous page")
+) -}}
+{{- $label -}}
+{{- print "</a>" | safeHTML -}}
+{{- else -}}
+{{- partial "haz/helpers/fn/fn_tag_tag_open.html" (dict "tag" "span" "attrs" (dict "class" $class "aria" (dict "hidden" "true"))) -}}
+{{- $label -}}
+{{- print "</span>" | safeHTML -}}
+{{- end -}}
+{{- else if index $thisChildren "enabled_false" "enabled" -}}
+{{- partial "haz/helpers/fn/fn_partial.html" (dict
+  "source" $thisSource
+  "child" (index $thisChildren "enabled_false" "child")
+  "thisObj" $thisObj
+  "sysManifest" $sysManifest
+  "context" $context
+) -}}
+{{- end -}}

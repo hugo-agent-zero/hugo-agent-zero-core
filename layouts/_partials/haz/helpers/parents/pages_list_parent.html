@@ -1,0 +1,30 @@
+{{/*
+  pages_list_parent.html
+  Output only: list tag + range of pages as list_item children.
+  Caller (atom index) owns enabled / enabled_false / html comment,
+  and resolves the page collection (.Pages vs .Paginate).
+  Args: pages, thisObj, sysManifest, templateSource
+*/}}
+{{- $thisObj := index . "thisObj" | default dict -}}
+{{- $sysManifest := index . "sysManifest" -}}
+{{- $thisSource := index . "templateSource" | default "parents|pages_list_parent" -}}
+{{- $thisObjProps := index $thisObj "props" | default dict -}}
+{{- $pages := index . "pages" | default slice -}}
+{{- $tag := "ul" -}}
+{{- if eq (index $thisObjProps "list_type") "ol" -}}
+{{- $tag = "ol" -}}
+{{- end -}}
+{{- $attrs := index $thisObjProps "attrs" -}}
+{{- partial "haz/helpers/fn/fn_tag_tag_open.html" (dict "tag" $tag "attrs" $attrs) -}}
+{{- range $page := $pages -}}
+{{- partial "haz/helpers/fn/fn_tag_tag_open.html" (dict "tag" "li" "attrs" (dict)) -}}
+{{- partial "haz/helpers/fn/fn_partial.html" (dict
+  "source" $thisSource
+  "child" "list_item"
+  "thisObj" $thisObj
+  "sysManifest" $sysManifest
+  "context" $page
+) -}}
+{{- print "</li>" | safeHTML -}}
+{{- end -}}
+{{- printf "</%s>" $tag | safeHTML -}}
