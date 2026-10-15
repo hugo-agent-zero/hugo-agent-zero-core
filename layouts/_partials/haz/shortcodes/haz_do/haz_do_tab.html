@@ -45,7 +45,14 @@
   {{- $labelClass = printf "%s %s" $labelClass $extra -}}
   {{- $panelClass = printf "%s %s" $panelClass $extra -}}
 {{- end -}}
-{{- partial "haz/helpers/fn/fn_tag_tag_open.html" (dict "tag" "div" "attrs" (dict "class" "haz_do_tab")) -}}
+{{- $tabAttrs := dict "class" "haz_do_tab" -}}
+{{- with .Get "id" -}}
+  {{- $id := strings.TrimSpace . -}}
+  {{- if $id -}}
+    {{- $tabAttrs = merge $tabAttrs (dict "id" $id) -}}
+  {{- end -}}
+{{- end -}}
+{{- partial "haz/helpers/fn/fn_tag_tag_open.html" (dict "tag" "div" "attrs" $tabAttrs) -}}
 {{- $inputAttrs := dict "class" "haz_do_tab__radio" "type" "radio" "name" $rname "id" $rid -}}
 {{- if eq $n 0 -}}
   {{- $inputAttrs = merge $inputAttrs (dict "checked" "checked") -}}
