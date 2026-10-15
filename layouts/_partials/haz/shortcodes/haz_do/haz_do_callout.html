@@ -2,8 +2,9 @@
   haz_do callout blade. Receives the shortcode context (.).
   type is a CSS token, not an allowlist. Omitted or empty → note.
   Letters, digits, hyphen, and underscore are kept. Anything else is stripped.
-  Kit CSS styles the default set. Any other type renders with the note icon
-  and color until a .haz_do_callout--{type} rule sets the accent and icon.
+  Kit CSS styles the default set. Recolor --haz_callout_{type} in theme.css.
+  Any other type renders with the note icon and color until a
+  .haz_do_callout--{type} rule sets the accent and icon.
 */}}
 {{- $type := "note" -}}
 {{- with .Get "type" -}}
