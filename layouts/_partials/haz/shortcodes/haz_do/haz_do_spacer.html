@@ -24,7 +24,7 @@
 {{- end -}}
 {{- $args := dict "class" $class -}}
 {{- with .Get "id" -}}
-  {{- $id := strings.TrimSpace . | htmlEscape -}}
+  {{- $id := strings.TrimSpace . -}}
   {{- if $id -}}
     {{- $args = merge $args (dict "id" $id) -}}
   {{- end -}}

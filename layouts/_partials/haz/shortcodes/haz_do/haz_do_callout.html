@@ -26,7 +26,7 @@
 {{- $body := strings.TrimSpace .Inner | markdownify -}}
 {{- $rootAttrs := dict "class" $class "data" (dict "haz_callout" $type) -}}
 {{- with .Get "id" -}}
-  {{- $id := strings.TrimSpace . | htmlEscape -}}
+  {{- $id := strings.TrimSpace . -}}
   {{- if $id -}}
     {{- $rootAttrs = merge $rootAttrs (dict "id" $id) -}}
   {{- end -}}

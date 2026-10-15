@@ -40,7 +40,7 @@
 {{- $moreNote | safeHTML -}}
 {{- $rootAttrs := dict "class" $class -}}
 {{- with .Get "id" -}}
-  {{- $id := strings.TrimSpace . | htmlEscape -}}
+  {{- $id := strings.TrimSpace . -}}
   {{- if $id -}}
     {{- $rootAttrs = merge $rootAttrs (dict "id" $id) -}}
   {{- end -}}

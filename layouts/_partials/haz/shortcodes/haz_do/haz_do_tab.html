@@ -47,7 +47,7 @@
 {{- end -}}
 {{- $tabAttrs := dict "class" "haz_do_tab" -}}
 {{- with .Get "id" -}}
-  {{- $id := strings.TrimSpace . | htmlEscape -}}
+  {{- $id := strings.TrimSpace . -}}
   {{- if $id -}}
     {{- $tabAttrs = merge $tabAttrs (dict "id" $id) -}}
   {{- end -}}
