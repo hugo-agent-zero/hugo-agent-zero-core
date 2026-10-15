@@ -611,7 +611,7 @@ html:has(dialog[open]) body {
   display: none;
 }
 
-.haz_do_tabs_swipe_true > .haz_do_tabs__bar {
+.haz_do_tabs__bar.haz_swipe_true {
   overflow: hidden;
   scroll-snap-type: none;
 }
@@ -649,7 +649,7 @@ html:has(dialog[open]) body {
   content: none;
 }
 
-.haz_do_tabs_swipe_true .haz_do_tab__label {
+.haz_do_tabs__bar.haz_swipe_true .haz_do_tab__label {
   cursor: grab;
 }
 

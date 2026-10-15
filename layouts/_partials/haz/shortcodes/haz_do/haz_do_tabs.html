@@ -2,7 +2,8 @@
   haz_do tabs blade. Receives the shortcode context (.).
   Inner is the label row. Each tab stashes its panel on the page store.
   The row scrolls when the buttons do not fit. The panel stays full width.
-  CSS radios switch panels. swipe=true prints the swipe library tag for that row.
+  CSS radios switch panels. The bar wrap always gets haz_swipe_true/false like the pager.
+  swipe=true prints the swipe library tag for that row.
 */}}
 {{- $class := "haz_do haz_do_tabs" -}}
 {{- with .Get "class" -}}
@@ -14,13 +15,10 @@
 {{- $groupKey := printf "haz_do_tabs_%d" .Ordinal -}}
 {{- $panelKey := printf "haz_do_tabs_panels_%d" .Ordinal -}}
 {{- $swipe := partial "haz/helpers/fn/fn_haz_bool.html" (dict "value" (.Get "swipe") "default" false) -}}
-{{- $swipeClass := "haz_do_tabs_swipe_false" -}}
-{{- $barClass := "haz_do_tabs__bar" -}}
+{{- $barClass := "haz_do_tabs__bar haz_swipe_false" -}}
 {{- if $swipe -}}
-  {{- $swipeClass = "haz_do_tabs_swipe_true haz_swipe_true" -}}
-  {{- $barClass = "haz_do_tabs__bar haz_swipe__viewport" -}}
+  {{- $barClass = "haz_do_tabs__bar haz_swipe_true haz_swipe__viewport" -}}
 {{- end -}}
-{{- $class = printf "%s %s" $class $swipeClass -}}
 {{- $rootAttrs := dict "class" $class -}}
 {{- partial "haz/helpers/fn/fn_tag_tag_open.html" (dict "tag" "div" "attrs" $rootAttrs) -}}
   {{- partial "haz/helpers/fn/fn_tag_tag_open.html" (dict "tag" "div" "attrs" (dict "class" $barClass)) -}}
