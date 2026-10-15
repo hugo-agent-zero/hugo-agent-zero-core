@@ -3,10 +3,11 @@
   title is the label. Inner is Markdown unless html=true.
   html=true prints Inner as markup (safeHTML), same pass-through as haz_img.
   CSS radios switch panels. No script.
+  Panel is class + body on the page store. Tabs opens the tag with fn_tag_*.
 */}}
 {{- $extra := "" -}}
 {{- with .Get "class" -}}
-  {{- $extra = strings.TrimSpace . | htmlEscape -}}
+  {{- $extra = strings.TrimSpace . -}}
 {{- end -}}
 {{- $group := .Ordinal -}}
 {{- with .Parent -}}
@@ -64,5 +65,4 @@
 {{- print "</div>" | safeHTML -}}
 {{- $panelKey := printf "haz_do_tabs_panels_%d" $group -}}
 {{- $panels := .Page.Store.Get $panelKey | default slice -}}
-{{- $panel := print (printf "<div class=\"%s\">" $panelClass) $body "</div>" | safeHTML -}}
-{{- .Page.Store.Set $panelKey ($panels | append $panel) -}}
+{{- .Page.Store.Set $panelKey ($panels | append (dict "class" $panelClass "body" $body)) -}}

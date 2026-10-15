@@ -17,7 +17,7 @@
   {{- $class = printf "%s haz_clear" $class -}}
 {{- end -}}
 {{- with .Get "class" -}}
-  {{- $extra := strings.TrimSpace . | htmlEscape -}}
+  {{- $extra := strings.TrimSpace . -}}
   {{- if $extra -}}
     {{- $class = printf "%s %s" $class $extra -}}
   {{- end -}}

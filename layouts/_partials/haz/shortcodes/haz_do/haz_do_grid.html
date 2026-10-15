@@ -7,7 +7,7 @@
 */}}
 {{- $class := "haz_do haz_do_grid haz_do_grid_swipe_false" -}}
 {{- with .Get "class" -}}
-  {{- $extra := strings.TrimSpace . | htmlEscape -}}
+  {{- $extra := strings.TrimSpace . -}}
   {{- if $extra -}}
     {{- $class = printf "%s %s" $class $extra -}}
   {{- end -}}
