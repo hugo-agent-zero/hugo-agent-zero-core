@@ -109,7 +109,7 @@
 {{- $lastShown := 0 -}}
 {{- $wrapClass := "haz_pager__swipe haz_swipe_false" -}}
 {{- if $swipe -}}
-  {{- $wrapClass = "haz_pager__swipe haz_swipe_true haz_swipe__viewport" -}}
+  {{- $wrapClass = "haz_pager__swipe haz_swipe_true" -}}
 {{- end -}}
 {{- partial "haz/helpers/fn/fn_tag_tag_open.html" (dict "tag" "div" "attrs" (dict "class" $wrapClass)) -}}
 {{- partial "haz/helpers/fn/fn_tag_tag_open.html" (dict "tag" "ol" "attrs" (dict "class" $listClass "aria" (dict "label" "Pages"))) -}}

@@ -1,12 +1,8 @@
 (function () {
   if (typeof EmblaCarousel !== "function") return;
-  var roots = document.querySelectorAll(".haz_swipe_true");
-  if (!roots.length) return;
-  roots.forEach(function (root) {
-    var viewport = root.classList.contains("haz_swipe__viewport")
-      ? root
-      : root.querySelector(".haz_swipe__viewport");
-    if (!viewport) return;
+  var viewports = document.querySelectorAll(".haz_swipe_true");
+  if (!viewports.length) return;
+  viewports.forEach(function (viewport) {
     var embla = EmblaCarousel(viewport, {
       align: "start",
       containScroll: "trimSnaps",

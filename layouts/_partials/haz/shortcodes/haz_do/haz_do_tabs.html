@@ -17,7 +17,7 @@
 {{- $swipe := partial "haz/helpers/fn/fn_haz_bool.html" (dict "value" (.Get "swipe") "default" false) -}}
 {{- $barClass := "haz_do_tabs__bar haz_swipe_false" -}}
 {{- if $swipe -}}
-  {{- $barClass = "haz_do_tabs__bar haz_swipe_true haz_swipe__viewport" -}}
+  {{- $barClass = "haz_do_tabs__bar haz_swipe_true" -}}
 {{- end -}}
 {{- $rootAttrs := dict "class" $class -}}
 {{- partial "haz/helpers/fn/fn_tag_tag_open.html" (dict "tag" "div" "attrs" $rootAttrs) -}}
