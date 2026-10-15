@@ -24,9 +24,10 @@
 
   add          verb. Allowlist: spacer, callout, list, tabs, tab, grid.
   callout      type is a CSS token (default note). Letters, digits, hyphen, underscore.
-               Kit CSS covers note, tip, info, important, warning, caution, cancel, happy,
+               Kit CSS covers note, tip, info, code, important, warning, caution, cancel, happy,
                sad, love, peace, calendar, deadline. Any other type still renders.
-               Add .haz_do_callout--{type} to set --haz_callout_accent and --haz_callout_icon.
+               Recolor --haz_callout_{type} in theme.css. The type rule sets
+               --haz_callout_accent from that token and the icon.
                title optional. Inner is Markdown (markdownify).
   list         optional title. Inner is Markdown, a ul or an ol.
                Chrome only. A plain ul or ol outside haz_do stays plain.

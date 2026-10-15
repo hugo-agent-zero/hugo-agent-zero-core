@@ -434,9 +434,28 @@ html:has(dialog[open]) body {
 /* haz_do callout. Icon urls below are Go templates, so this file is ExecuteAsTemplate.
    Col 1 is a large icon. Col 2 is title + body. No accent bar.
    The base rule is the fallback (note). A type token adds haz_do_callout--{type}.
-   The modifiers below are the default set. A site can add its own. */
+   The modifiers below are the default set. A site can add its own.
+   Type colors are :root tokens. Recolor in child theme.css. The type rule
+   only reads the token and sets the icon. Several types may share a color. */
+:root {
+  --haz_callout_calendar: var(--text-light, var(--border));
+  --haz_callout_cancel: var(--red-7, var(--code));
+  --haz_callout_caution: var(--yellow-7, var(--marked));
+  --haz_callout_code: var(--code);
+  --haz_callout_deadline: var(--text-light, var(--border));
+  --haz_callout_happy: var(--yellow-7, var(--marked));
+  --haz_callout_important: var(--blue-6, var(--haz_site_primary, var(--accent)));
+  --haz_callout_info: var(--blue-6, var(--haz_site_primary, var(--accent)));
+  --haz_callout_love: var(--red-7, var(--code));
+  --haz_callout_note: var(--text-light, var(--border));
+  --haz_callout_peace: var(--blue-6, var(--haz_site_primary, var(--accent)));
+  --haz_callout_sad: var(--yellow-7, var(--marked));
+  --haz_callout_tip: var(--yellow-7, var(--marked));
+  --haz_callout_warning: var(--red-7, var(--code));
+}
+
 .haz_do_callout {
-  --haz_callout_accent: var(--text-light, var(--border));
+  --haz_callout_accent: var(--haz_callout_note);
   --haz_callout_icon: url("{{ "third_party/fontawesome-free/svgs/solid/pen-to-square.svg" | relURL }}");
   display: grid;
   grid-template-columns: auto 1fr;
@@ -488,68 +507,73 @@ html:has(dialog[open]) body {
 }
 
 .haz_do_callout--note {
-  --haz_callout_accent: var(--text-light, var(--border));
+  --haz_callout_accent: var(--haz_callout_note);
   --haz_callout_icon: url("{{ "third_party/fontawesome-free/svgs/solid/pen-to-square.svg" | relURL }}");
 }
 
 .haz_do_callout--tip {
-  --haz_callout_accent: var(--yellow-7, var(--marked));
+  --haz_callout_accent: var(--haz_callout_tip);
   --haz_callout_icon: url("{{ "third_party/fontawesome-free/svgs/solid/lightbulb.svg" | relURL }}");
 }
 
 .haz_do_callout--info {
-  --haz_callout_accent: var(--blue-6, var(--haz_site_primary, var(--accent)));
+  --haz_callout_accent: var(--haz_callout_info);
   --haz_callout_icon: url("{{ "third_party/fontawesome-free/svgs/solid/circle-info.svg" | relURL }}");
 }
 
+.haz_do_callout--code {
+  --haz_callout_accent: var(--haz_callout_code);
+  --haz_callout_icon: url("{{ "third_party/fontawesome-free/svgs/solid/code.svg" | relURL }}");
+}
+
 .haz_do_callout--warning {
-  --haz_callout_accent: var(--red-7, var(--code));
+  --haz_callout_accent: var(--haz_callout_warning);
   --haz_callout_icon: url("{{ "third_party/fontawesome-free/svgs/solid/triangle-exclamation.svg" | relURL }}");
 }
 
 .haz_do_callout--caution {
-  --haz_callout_accent: var(--yellow-7, var(--marked));
+  --haz_callout_accent: var(--haz_callout_caution);
   --haz_callout_icon: url("{{ "third_party/fontawesome-free/svgs/solid/circle-exclamation.svg" | relURL }}");
 }
 
 .haz_do_callout--cancel {
-  --haz_callout_accent: var(--red-7, var(--code));
+  --haz_callout_accent: var(--haz_callout_cancel);
   --haz_callout_icon: url("{{ "third_party/fontawesome-free/svgs/solid/cancel.svg" | relURL }}");
 }
 
 /* Placeholders. Colors are for the lineup comparison, not a locked palette. */
 .haz_do_callout--important {
-  --haz_callout_accent: var(--blue-6, var(--haz_site_primary, var(--accent)));
+  --haz_callout_accent: var(--haz_callout_important);
   --haz_callout_icon: url("{{ "third_party/fontawesome-free/svgs/solid/star.svg" | relURL }}");
 }
 
 .haz_do_callout--happy {
-  --haz_callout_accent: var(--yellow-7, var(--marked));
+  --haz_callout_accent: var(--haz_callout_happy);
   --haz_callout_icon: url("{{ "third_party/fontawesome-free/svgs/solid/face-smile.svg" | relURL }}");
 }
 
 .haz_do_callout--sad {
-  --haz_callout_accent: var(--yellow-7, var(--marked));
+  --haz_callout_accent: var(--haz_callout_sad);
   --haz_callout_icon: url("{{ "third_party/fontawesome-free/svgs/solid/face-frown.svg" | relURL }}");
 }
 
 .haz_do_callout--love {
-  --haz_callout_accent: var(--red-7, var(--code));
+  --haz_callout_accent: var(--haz_callout_love);
   --haz_callout_icon: url("{{ "third_party/fontawesome-free/svgs/solid/heart.svg" | relURL }}");
 }
 
 .haz_do_callout--peace {
-  --haz_callout_accent: var(--blue-6, var(--haz_site_primary, var(--accent)));
+  --haz_callout_accent: var(--haz_callout_peace);
   --haz_callout_icon: url("{{ "third_party/fontawesome-free/svgs/solid/peace.svg" | relURL }}");
 }
 
 .haz_do_callout--calendar {
-  --haz_callout_accent: var(--text-light, var(--border));
+  --haz_callout_accent: var(--haz_callout_calendar);
   --haz_callout_icon: url("{{ "third_party/fontawesome-free/svgs/solid/calendar-check.svg" | relURL }}");
 }
 
 .haz_do_callout--deadline {
-  --haz_callout_accent: var(--text-light, var(--border));
+  --haz_callout_accent: var(--haz_callout_deadline);
   --haz_callout_icon: url("{{ "third_party/fontawesome-free/svgs/solid/alarm-clock.svg" | relURL }}");
 }
 
