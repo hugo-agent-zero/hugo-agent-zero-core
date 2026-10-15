@@ -5,7 +5,7 @@
 */}}
 {{- $class := "haz_do haz_do_list" -}}
 {{- with .Get "class" -}}
-  {{- $extra := strings.TrimSpace . | htmlEscape -}}
+  {{- $extra := strings.TrimSpace . -}}
   {{- if $extra -}}
     {{- $class = printf "%s %s" $class $extra -}}
   {{- end -}}
@@ -24,9 +24,13 @@
 {{- end -}}
 {{- partial "haz/helpers/fn/fn_tag_tag_open.html" (dict "tag" "div" "attrs" $rootAttrs) -}}
   {{- with $title }}
-  <p class="haz_do_list__title">{{ . }}</p>
+  {{- partial "haz/helpers/fn/fn_tag_tag_open.html" (dict "tag" "p" "attrs" (dict "class" "haz_do_list__title")) -}}
+  {{- . -}}
+  {{- print "</p>" | safeHTML -}}
   {{- end }}
   {{- with $body }}
-  <div class="haz_do_list__body">{{ . }}</div>
+  {{- partial "haz/helpers/fn/fn_tag_tag_open.html" (dict "tag" "div" "attrs" (dict "class" "haz_do_list__body")) -}}
+  {{- . -}}
+  {{- print "</div>" | safeHTML -}}
   {{- end }}
 {{- print "</div>" | safeHTML -}}

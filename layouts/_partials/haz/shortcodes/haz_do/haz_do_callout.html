@@ -15,7 +15,7 @@
 {{- end -}}
 {{- $class := printf "haz_do haz_do_callout haz_do_callout--%s" $type -}}
 {{- with .Get "class" -}}
-  {{- $extra := strings.TrimSpace . | htmlEscape -}}
+  {{- $extra := strings.TrimSpace . -}}
   {{- if $extra -}}
     {{- $class = printf "%s %s" $class $extra -}}
   {{- end -}}
@@ -33,12 +33,16 @@
   {{- end -}}
 {{- end -}}
 {{- partial "haz/helpers/fn/fn_tag_tag_open.html" (dict "tag" "div" "attrs" $rootAttrs) -}}
-  <div class="haz_do_callout__copy">
+  {{- partial "haz/helpers/fn/fn_tag_tag_open.html" (dict "tag" "div" "attrs" (dict "class" "haz_do_callout__copy")) -}}
     {{- with $title }}
-    <p class="haz_do_callout__title">{{ . }}</p>
+    {{- partial "haz/helpers/fn/fn_tag_tag_open.html" (dict "tag" "p" "attrs" (dict "class" "haz_do_callout__title")) -}}
+    {{- . -}}
+    {{- print "</p>" | safeHTML -}}
     {{- end }}
     {{- with $body }}
-    <div class="haz_do_callout__body">{{ . }}</div>
+    {{- partial "haz/helpers/fn/fn_tag_tag_open.html" (dict "tag" "div" "attrs" (dict "class" "haz_do_callout__body")) -}}
+    {{- . -}}
+    {{- print "</div>" | safeHTML -}}
     {{- end }}
-  </div>
+  {{- print "</div>" | safeHTML -}}
 {{- print "</div>" | safeHTML -}}

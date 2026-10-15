@@ -7,7 +7,7 @@
 */}}
 {{- $class := "haz_do haz_do_tabs" -}}
 {{- with .Get "class" -}}
-  {{- $extra := strings.TrimSpace . | htmlEscape -}}
+  {{- $extra := strings.TrimSpace . -}}
   {{- if $extra -}}
     {{- $class = printf "%s %s" $class $extra -}}
   {{- end -}}
@@ -34,7 +34,11 @@
   {{- print "</div>" | safeHTML -}}
   {{- partial "haz/helpers/fn/fn_tag_tag_open.html" (dict "tag" "div" "attrs" (dict "class" "haz_do_tabs__panels")) -}}
     {{- with .Page.Store.Get $panelKey -}}
-      {{- range . }}{{ . }}{{ end -}}
+      {{- range . -}}
+        {{- partial "haz/helpers/fn/fn_tag_tag_open.html" (dict "tag" "div" "attrs" (dict "class" .class)) -}}
+        {{- .body | safeHTML -}}
+        {{- print "</div>" | safeHTML -}}
+      {{- end -}}
     {{- end -}}
   {{- print "</div>" | safeHTML -}}
 {{- print "</div>" | safeHTML -}}
