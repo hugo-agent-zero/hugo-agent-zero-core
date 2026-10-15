@@ -438,20 +438,20 @@ html:has(dialog[open]) body {
    Type colors are :root tokens. Recolor in child theme.css. The type rule
    only reads the token and sets the icon. Several types may share a color. */
 :root {
-  --haz_callout_note: var(--text-light, var(--border));
-  --haz_callout_tip: var(--yellow-7, var(--marked));
-  --haz_callout_info: var(--blue-6, var(--haz_site_primary, var(--accent)));
-  --haz_callout_code: var(--code);
-  --haz_callout_warning: var(--red-7, var(--code));
-  --haz_callout_caution: var(--yellow-7, var(--marked));
-  --haz_callout_cancel: var(--red-7, var(--code));
-  --haz_callout_important: var(--blue-6, var(--haz_site_primary, var(--accent)));
-  --haz_callout_happy: var(--yellow-7, var(--marked));
-  --haz_callout_sad: var(--yellow-7, var(--marked));
-  --haz_callout_love: var(--red-7, var(--code));
-  --haz_callout_peace: var(--blue-6, var(--haz_site_primary, var(--accent)));
   --haz_callout_calendar: var(--text-light, var(--border));
+  --haz_callout_cancel: var(--red-7, var(--code));
+  --haz_callout_caution: var(--yellow-7, var(--marked));
+  --haz_callout_code: var(--code);
   --haz_callout_deadline: var(--text-light, var(--border));
+  --haz_callout_happy: var(--yellow-7, var(--marked));
+  --haz_callout_important: var(--blue-6, var(--haz_site_primary, var(--accent)));
+  --haz_callout_info: var(--blue-6, var(--haz_site_primary, var(--accent)));
+  --haz_callout_love: var(--red-7, var(--code));
+  --haz_callout_note: var(--text-light, var(--border));
+  --haz_callout_peace: var(--blue-6, var(--haz_site_primary, var(--accent)));
+  --haz_callout_sad: var(--yellow-7, var(--marked));
+  --haz_callout_tip: var(--yellow-7, var(--marked));
+  --haz_callout_warning: var(--red-7, var(--code));
 }
 
 .haz_do_callout {
