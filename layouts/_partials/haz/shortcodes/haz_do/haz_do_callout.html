@@ -24,7 +24,14 @@
   {{- $title = strings.TrimSpace . -}}
 {{- end -}}
 {{- $body := strings.TrimSpace .Inner | markdownify -}}
-<div class="{{ $class }}" data-haz_callout="{{ $type }}">
+{{- $rootAttrs := dict "class" $class "data" (dict "haz_callout" $type) -}}
+{{- with .Get "id" -}}
+  {{- $id := strings.TrimSpace . | htmlEscape -}}
+  {{- if $id -}}
+    {{- $rootAttrs = merge $rootAttrs (dict "id" $id) -}}
+  {{- end -}}
+{{- end -}}
+{{- partial "haz/helpers/fn/fn_tag_tag_open.html" (dict "tag" "div" "attrs" $rootAttrs) -}}
   <div class="haz_do_callout__copy">
     {{- with $title }}
     <p class="haz_do_callout__title">{{ . }}</p>
@@ -33,4 +40,4 @@
     <div class="haz_do_callout__body">{{ . }}</div>
     {{- end }}
   </div>
-</div>
+{{- print "</div>" | safeHTML -}}

@@ -38,7 +38,14 @@
   {{- $class = printf "%s haz_do_grid_more_%d" $class $moreAfter -}}
 {{- end -}}
 {{- $moreNote | safeHTML -}}
-{{- partial "haz/helpers/fn/fn_tag_tag_open.html" (dict "tag" "div" "attrs" (dict "class" $class)) -}}
+{{- $rootAttrs := dict "class" $class -}}
+{{- with .Get "id" -}}
+  {{- $id := strings.TrimSpace . | htmlEscape -}}
+  {{- if $id -}}
+    {{- $rootAttrs = merge $rootAttrs (dict "id" $id) -}}
+  {{- end -}}
+{{- end -}}
+{{- partial "haz/helpers/fn/fn_tag_tag_open.html" (dict "tag" "div" "attrs" $rootAttrs) -}}
   {{- partial "haz/helpers/fn/fn_tag_tag_open.html" (dict "tag" "div" "attrs" (dict "class" "haz_do_grid__cells")) -}}
     {{- strings.TrimSpace .Inner | safeHTML -}}
   {{- print "</div>" | safeHTML -}}

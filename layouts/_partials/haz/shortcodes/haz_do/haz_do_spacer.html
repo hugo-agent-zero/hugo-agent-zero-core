@@ -23,6 +23,12 @@
   {{- end -}}
 {{- end -}}
 {{- $args := dict "class" $class -}}
+{{- with .Get "id" -}}
+  {{- $id := strings.TrimSpace . | htmlEscape -}}
+  {{- if $id -}}
+    {{- $args = merge $args (dict "id" $id) -}}
+  {{- end -}}
+{{- end -}}
 {{- if isset .Params "height" -}}
   {{- $unit := "rem" -}}
   {{- $allowedUnits := slice "rem" "em" "px" "vh" "vw" "%" -}}

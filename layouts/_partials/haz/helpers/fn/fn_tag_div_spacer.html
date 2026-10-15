@@ -1,11 +1,16 @@
 {{/*
-  Empty div spacer. Accepts class, optional height (CSS length, unit included).
+  Empty div spacer. Accepts class, optional id, optional height (CSS length, unit included).
   No height → no style; CSS owns the default.
 */}}
 {{- $attrs := dict -}}
 {{- with index . "class" -}}
   {{- if . -}}
     {{- $attrs = merge $attrs (dict "class" .) -}}
+  {{- end -}}
+{{- end -}}
+{{- with index . "id" -}}
+  {{- if . -}}
+    {{- $attrs = merge $attrs (dict "id" .) -}}
   {{- end -}}
 {{- end -}}
 {{- with index . "height" -}}

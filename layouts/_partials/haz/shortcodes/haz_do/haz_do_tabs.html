@@ -20,6 +20,12 @@
   {{- $barClass = "haz_do_tabs__bar haz_swipe_true" -}}
 {{- end -}}
 {{- $rootAttrs := dict "class" $class -}}
+{{- with .Get "id" -}}
+  {{- $id := strings.TrimSpace . | htmlEscape -}}
+  {{- if $id -}}
+    {{- $rootAttrs = merge $rootAttrs (dict "id" $id) -}}
+  {{- end -}}
+{{- end -}}
 {{- partial "haz/helpers/fn/fn_tag_tag_open.html" (dict "tag" "div" "attrs" $rootAttrs) -}}
   {{- partial "haz/helpers/fn/fn_tag_tag_open.html" (dict "tag" "div" "attrs" (dict "class" $barClass)) -}}
     {{- partial "haz/helpers/fn/fn_tag_tag_open.html" (dict "tag" "div" "attrs" (dict "class" "haz_do_tabs__tabs")) -}}
