@@ -1,7 +1,7 @@
 {{/*
   fn_haz_img_rwd_resolve.html
   Resolve preset.rwd m/t/d (w %, align, ratio) against width_px + site when.
-  When = settings.breakpoints (mins). Else config.max_px + 1.
+  When = settings.breakpoints (mins). Band max = fn_get_haz_breakpoints_minus_one.
   Inherit omit-up for w/align/ratio. Returns dict with rwd fields + sizes_attr.
   resolved = true when preset exists and each band w ∈ 25|33|50|67|75|100.
   Args:
@@ -30,11 +30,12 @@
   {{- $bpArgs = dict "settings" $settings -}}
 {{- end -}}
 {{- $bp := partial "haz/helpers/fn/fn_get_haz_breakpoints.html" $bpArgs -}}
+{{- $bandMax := partial "haz/helpers/fn/fn_get_haz_breakpoints_minus_one.html" $bpArgs -}}
 {{- $minTabletPx := index $bp "m" -}}
 {{- $minDesktopPx := index $bp "t" -}}
 
-{{- $smPx := float (index $widthPx "sm" | default (sub $minTabletPx 1)) -}}
-{{- $mdPx := float (index $widthPx "md" | default (sub $minDesktopPx 1)) -}}
+{{- $smPx := float (index $widthPx "sm" | default (index $bandMax "m")) -}}
+{{- $mdPx := float (index $widthPx "md" | default (index $bandMax "t")) -}}
 {{- $lgPx := float (index $widthPx "lg" | default (index $bp "d")) -}}
 
 {{- $rwd := index $preset "rwd" | default dict -}}

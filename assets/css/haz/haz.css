@@ -840,8 +840,8 @@ html:has(dialog[open]) body {
 
 {{- /* Same cuts as haz_img.css: fn_get_haz_breakpoints. A custom property cannot sit inside @media. */ -}}
 {{- $bp := partial "haz/helpers/fn/fn_get_haz_breakpoints.html" . -}}
-{{- $minTablet := index $bp "m" -}}
-{{- $minDesktop := index $bp "t" -}}
+{{- $minTablet := index $bp "m" | default 480 -}}
+{{- $minDesktop := index $bp "t" | default 768 -}}
 @media (min-width: {{ $minTablet }}px) {
   .haz_do_grid_swipe_false .haz_do_grid__cells {
     grid-template-columns: repeat(2, minmax(0, 1fr));
