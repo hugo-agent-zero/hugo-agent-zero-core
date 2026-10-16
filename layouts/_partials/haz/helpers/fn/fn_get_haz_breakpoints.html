@@ -1,12 +1,15 @@
 {{/*
   fn_get_haz_breakpoints.html
-  Getter only. Path lives here: settings.breakpoints.
-  Does not resolve, default, or +1. Empty / missing → empty dict.
-  Call with the page (.) or a dict: context / manifest / settings.
+  Getter. Path lives here: settings.breakpoints.
+  Optional add (int) is applied to hop keys m and t only. d is the column — leave it.
+  add=-1 → old max-of-band (479 / 767). add omitted or 0 → as stored (480 / 768).
+  Call with the page (.) or a dict: context / manifest / settings / add.
+  Empty / missing → empty dict.
 */}}
 {{- $ctx := . -}}
 {{- $manifest := dict -}}
 {{- $settings := dict -}}
+{{- $add := 0 -}}
 {{- if reflect.IsMap . -}}
   {{- with index . "context" -}}
     {{- $ctx = . -}}
@@ -16,6 +19,9 @@
   {{- end -}}
   {{- with index . "settings" -}}
     {{- $settings = . -}}
+  {{- end -}}
+  {{- if isset . "add" -}}
+    {{- $add = int (index . "add") -}}
   {{- end -}}
 {{- end -}}
 {{- if and (eq (len $manifest) 0) (gt (len $settings) 0) -}}
@@ -30,5 +36,18 @@
 {{- $bp := partial "haz/helpers/fn/fn_get_sys_manifest_prop.html" $propArgs -}}
 {{- if not (reflect.IsMap $bp) -}}
   {{- $bp = dict -}}
+{{- end -}}
+{{- if $add -}}
+  {{- $out := dict -}}
+  {{- with index $bp "m" -}}
+    {{- $out = merge $out (dict "m" (add (int .) $add)) -}}
+  {{- end -}}
+  {{- with index $bp "t" -}}
+    {{- $out = merge $out (dict "t" (add (int .) $add)) -}}
+  {{- end -}}
+  {{- with index $bp "d" -}}
+    {{- $out = merge $out (dict "d" (int .)) -}}
+  {{- end -}}
+  {{- $bp = $out -}}
 {{- end -}}
 {{- return $bp -}}
