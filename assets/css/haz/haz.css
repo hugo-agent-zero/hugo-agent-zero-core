@@ -450,6 +450,7 @@ html:has(dialog[open]) body {
   --haz_callout_note: var(--text-light, var(--border));
   --haz_callout_peace: var(--blue-6, var(--haz_site_primary, var(--accent)));
   --haz_callout_sad: var(--yellow-7, var(--marked));
+  --haz_callout_steps: var(--haz_site_primary, var(--pink-7));
   --haz_callout_tip: var(--yellow-7, var(--marked));
   --haz_callout_warning: var(--red-7, var(--code));
 }
@@ -524,6 +525,30 @@ html:has(dialog[open]) body {
 .haz_do_callout--code {
   --haz_callout_accent: var(--haz_callout_code);
   --haz_callout_icon: url("{{ "third_party/fontawesome-free/svgs/solid/code.svg" | relURL }}");
+}
+
+.haz_do_callout--steps {
+  --haz_callout_accent: var(--haz_callout_steps);
+}
+
+.haz_do_callout--steps::before {
+  content: attr(data-haz_callout_step);
+  -webkit-mask: none;
+  mask: none;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  min-width: 2.5rem;
+  min-height: 2.5rem;
+  width: auto;
+  height: auto;
+  aspect-ratio: 1;
+  padding: 0.25rem;
+  box-sizing: border-box;
+  color: var(--accent-text, var(--bg));
+  font-weight: var(--haz_do_title_weight, 700);
+  font-size: 1rem;
+  line-height: 1;
 }
 
 .haz_do_callout--warning {

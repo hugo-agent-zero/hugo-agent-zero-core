@@ -3,6 +3,7 @@
   type is a CSS token, not an allowlist. Omitted or empty → note.
   Letters, digits, hyphen, and underscore are kept. Anything else is stripped.
   Kit CSS styles the default set. Recolor --haz_callout_{type} in theme.css.
+  type=steps is a badge, not FA. Pass step= for the string in the circle.
   Any other type renders with the note icon and color until a
   .haz_do_callout--{type} rule sets the accent and icon.
 */}}
@@ -25,7 +26,14 @@
   {{- $title = strings.TrimSpace . -}}
 {{- end -}}
 {{- $body := strings.TrimSpace .Inner | markdownify -}}
-{{- $rootAttrs := dict "class" $class "data" (dict "haz_callout" $type) -}}
+{{- $data := dict "haz_callout" $type -}}
+{{- with .Get "step" -}}
+  {{- $step := strings.TrimSpace . -}}
+  {{- if $step -}}
+    {{- $data = merge $data (dict "haz_callout_step" $step) -}}
+  {{- end -}}
+{{- end -}}
+{{- $rootAttrs := dict "class" $class "data" $data -}}
 {{- with .Get "id" -}}
   {{- $id := strings.TrimSpace . -}}
   {{- if $id -}}
