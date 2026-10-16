@@ -15,8 +15,8 @@
          Preset owns rwd.m|t|d: w (25|33|50|67|75|100 % of column),
          align (left|right|center|none), ratio (e.g. "16/9").
          Omit band/field → inherit above. ratio → --haz_img_ratio_m|t|d;
-         CSS picks by max_px windows. fit cover for v1 when any ratio.
-         sizes= px from width_px.sm|md|lg × w%; when from max_px.
+         CSS picks by settings.breakpoints (else max_px + 1). fit cover for v1 when any ratio.
+         sizes= px from width_px.sm|md|lg × w%; when from breakpoints.
          No ratio on any band = as-is (no frame / cover) and no auto prefix
          (auto without a frame pins height at 150).
     lazy optional — false skips loading=lazy (heroes). true forces it.
@@ -69,7 +69,7 @@
   {{- $preset = index $presets $presetKey -}}
 {{- end -}}
 
-{{- $rwd := partial $rwdResolveFn (dict "config" $config "preset" $preset "width_px" $variantWidths) -}}
+{{- $rwd := partial $rwdResolveFn (dict "config" $config "settings" $settings "preset" $preset "width_px" $variantWidths) -}}
 {{- $resolved := index $rwd "resolved" | default false -}}
 {{- $mPct := index $rwd "m_pct" | default 0 -}}
 {{- $tPct := index $rwd "t_pct" | default 0 -}}

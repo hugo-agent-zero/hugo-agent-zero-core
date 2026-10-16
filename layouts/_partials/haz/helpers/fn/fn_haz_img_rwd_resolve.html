@@ -1,10 +1,12 @@
 {{/*
   fn_haz_img_rwd_resolve.html
-  Resolve preset.rwd m/t/d (w %, align, ratio) against config.max_px + width_px.
+  Resolve preset.rwd m/t/d (w %, align, ratio) against width_px + site when.
+  When = settings.breakpoints (mins). Else config.max_px + 1.
   Inherit omit-up for w/align/ratio. Returns dict with rwd fields + sizes_attr.
   resolved = true when preset exists and each band w ∈ 25|33|50|67|75|100.
   Args:
     - config (dict) settings.haz_img.config
+    - settings (dict) optional; for settings.breakpoints
     - preset (dict) one presets.* entry
     - width_px (dict) optional; else read config.width_px via defaults
   Swappable via config.helpers.rwd_resolve_fn (same pattern as variant_widths_fn).
@@ -16,16 +18,17 @@
   {{- $widthPx = partial "haz/helpers/fn/fn_haz_img_variant_widths.html" (dict "config" $config) -}}
 {{- end -}}
 
-{{- $maxPx := index $config "max_px" | default dict -}}
-{{- $maxM := int (index $maxPx "m" | default 479) -}}
-{{- $maxT := int (index $maxPx "t" | default 767) -}}
-{{- /* when t/d bands start = max for previous band + 1 */ -}}
-{{- $minTabletPx := add $maxM 1 -}}
-{{- $minDesktopPx := add $maxT 1 -}}
+{{- $settings := index . "settings" | default dict -}}
+{{- if eq (len $settings) 0 -}}
+  {{- $settings = dict "haz_img" (dict "config" $config) -}}
+{{- end -}}
+{{- $bp := partial "haz/helpers/fn/fn_haz_breakpoints.html" (dict "settings" $settings) -}}
+{{- $minTabletPx := index $bp "m" -}}
+{{- $minDesktopPx := index $bp "t" -}}
 
-{{- $smPx := float (index $widthPx "sm" | default $maxM) -}}
-{{- $mdPx := float (index $widthPx "md" | default $maxT) -}}
-{{- $lgPx := float (index $widthPx "lg" | default (index $maxPx "d" | default 1024)) -}}
+{{- $smPx := float (index $widthPx "sm" | default (sub $minTabletPx 1)) -}}
+{{- $mdPx := float (index $widthPx "md" | default (sub $minDesktopPx 1)) -}}
+{{- $lgPx := float (index $widthPx "lg" | default (index $bp "d")) -}}
 
 {{- $rwd := index $preset "rwd" | default dict -}}
 {{- $alignAllowed := slice "left" "right" "center" "none" -}}

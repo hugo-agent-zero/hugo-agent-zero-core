@@ -838,14 +838,12 @@ html:has(dialog[open]) body {
   inline-size: 100%;
 }
 
-{{- /* Same cuts as haz_img.css: settings max_px.m|t + 1. A custom property cannot sit inside @media. */ -}}
+{{- /* Same cuts as haz_img.css: settings.breakpoints (else max_px + 1). A custom property cannot sit inside @media. */ -}}
 {{- $sysManifest := partial "haz/helpers/fn/fn_get_sys_manifest.html" . -}}
 {{- $settings := index $sysManifest "settings" | default dict -}}
-{{- $hazImg := index $settings "haz_img" | default dict -}}
-{{- $config := index $hazImg "config" | default dict -}}
-{{- $maxPx := index $config "max_px" | default dict -}}
-{{- $minTablet := add (int (index $maxPx "m" | default 479)) 1 -}}
-{{- $minDesktop := add (int (index $maxPx "t" | default 767)) 1 -}}
+{{- $bp := partial "haz/helpers/fn/fn_haz_breakpoints.html" (dict "settings" $settings) -}}
+{{- $minTablet := index $bp "m" -}}
+{{- $minDesktop := index $bp "t" -}}
 @media (min-width: {{ $minTablet }}px) {
   .haz_do_grid_swipe_false .haz_do_grid__cells {
     grid-template-columns: repeat(2, minmax(0, 1fr));
