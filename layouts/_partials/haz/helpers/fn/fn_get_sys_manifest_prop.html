@@ -1,0 +1,16 @@
+{{/*
+  fn_get_sys_manifest_prop.html
+  Load sysManifest (or use the one passed), then walk path via fn_get_nested.
+  The walker is not settings-only. Path can start at any manifest child.
+  Args:
+    - path (slice) e.g. slice "settings" "breakpoints"
+    - context (page) when manifest is omitted
+    - manifest (optional map) skip the load (Atomics already have it)
+*/}}
+{{- $path := index . "path" | default slice -}}
+{{- $manifest := index . "manifest" | default dict -}}
+{{- if eq (len $manifest) 0 -}}
+  {{- $ctx := index . "context" | default . -}}
+  {{- $manifest = partial "haz/helpers/fn/fn_get_sys_manifest.html" $ctx -}}
+{{- end -}}
+{{- return (partial "haz/helpers/fn/fn_get_nested.html" (dict "value" $manifest "path" $path)) -}}

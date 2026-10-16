@@ -838,10 +838,8 @@ html:has(dialog[open]) body {
   inline-size: 100%;
 }
 
-{{- /* Same cuts as haz_img.css: settings.breakpoints (else max_px + 1). A custom property cannot sit inside @media. */ -}}
-{{- $sysManifest := partial "haz/helpers/fn/fn_get_sys_manifest.html" . -}}
-{{- $settings := index $sysManifest "settings" | default dict -}}
-{{- $bp := partial "haz/helpers/fn/fn_haz_breakpoints.html" (dict "settings" $settings) -}}
+{{- /* Same cuts as haz_img.css: fn_get_haz_breakpoints. A custom property cannot sit inside @media. */ -}}
+{{- $bp := partial "haz/helpers/fn/fn_get_haz_breakpoints.html" . -}}
 {{- $minTablet := index $bp "m" -}}
 {{- $minDesktop := index $bp "t" -}}
 @media (min-width: {{ $minTablet }}px) {

@@ -1,7 +1,5 @@
-{{- /* haz_img.css — ExecuteAsTemplate. When = settings.breakpoints (else max_px + 1). */ -}}
-{{- $sysManifest := partial "haz/helpers/fn/fn_get_sys_manifest.html" . -}}
-{{- $settings := index $sysManifest "settings" | default dict -}}
-{{- $bp := partial "haz/helpers/fn/fn_haz_breakpoints.html" (dict "settings" $settings) -}}
+{{- /* haz_img.css — ExecuteAsTemplate. When = fn_get_haz_breakpoints (settings.breakpoints, else max_px + 1). */ -}}
+{{- $bp := partial "haz/helpers/fn/fn_get_haz_breakpoints.html" . -}}
 {{- $minTablet := index $bp "m" -}}
 {{- $minDesktop := index $bp "t" -}}
 /* haz_img — mobile-first; % of column per rwd band.

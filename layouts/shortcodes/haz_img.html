@@ -69,7 +69,7 @@
   {{- $preset = index $presets $presetKey -}}
 {{- end -}}
 
-{{- $rwd := partial $rwdResolveFn (dict "config" $config "settings" $settings "preset" $preset "width_px" $variantWidths) -}}
+{{- $rwd := partial $rwdResolveFn (dict "config" $config "context" $page "preset" $preset "width_px" $variantWidths) -}}
 {{- $resolved := index $rwd "resolved" | default false -}}
 {{- $mPct := index $rwd "m_pct" | default 0 -}}
 {{- $tPct := index $rwd "t_pct" | default 0 -}}

@@ -6,7 +6,8 @@
   resolved = true when preset exists and each band w ∈ 25|33|50|67|75|100.
   Args:
     - config (dict) settings.haz_img.config
-    - settings (dict) optional; for settings.breakpoints
+    - context (page) optional; getter loads settings.breakpoints
+    - settings (dict) optional fallback if no context
     - preset (dict) one presets.* entry
     - width_px (dict) optional; else read config.width_px via defaults
   Swappable via config.helpers.rwd_resolve_fn (same pattern as variant_widths_fn).
@@ -18,11 +19,17 @@
   {{- $widthPx = partial "haz/helpers/fn/fn_haz_img_variant_widths.html" (dict "config" $config) -}}
 {{- end -}}
 
-{{- $settings := index . "settings" | default dict -}}
-{{- if eq (len $settings) 0 -}}
-  {{- $settings = dict "haz_img" (dict "config" $config) -}}
+{{- $bpArgs := dict -}}
+{{- with index . "context" -}}
+  {{- $bpArgs = dict "context" . -}}
+{{- else -}}
+  {{- $settings := index . "settings" | default dict -}}
+  {{- if eq (len $settings) 0 -}}
+    {{- $settings = dict "haz_img" (dict "config" $config) -}}
+  {{- end -}}
+  {{- $bpArgs = dict "settings" $settings -}}
 {{- end -}}
-{{- $bp := partial "haz/helpers/fn/fn_haz_breakpoints.html" (dict "settings" $settings) -}}
+{{- $bp := partial "haz/helpers/fn/fn_get_haz_breakpoints.html" $bpArgs -}}
 {{- $minTabletPx := index $bp "m" -}}
 {{- $minDesktopPx := index $bp "t" -}}
 

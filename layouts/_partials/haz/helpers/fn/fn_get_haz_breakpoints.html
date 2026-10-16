@@ -1,0 +1,66 @@
+{{/*
+  fn_get_haz_breakpoints.html
+  Getter wrapper. Path lives here: settings.breakpoints.
+  Prefer that map. Else settings.haz_img.config.max_px + 1 (d as-is).
+  Call with the page (.) or a dict: context / manifest / settings.
+  Returns: dict m t d (int px)
+*/}}
+{{- $ctx := . -}}
+{{- $manifest := dict -}}
+{{- $settings := dict -}}
+{{- if reflect.IsMap . -}}
+  {{- with index . "context" -}}
+    {{- $ctx = . -}}
+  {{- end -}}
+  {{- with index . "manifest" -}}
+    {{- $manifest = . -}}
+  {{- end -}}
+  {{- with index . "settings" -}}
+    {{- $settings = . -}}
+  {{- end -}}
+{{- end -}}
+{{- if and (eq (len $manifest) 0) (gt (len $settings) 0) -}}
+  {{- $manifest = dict "settings" $settings -}}
+{{- end -}}
+{{- $propArgs := dict "path" (slice "settings" "breakpoints") -}}
+{{- if gt (len $manifest) 0 -}}
+  {{- $propArgs = merge $propArgs (dict "manifest" $manifest) -}}
+{{- else -}}
+  {{- $propArgs = merge $propArgs (dict "context" $ctx) -}}
+{{- end -}}
+{{- $bp := partial "haz/helpers/fn/fn_get_sys_manifest_prop.html" $propArgs | default dict -}}
+{{- if not (reflect.IsMap $bp) -}}
+  {{- $bp = dict -}}
+{{- end -}}
+
+{{- $maxArgs := merge $propArgs (dict "path" (slice "settings" "haz_img" "config" "max_px")) -}}
+{{- $maxPx := partial "haz/helpers/fn/fn_get_sys_manifest_prop.html" $maxArgs | default dict -}}
+{{- if not (reflect.IsMap $maxPx) -}}
+  {{- $maxPx = dict -}}
+{{- end -}}
+
+{{- $m := 0 -}}
+{{- with index $bp "m" -}}
+  {{- $m = int . -}}
+{{- end -}}
+{{- if not $m -}}
+  {{- $m = add (int (index $maxPx "m" | default 479)) 1 -}}
+{{- end -}}
+
+{{- $t := 0 -}}
+{{- with index $bp "t" -}}
+  {{- $t = int . -}}
+{{- end -}}
+{{- if not $t -}}
+  {{- $t = add (int (index $maxPx "t" | default 767)) 1 -}}
+{{- end -}}
+
+{{- $d := 0 -}}
+{{- with index $bp "d" -}}
+  {{- $d = int . -}}
+{{- end -}}
+{{- if not $d -}}
+  {{- $d = int (index $maxPx "d" | default 1024) -}}
+{{- end -}}
+
+{{- return (dict "m" $m "t" $t "d" $d) -}}
