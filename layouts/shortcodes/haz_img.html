@@ -30,9 +30,10 @@
   {{- $presetKey = . -}}
 {{- end -}}
 
-{{- $sysManifest := partial "haz/helpers/fn/fn_get_sys_manifest.html" $page -}}
-{{- $settings := index $sysManifest "settings" | default dict -}}
-{{- $hazImg := index $settings "haz_img" | default dict -}}
+{{- $hazImg := partial "haz/helpers/fn/fn_get_sys_manifest_prop.html" (dict "context" $page "path" (slice "settings" "haz_img")) -}}
+{{- if not (reflect.IsMap $hazImg) -}}
+  {{- $hazImg = dict -}}
+{{- end -}}
 {{- $config := index $hazImg "config" | default dict -}}
 {{- $helpers := index $config "helpers" | default dict -}}
 
