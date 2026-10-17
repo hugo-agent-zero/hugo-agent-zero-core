@@ -1,13 +1,9 @@
-{{- /* haz_img.css — ExecuteAsTemplate. When = max_px.m|t + 1 (same as sizes=). */ -}}
-{{- $sysManifest := partial "haz/helpers/fn/fn_get_sys_manifest.html" . -}}
-{{- $settings := index $sysManifest "settings" | default dict -}}
-{{- $hazImg := index $settings "haz_img" | default dict -}}
-{{- $config := index $hazImg "config" | default dict -}}
-{{- $maxPx := index $config "max_px" | default dict -}}
-{{- $minTablet := add (int (index $maxPx "m" | default 479)) 1 -}}
-{{- $minDesktop := add (int (index $maxPx "t" | default 767)) 1 -}}
+{{- /* haz_img.css — ExecuteAsTemplate. When = settings.breakpoints via getter. */ -}}
+{{- $bp := partial "haz/helpers/fn/fn_get_haz_breakpoints.html" . -}}
+{{- $minTablet := index $bp "m" | default 480 -}}
+{{- $minDesktop := index $bp "t" | default 768 -}}
 /* haz_img — mobile-first; % of column per rwd band.
-   @media when from settings.haz_img.config.max_px (m/t + 1). Restamp max_px → this file follows.
+   @media when from settings.breakpoints (m/t).
    Shortcode emits haz_img_m*|t*|d* + --haz_img_ratio_m|t|d from preset.rwd. */
 :root {
   --haz_min_tablet: {{ $minTablet }}px;

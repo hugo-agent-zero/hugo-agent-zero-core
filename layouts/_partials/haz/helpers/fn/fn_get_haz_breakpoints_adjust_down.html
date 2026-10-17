@@ -1,0 +1,21 @@
+{{/*
+  fn_get_haz_breakpoints_adjust_down.html
+  Takes the dict from fn_get_haz_breakpoints. Does not read settings.
+  Subtract 1 from m and t (480 → 479, 768 → 767). d is copied.
+  Missing m or t stays missing.
+*/}}
+{{- $bp := . -}}
+{{- if not (reflect.IsMap $bp) -}}
+  {{- $bp = dict -}}
+{{- end -}}
+{{- $out := dict -}}
+{{- with index $bp "m" -}}
+  {{- $out = merge $out (dict "m" (sub (int .) 1)) -}}
+{{- end -}}
+{{- with index $bp "t" -}}
+  {{- $out = merge $out (dict "t" (sub (int .) 1)) -}}
+{{- end -}}
+{{- with index $bp "d" -}}
+  {{- $out = merge $out (dict "d" (int .)) -}}
+{{- end -}}
+{{- return $out -}}
