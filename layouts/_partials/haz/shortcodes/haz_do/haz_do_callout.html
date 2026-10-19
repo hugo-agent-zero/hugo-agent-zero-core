@@ -7,8 +7,8 @@
   Any other type renders with the note icon and color until a
   .haz_do_callout--{type} rule sets the accent and icon.
   type=code does not emit pre or code tags by itself. Inner is Markdown.
-  A fence in the body stays a fence, and the rest stays prose.
-  No fence at all: the whole body is wrapped as one code block.
+  Trim the body. If it opens and closes with a fence, leave it.
+  Otherwise wrap the whole body as one code block.
 */}}
 {{- $type := "note" -}}
 {{- with .Get "type" -}}
@@ -29,7 +29,8 @@
   {{- $title = strings.TrimSpace . -}}
 {{- end -}}
 {{- $raw := strings.TrimSpace .Inner -}}
-{{- if and (eq $type "code") $raw (not (in $raw "```")) -}}
+{{- $fenced := and (hasPrefix $raw "```") (hasSuffix $raw "```") -}}
+{{- if and (eq $type "code") $raw (not $fenced) -}}
   {{- $raw = printf "```\n%s\n```" $raw -}}
 {{- end -}}
 {{- $body := $raw | markdownify -}}

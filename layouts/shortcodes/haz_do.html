@@ -30,8 +30,8 @@
                --haz_callout_accent from that token and the icon.
                steps     badge instead of FA. Pass step="1" / step="A" / a short word.
                title optional. Inner is Markdown (markdownify). Do not write pre or code tags.
-               type=code A fence in the body is the code block. Prose around that fence stays prose.
-                         No fence at all: the whole body is wrapped as one code block.
+               type=code Trim the body. If it opens and closes with a fence, leave it.
+                         Otherwise the whole body is wrapped as one code block.
   list         optional title. Inner is Markdown, a ul or an ol.
                Chrome only. A plain ul or ol outside haz_do stays plain.
   tabs         wrapper. Nested tab shortcodes run. CSS radios switch panels.
