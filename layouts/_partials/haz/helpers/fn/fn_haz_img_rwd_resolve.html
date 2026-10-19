@@ -40,59 +40,59 @@
 
 {{- $rwd := index $preset "rwd" | default dict -}}
 {{- $alignAllowed := slice "left" "right" "center" "none" -}}
-{{- $mBand := index $rwd "m" | default dict -}}
-{{- $tBand := index $rwd "t" | default dict -}}
-{{- $dBand := index $rwd "d" | default dict -}}
+{{- $bandM := index $rwd "m" | default dict -}}
+{{- $bandT := index $rwd "t" | default dict -}}
+{{- $bandD := index $rwd "d" | default dict -}}
 
-{{- $mPct := 0 -}}
-{{- $mAlign := "" -}}
-{{- $mRatio := "" -}}
-{{- if isset $mBand "w" -}}
-  {{- $mPct = int (index $mBand "w") -}}
+{{- $pctM := 0 -}}
+{{- $alignM := "" -}}
+{{- $ratioM := "" -}}
+{{- if isset $bandM "w" -}}
+  {{- $pctM = int (index $bandM "w") -}}
 {{- end -}}
-{{- with index $mBand "align" -}}
+{{- with index $bandM "align" -}}
   {{- $cand := lower (strings.TrimSpace (printf "%v" .)) -}}
   {{- if in $alignAllowed $cand -}}
-    {{- $mAlign = $cand -}}
+    {{- $alignM = $cand -}}
   {{- end -}}
 {{- end -}}
-{{- with index $mBand "ratio" -}}
-  {{- $mRatio = strings.TrimSpace (printf "%v" .) -}}
+{{- with index $bandM "ratio" -}}
+  {{- $ratioM = strings.TrimSpace (printf "%v" .) -}}
 {{- end -}}
 
-{{- $tPct := $mPct -}}
-{{- $tAlign := $mAlign -}}
-{{- $tRatio := $mRatio -}}
-{{- if isset $tBand "w" -}}
-  {{- $tPct = int (index $tBand "w") -}}
+{{- $pctT := $pctM -}}
+{{- $alignT := $alignM -}}
+{{- $ratioT := $ratioM -}}
+{{- if isset $bandT "w" -}}
+  {{- $pctT = int (index $bandT "w") -}}
 {{- end -}}
-{{- with index $tBand "align" -}}
+{{- with index $bandT "align" -}}
   {{- $cand := lower (strings.TrimSpace (printf "%v" .)) -}}
   {{- if in $alignAllowed $cand -}}
-    {{- $tAlign = $cand -}}
+    {{- $alignT = $cand -}}
   {{- end -}}
 {{- end -}}
-{{- with index $tBand "ratio" -}}
-  {{- $tRatio = strings.TrimSpace (printf "%v" .) -}}
+{{- with index $bandT "ratio" -}}
+  {{- $ratioT = strings.TrimSpace (printf "%v" .) -}}
 {{- end -}}
 
-{{- $dPct := $tPct -}}
-{{- $dAlign := $tAlign -}}
-{{- $dRatio := $tRatio -}}
-{{- if isset $dBand "w" -}}
-  {{- $dPct = int (index $dBand "w") -}}
+{{- $pctD := $pctT -}}
+{{- $alignD := $alignT -}}
+{{- $ratioD := $ratioT -}}
+{{- if isset $bandD "w" -}}
+  {{- $pctD = int (index $bandD "w") -}}
 {{- end -}}
-{{- with index $dBand "align" -}}
+{{- with index $bandD "align" -}}
   {{- $cand := lower (strings.TrimSpace (printf "%v" .)) -}}
   {{- if in $alignAllowed $cand -}}
-    {{- $dAlign = $cand -}}
+    {{- $alignD = $cand -}}
   {{- end -}}
 {{- end -}}
-{{- with index $dBand "ratio" -}}
-  {{- $dRatio = strings.TrimSpace (printf "%v" .) -}}
+{{- with index $bandD "ratio" -}}
+  {{- $ratioD = strings.TrimSpace (printf "%v" .) -}}
 {{- end -}}
 
-{{- $hasFrame := or $mRatio $tRatio $dRatio -}}
+{{- $hasFrame := or $ratioM $ratioT $ratioD -}}
 {{- $extraClass := "" -}}
 {{- with index $preset "class" -}}
   {{- $extraClass = strings.TrimSpace (printf "%v" .) -}}
@@ -101,38 +101,38 @@
 {{- $allowed := slice 25 33 50 67 75 100 -}}
 {{- $resolved := false -}}
 {{- if gt (len $preset) 0 -}}
-  {{- $resolved = and (in $allowed $mPct) (in $allowed $tPct) (in $allowed $dPct) -}}
+  {{- $resolved = and (in $allowed $pctM) (in $allowed $pctT) (in $allowed $pctD) -}}
 {{- end -}}
 
-{{- $dNeed := int (math.Round (mul $lgPx (div (float $dPct) 100.0))) -}}
-{{- $tNeed := int (math.Round (mul $mdPx (div (float $tPct) 100.0))) -}}
-{{- $mNeed := int (math.Round (mul $smPx (div (float $mPct) 100.0))) -}}
+{{- $needD := int (math.Round (mul $lgPx (div (float $pctD) 100.0))) -}}
+{{- $needT := int (math.Round (mul $mdPx (div (float $pctT) 100.0))) -}}
+{{- $needM := int (math.Round (mul $smPx (div (float $pctM) 100.0))) -}}
 {{- /* settings w: 33|67 → true thirds for sizes= holes (match CSS 33.333% / 66.667%) */ -}}
-{{- if eq $dPct 33 -}}{{- $dNeed = int (math.Round (div (float $lgPx) 3.0)) -}}{{- end -}}
-{{- if eq $dPct 67 -}}{{- $dNeed = int (math.Round (mul (float $lgPx) (div 2.0 3.0))) -}}{{- end -}}
-{{- if eq $tPct 33 -}}{{- $tNeed = int (math.Round (div (float $mdPx) 3.0)) -}}{{- end -}}
-{{- if eq $tPct 67 -}}{{- $tNeed = int (math.Round (mul (float $mdPx) (div 2.0 3.0))) -}}{{- end -}}
-{{- if eq $mPct 33 -}}{{- $mNeed = int (math.Round (div (float $smPx) 3.0)) -}}{{- end -}}
-{{- if eq $mPct 67 -}}{{- $mNeed = int (math.Round (mul (float $smPx) (div 2.0 3.0))) -}}{{- end -}}
-{{- $dHole := printf "%dpx" $dNeed -}}
-{{- $tHole := printf "%dpx" $tNeed -}}
-{{- $mHole := printf "min(%dvw, %dpx)" $mPct $mNeed -}}
-{{- $sizesAttr := printf "(min-width: %dpx) %s, (min-width: %dpx) %s, %s" $minDesktopPx $dHole $minTabletPx $tHole $mHole -}}
+{{- if eq $pctD 33 -}}{{- $needD = int (math.Round (div (float $lgPx) 3.0)) -}}{{- end -}}
+{{- if eq $pctD 67 -}}{{- $needD = int (math.Round (mul (float $lgPx) (div 2.0 3.0))) -}}{{- end -}}
+{{- if eq $pctT 33 -}}{{- $needT = int (math.Round (div (float $mdPx) 3.0)) -}}{{- end -}}
+{{- if eq $pctT 67 -}}{{- $needT = int (math.Round (mul (float $mdPx) (div 2.0 3.0))) -}}{{- end -}}
+{{- if eq $pctM 33 -}}{{- $needM = int (math.Round (div (float $smPx) 3.0)) -}}{{- end -}}
+{{- if eq $pctM 67 -}}{{- $needM = int (math.Round (mul (float $smPx) (div 2.0 3.0))) -}}{{- end -}}
+{{- $holeD := printf "%dpx" $needD -}}
+{{- $holeT := printf "%dpx" $needT -}}
+{{- $holeM := printf "min(%dvw, %dpx)" $pctM $needM -}}
+{{- $sizesAttr := printf "(min-width: %dpx) %s, (min-width: %dpx) %s, %s" $minDesktopPx $holeD $minTabletPx $holeT $holeM -}}
 {{- if $hasFrame -}}
   {{- $sizesAttr = printf "auto, %s" $sizesAttr -}}
 {{- end -}}
 
 {{- return (dict
   "resolved" $resolved
-  "m_pct" $mPct
-  "t_pct" $tPct
-  "d_pct" $dPct
-  "m_align" $mAlign
-  "t_align" $tAlign
-  "d_align" $dAlign
-  "m_ratio" $mRatio
-  "t_ratio" $tRatio
-  "d_ratio" $dRatio
+  "pct_m" $pctM
+  "pct_t" $pctT
+  "pct_d" $pctD
+  "align_m" $alignM
+  "align_t" $alignT
+  "align_d" $alignD
+  "ratio_m" $ratioM
+  "ratio_t" $ratioT
+  "ratio_d" $ratioD
   "has_frame" $hasFrame
   "sizes_attr" $sizesAttr
   "extra_class" $extraClass
