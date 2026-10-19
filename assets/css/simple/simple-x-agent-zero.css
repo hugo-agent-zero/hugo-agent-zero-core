@@ -162,10 +162,12 @@ main .haz_section--blog {
 }
 
 /* Simple boxes pre with aside/details and paints inline code pink (--code).
-   Fences stay quiet. Inline code is a light chip. kbd keeps Simple's keycap.
+   Fences use --haz_pre_bg so they stand out on the page and inside a callout.
+   Child theme sets that token (off-black in dark, a grey step in light).
+   Inline code is a chip. kbd keeps Simple's keycap.
    --code stays so callout type=code can still use it as an accent. */
 pre {
-  background-color: transparent;
+  background-color: var(--haz_pre_bg, #212529);
   border: none;
   color: var(--text);
 }
