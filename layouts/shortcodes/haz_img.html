@@ -23,7 +23,7 @@
          Default is settings.haz_img.config.default_lazy (true).
     process optional — true fills missing width_px stubs via Hugo Resize
          (width-only; existing page-bundle stubs win). Default is
-         settings.haz_img.config.process (false).
+         settings.haz_img.config.process (ship child: true).
 
   Inner: author HTML. Stem from src= → .Page.Resources variants (width_px keys). Sparse OK.
 */}}
@@ -61,8 +61,9 @@
   {{- end -}}
 {{- end -}}
 
-{{- $defaultProcess := false -}}
+{{- $defaultProcess := true -}}
 {{- if isset $config "process" -}}
+
   {{- $cfgProcess := index $config "process" -}}
   {{- if eq (printf "%T" $cfgProcess) "bool" -}}
     {{- $defaultProcess = $cfgProcess -}}
