@@ -3,34 +3,18 @@
   Normalize a process format token for haz_img.
   Args:
     - value (any) raw format from settings
-    - formats_allow (slice) optional; settings.haz_img.config.formats_allow
-  Valid = entries in formats_allow only (Hugo format tokens). jpg → jpeg before check.
-  Core fallback allowlist (web-facing): jpeg|webp|avif|png — not tiff/bmp/gif.
-  Child may widen (e.g. add tiff) via config.formats_allow.
-  inherit is never listed: empty / unknown / not allowed → inherit (same as master).
+  Baked-in allowlist (web-facing): jpeg|webp|avif|png. jpg → jpeg.
+  Not allowed / empty → inherit (same as master). inherit is never “allowed”;
+  it is the fallback. Child `_formats_allow` is parked FYI only — nothing reads it yet.
   Returns string.
 */}}
 {{- $cand := lower (strings.TrimSpace (printf "%v" (index . "value" | default ""))) -}}
 {{- if eq $cand "jpg" -}}
   {{- $cand = "jpeg" -}}
 {{- end -}}
-{{- $ok := index . "formats_allow" | default slice -}}
-{{- if eq (len $ok) 0 -}}
-  {{- $ok = slice "jpeg" "webp" "avif" "png" -}}
-{{- end -}}
-{{- /* Normalize allow entries (jpg → jpeg) once. */ -}}
-{{- $okNorm := slice -}}
-{{- range $ok -}}
-  {{- $e := lower (strings.TrimSpace (printf "%v" .)) -}}
-  {{- if eq $e "jpg" -}}
-    {{- $e = "jpeg" -}}
-  {{- end -}}
-  {{- if $e -}}
-    {{- $okNorm = $okNorm | append $e -}}
-  {{- end -}}
-{{- end -}}
+{{- $ok := slice "jpeg" "webp" "avif" "png" -}}
 {{- $out := "inherit" -}}
-{{- if and $cand (ne $cand "inherit") (in $okNorm $cand) -}}
+{{- if and $cand (ne $cand "inherit") (in $ok $cand) -}}
   {{- $out = $cand -}}
 {{- end -}}
 {{- return $out -}}
