@@ -1,0 +1,20 @@
+{{/*
+  fn_haz_img_format.html
+  Normalize a process format token for haz_img.
+  Valid: inherit + Hugo Resize formats (avif|bmp|gif|jpeg|png|tiff|webp).
+  Alias: jpg → jpeg. Empty / null / unknown → inherit.
+  Args:
+    - value (any) raw format from settings
+  Returns string.
+*/}}
+{{- $cand := lower (strings.TrimSpace (printf "%v" (index . "value" | default ""))) -}}
+{{- if eq $cand "jpg" -}}
+  {{- $cand = "jpeg" -}}
+{{- end -}}
+{{- /* Hugo imaging format tokens + HAZ inherit (same as master). */ -}}
+{{- $ok := slice "inherit" "avif" "bmp" "gif" "jpeg" "png" "tiff" "webp" -}}
+{{- $out := "inherit" -}}
+{{- if and $cand (in $ok $cand) -}}
+  {{- $out = $cand -}}
+{{- end -}}
+{{- return $out -}}

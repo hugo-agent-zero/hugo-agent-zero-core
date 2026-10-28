@@ -24,8 +24,9 @@
     process optional — true fills missing rwd_widths stubs via Hugo Resize
          (width-only; existing page-bundle stubs win). Default is
          settings.haz_img.config.process (ship child: true).
-         Per rung: format inherit|webp (inherit unless valid override); q.jpeg /
-         q.webp 1–100 on Resize; -1/omit = Hugo imaging default for that format.
+         Per rung: format inherit unless a valid Hugo format overrides
+         (avif|bmp|gif|jpeg|png|tiff|webp; jpg→jpeg). q.{format} 1–100 on
+         Resize; -1/omit = Hugo imaging default for that format.
 
   Inner: author HTML. Stem from src= → .Page.Resources variants (rwd_widths keys). Sparse OK.
 */}}
@@ -98,51 +99,40 @@
 
 {{- /* Preset rwd_widths layer on HAZ defaults (only fields set; format/q/px). */ -}}
 {{- $presetRungs := index $preset "rwd_widths" | default dict -}}
-{{- $formatOk := slice "inherit" "webp" -}}
 {{- $rwdWidths := dict -}}
 {{- range $vKey, $base := $rwdWidthsBase -}}
   {{- $px := int (index $base "px" | default 0) -}}
-  {{- $format := "inherit" -}}
-  {{- with index $base "format" -}}
-    {{- $cand := lower (strings.TrimSpace (printf "%v" .)) -}}
-    {{- if and $cand (in $formatOk $cand) -}}
-      {{- $format = $cand -}}
-    {{- end -}}
+  {{- $format := partial "haz/helpers/fn/fn_haz_img_format.html" (dict "value" (index $base "format")) -}}
+  {{- $qMerged := index $base "q" | default dict -}}
+  {{- if not (reflect.IsMap $qMerged) -}}
+    {{- $qMerged = dict -}}
   {{- end -}}
-  {{- $baseQ := index $base "q" | default dict -}}
-  {{- if not (reflect.IsMap $baseQ) -}}
-    {{- $baseQ = dict "jpeg" -1 "webp" -1 -}}
-  {{- end -}}
-  {{- $qJpeg := int (index $baseQ "jpeg" | default -1) -}}
-  {{- $qWebp := int (index $baseQ "webp" | default -1) -}}
   {{- $over := index $presetRungs $vKey | default dict -}}
   {{- if reflect.IsMap $over -}}
     {{- if isset $over "px" -}}
       {{- $px = int (index $over "px") -}}
     {{- end -}}
     {{- if isset $over "format" -}}
-      {{- $cand := lower (strings.TrimSpace (printf "%v" (index $over "format"))) -}}
-      {{- if and $cand (in $formatOk $cand) -}}
-        {{- $format = $cand -}}
-      {{- else -}}
-        {{- $format = "inherit" -}}
-      {{- end -}}
+      {{- $format = partial "haz/helpers/fn/fn_haz_img_format.html" (dict "value" (index $over "format")) -}}
     {{- end -}}
     {{- if isset $over "q" -}}
       {{- $overQ := index $over "q" -}}
       {{- if reflect.IsMap $overQ -}}
-        {{- if isset $overQ "jpeg" -}}
-          {{- $qJpeg = int (index $overQ "jpeg") -}}
+        {{- $overNorm := dict -}}
+        {{- range $qk, $qv := $overQ -}}
+          {{- $qKey := lower (printf "%v" $qk) -}}
+          {{- if eq $qKey "jpg" -}}
+            {{- $qKey = "jpeg" -}}
+          {{- end -}}
+          {{- $overNorm = merge $overNorm (dict $qKey (int $qv)) -}}
         {{- end -}}
-        {{- if isset $overQ "webp" -}}
-          {{- $qWebp = int (index $overQ "webp") -}}
-        {{- end -}}
+        {{- $qMerged = merge $qMerged $overNorm -}}
       {{- else -}}
-        {{- $qJpeg = int $overQ -}}
+        {{- $qMerged = merge $qMerged (dict "jpeg" (int $overQ)) -}}
       {{- end -}}
     {{- end -}}
   {{- end -}}
-  {{- $rwdWidths = merge $rwdWidths (dict $vKey (dict "px" $px "format" $format "q" (dict "jpeg" $qJpeg "webp" $qWebp))) -}}
+  {{- $rwdWidths = merge $rwdWidths (dict $vKey (dict "px" $px "format" $format "q" $qMerged)) -}}
 {{- end -}}
 
 {{- $rwd := partial $rwdResolveFn (dict "config" $config "context" $page "preset" $preset "rwd_widths" $rwdWidths) -}}
@@ -222,15 +212,10 @@
       {{- range $vKey, $rung := $rwdWidths -}}
         {{- $wPx := int (index $rung "px" | default 0) -}}
         {{- $rungQ := index $rung "q" | default dict -}}
-        {{- $qJpeg := int (index $rungQ "jpeg" | default -1) -}}
-        {{- $qWebp := int (index $rungQ "webp" | default -1) -}}
-        {{- $rungFmt := "inherit" -}}
-        {{- with index $rung "format" -}}
-          {{- $cand := lower (strings.TrimSpace (printf "%v" .)) -}}
-          {{- if and $cand (in (slice "inherit" "webp") $cand) -}}
-            {{- $rungFmt = $cand -}}
-          {{- end -}}
+        {{- if not (reflect.IsMap $rungQ) -}}
+          {{- $rungQ = dict -}}
         {{- end -}}
+        {{- $rungFmt := partial "haz/helpers/fn/fn_haz_img_format.html" (dict "value" (index $rung "format")) -}}
         {{- $fileName := printf "%s%s%s%s" $stem $variantSep $vKey $ext -}}
         {{- if and $dir (ne $dir ".") -}}
           {{- $fileName = printf "%s/%s" $dir $fileName -}}
@@ -239,17 +224,15 @@
         {{- if $res -}}
           {{- $srcsetParts = $srcsetParts | append (dict "w" $wPx "url" $res.RelPermalink) -}}
         {{- else if and $wantProcess (ne $master "") (gt $wPx 0) -}}
-          {{- $spec := "" -}}
-          {{- if eq $rungFmt "webp" -}}
-            {{- $spec = printf "%dx webp" $wPx -}}
-            {{- if and (ge $qWebp 1) (le $qWebp 100) -}}
-              {{- $spec = printf "%dx webp q%d" $wPx $qWebp -}}
-            {{- end -}}
-          {{- else -}}
-            {{- $spec = printf "%dx" $wPx -}}
-            {{- if and (ge $qJpeg 1) (le $qJpeg 100) -}}
-              {{- $spec = printf "%dx q%d" $wPx $qJpeg -}}
-            {{- end -}}
+          {{- $spec := printf "%dx" $wPx -}}
+          {{- $qKey := "jpeg" -}}
+          {{- if ne $rungFmt "inherit" -}}
+            {{- $spec = printf "%dx %s" $wPx $rungFmt -}}
+            {{- $qKey = $rungFmt -}}
+          {{- end -}}
+          {{- $qN := int (index $rungQ $qKey | default -1) -}}
+          {{- if and (ge $qN 1) (le $qN 100) -}}
+            {{- $spec = printf "%s q%d" $spec $qN -}}
           {{- end -}}
           {{- with $master.Resize $spec -}}
             {{- $srcsetParts = $srcsetParts | append (dict "w" $wPx "url" .RelPermalink) -}}
