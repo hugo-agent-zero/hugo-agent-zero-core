@@ -16,16 +16,17 @@
          align (left|right|center|none), ratio (e.g. "16/9").
          Omit band/field → inherit above. ratio → --haz_img_ratio_m|t|d;
          CSS picks by settings.breakpoints. fit cover for v1 when any ratio.
-         sizes= px from width_px.sm|md|lg × w%; when from breakpoints.
+         sizes= px from rwd_widths.sm|md|lg.px × w%; when from breakpoints.
          No ratio on any band = as-is (no frame / cover) and no auto prefix
          (auto without a frame pins height at 150).
     lazy optional — false skips loading=lazy (heroes). true forces it.
          Default is settings.haz_img.config.default_lazy (true).
-    process optional — true fills missing width_px stubs via Hugo Resize
+    process optional — true fills missing rwd_widths stubs via Hugo Resize
          (width-only; existing page-bundle stubs win). Default is
-         settings.haz_img.config.process (false).
+         settings.haz_img.config.process (ship child: true).
+         Quality from rwd_widths.*.q.jpeg (1–100 on Resize; -1/omit = Hugo default).
 
-  Inner: author HTML. Stem from src= → .Page.Resources variants (width_px keys). Sparse OK.
+  Inner: author HTML. Stem from src= → .Page.Resources variants (rwd_widths keys). Sparse OK.
 */}}
 {{- $page := .Page -}}
 {{- $presetKey := "" -}}
@@ -83,10 +84,10 @@
 {{- end -}}
 
 {{- $variantSep := index $config "variant_sep" | default "_" -}}
-{{- $variantWidthsFn := index $helpers "variant_widths_fn" | default "haz/helpers/fn/fn_haz_img_variant_widths.html" -}}
+{{- $rwdWidthsFn := index $helpers "rwd_widths_fn" | default "haz/helpers/fn/fn_haz_img_rwd_widths.html" -}}
 {{- $rwdResolveFn := index $helpers "rwd_resolve_fn" | default "haz/helpers/fn/fn_haz_img_rwd_resolve.html" -}}
 
-{{- $variantWidths := partial $variantWidthsFn (dict "config" $config) -}}
+{{- $rwdWidthsBase := partial $rwdWidthsFn (dict "config" $config) -}}
 
 {{- $presets := index $hazImg "presets" | default dict -}}
 {{- $preset := dict -}}
@@ -94,33 +95,62 @@
   {{- $preset = index $presets $presetKey -}}
 {{- end -}}
 
-{{- $rwd := partial $rwdResolveFn (dict "config" $config "context" $page "preset" $preset "width_px" $variantWidths) -}}
+{{- /* Deep-merge preset.rwd_widths over config (preset fields win; q maps merge per format). */ -}}
+{{- $presetRungs := index $preset "rwd_widths" | default dict -}}
+{{- $rwdWidths := dict -}}
+{{- range $vKey, $base := $rwdWidthsBase -}}
+  {{- $px := int (index $base "px" | default 0) -}}
+  {{- $baseQ := index $base "q" | default dict -}}
+  {{- if not (reflect.IsMap $baseQ) -}}
+    {{- $baseQ = dict "jpeg" -1 -}}
+  {{- end -}}
+  {{- $qJpeg := int (index $baseQ "jpeg" | default -1) -}}
+  {{- $over := index $presetRungs $vKey | default dict -}}
+  {{- if reflect.IsMap $over -}}
+    {{- if isset $over "px" -}}
+      {{- $px = int (index $over "px") -}}
+    {{- end -}}
+    {{- if isset $over "q" -}}
+      {{- $overQ := index $over "q" -}}
+      {{- if reflect.IsMap $overQ -}}
+        {{- if isset $overQ "jpeg" -}}
+          {{- $qJpeg = int (index $overQ "jpeg") -}}
+        {{- end -}}
+      {{- else -}}
+        {{- $qJpeg = int $overQ -}}
+      {{- end -}}
+    {{- end -}}
+  {{- end -}}
+  {{- $rwdWidths = merge $rwdWidths (dict $vKey (dict "px" $px "q" (dict "jpeg" $qJpeg))) -}}
+{{- end -}}
+
+{{- $rwd := partial $rwdResolveFn (dict "config" $config "context" $page "preset" $preset "rwd_widths" $rwdWidths) -}}
 {{- $resolved := index $rwd "resolved" | default false -}}
-{{- $pctM := index $rwd "pct_m" | default 0 -}}
-{{- $pctT := index $rwd "pct_t" | default 0 -}}
-{{- $pctD := index $rwd "pct_d" | default 0 -}}
-{{- $alignM := index $rwd "align_m" | default "" -}}
-{{- $alignT := index $rwd "align_t" | default "" -}}
-{{- $alignD := index $rwd "align_d" | default "" -}}
-{{- $ratioM := index $rwd "ratio_m" | default "" -}}
-{{- $ratioT := index $rwd "ratio_t" | default "" -}}
-{{- $ratioD := index $rwd "ratio_d" | default "" -}}
+{{- $mPct := index $rwd "m_pct" | default 0 -}}
+{{- $tPct := index $rwd "t_pct" | default 0 -}}
+{{- $dPct := index $rwd "d_pct" | default 0 -}}
+{{- $mAlign := index $rwd "m_align" | default "" -}}
+{{- $tAlign := index $rwd "t_align" | default "" -}}
+{{- $dAlign := index $rwd "d_align" | default "" -}}
+{{- $mRatio := index $rwd "m_ratio" | default "" -}}
+{{- $tRatio := index $rwd "t_ratio" | default "" -}}
+{{- $dRatio := index $rwd "d_ratio" | default "" -}}
 {{- $hasFrame := index $rwd "has_frame" | default false -}}
 {{- $sizesAttr := index $rwd "sizes_attr" | default "" -}}
 {{- $extraClass := index $rwd "extra_class" | default "" -}}
 
-{{- $wM := printf "haz_img_m%d" $pctM -}}
-{{- $wT := printf "haz_img_t%d" $pctT -}}
-{{- $wD := printf "haz_img_d%d" $pctD -}}
+{{- $wM := printf "haz_img_m%d" $mPct -}}
+{{- $wT := printf "haz_img_t%d" $tPct -}}
+{{- $wD := printf "haz_img_d%d" $dPct -}}
 {{- $layoutClasses := printf "%s %s %s" $wM $wT $wD -}}
-{{- if $alignM -}}
-  {{- $layoutClasses = printf "%s haz_img_m_%s" $layoutClasses $alignM -}}
+{{- if $mAlign -}}
+  {{- $layoutClasses = printf "%s haz_img_m_%s" $layoutClasses $mAlign -}}
 {{- end -}}
-{{- if $alignT -}}
-  {{- $layoutClasses = printf "%s haz_img_t_%s" $layoutClasses $alignT -}}
+{{- if $tAlign -}}
+  {{- $layoutClasses = printf "%s haz_img_t_%s" $layoutClasses $tAlign -}}
 {{- end -}}
-{{- if $alignD -}}
-  {{- $layoutClasses = printf "%s haz_img_d_%s" $layoutClasses $alignD -}}
+{{- if $dAlign -}}
+  {{- $layoutClasses = printf "%s haz_img_d_%s" $layoutClasses $dAlign -}}
 {{- end -}}
 {{- if $hasFrame -}}
   {{- $layoutClasses = printf "%s haz_img_frame haz_img_cover" $layoutClasses -}}
@@ -168,7 +198,9 @@
       {{- end -}}
 
       {{- $srcsetParts := slice -}}
-      {{- range $vKey, $wPx := $variantWidths -}}
+      {{- range $vKey, $rung := $rwdWidths -}}
+        {{- $wPx := int (index $rung "px" | default 0) -}}
+        {{- $qJpeg := int (index (index $rung "q" | default dict) "jpeg" | default -1) -}}
         {{- $fileName := printf "%s%s%s%s" $stem $variantSep $vKey $ext -}}
         {{- if and $dir (ne $dir ".") -}}
           {{- $fileName = printf "%s/%s" $dir $fileName -}}
@@ -176,8 +208,12 @@
         {{- $res := $page.Resources.GetMatch $fileName -}}
         {{- if $res -}}
           {{- $srcsetParts = $srcsetParts | append (dict "w" $wPx "url" $res.RelPermalink) -}}
-        {{- else if and $wantProcess (ne $master "") -}}
-          {{- with $master.Resize (printf "%dx" $wPx) -}}
+        {{- else if and $wantProcess (ne $master "") (gt $wPx 0) -}}
+          {{- $spec := printf "%dx" $wPx -}}
+          {{- if and (ge $qJpeg 1) (le $qJpeg 100) -}}
+            {{- $spec = printf "%dx q%d" $wPx $qJpeg -}}
+          {{- end -}}
+          {{- with $master.Resize $spec -}}
             {{- $srcsetParts = $srcsetParts | append (dict "w" $wPx "url" .RelPermalink) -}}
           {{- end -}}
         {{- end -}}
@@ -194,7 +230,7 @@
 
       {{- $classSub := findRESubmatch `(?i)\bclass\s*=\s*"([^"]*)"` $imgTag -}}
       {{- if eq (len $classSub) 0 -}}
-        {{- $classSub = findRESubmatch `(?i)\bclass\s*=\s*'([^']*)'` $imgTag -}}
+        {{- $classSub = findRESubmatch `(?i)\bclass\s*=\s*'[^']*'` $imgTag -}}
       {{- end -}}
       {{- $needClassAttr := true -}}
       {{- if gt (len $classSub) 0 -}}
@@ -217,7 +253,7 @@
         {{- $inject = printf "%s class=\"%s\"" $inject $layoutClasses -}}
       {{- end -}}
       {{- if $hasFrame -}}
-        {{- $ratioStyle := printf "--haz_img_ratio_m: %s; --haz_img_ratio_t: %s; --haz_img_ratio_d: %s" $ratioM $ratioT $ratioD -}}
+        {{- $ratioStyle := printf "--haz_img_ratio_m: %s; --haz_img_ratio_t: %s; --haz_img_ratio_d: %s" $mRatio $tRatio $dRatio -}}
         {{- if findRE `(?i)\bstyle\s*=\s*"` $imgTag -}}
           {{- $imgTag = replaceRE `(?i)\bstyle\s*=\s*"([^"]*)"` (printf "style=\"$1; %s\"" $ratioStyle) $imgTag 1 -}}
         {{- else if findRE `(?i)\bstyle\s*=\s*'` $imgTag -}}
