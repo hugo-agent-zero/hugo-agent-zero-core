@@ -21,6 +21,9 @@
          (auto without a frame pins height at 150).
     lazy optional — false skips loading=lazy (heroes). true forces it.
          Default is settings.haz_img.config.default_lazy (true).
+    process optional — true fills missing width_px stubs via Hugo Resize
+         (width-only; existing page-bundle stubs win). Default is
+         settings.haz_img.config.process (false).
 
   Inner: author HTML. Stem from src= → .Page.Resources variants (width_px keys). Sparse OK.
 */}}
@@ -55,6 +58,27 @@
   {{- else -}}
     {{- $lazyLow := lower (printf "%v" $lazyValue) -}}
     {{- $wantLazy = or (eq $lazyLow "true") (eq $lazyLow "1") (eq $lazyLow "yes") (eq $lazyLow "on") -}}
+  {{- end -}}
+{{- end -}}
+
+{{- $defaultProcess := false -}}
+{{- if isset $config "process" -}}
+  {{- $cfgProcess := index $config "process" -}}
+  {{- if eq (printf "%T" $cfgProcess) "bool" -}}
+    {{- $defaultProcess = $cfgProcess -}}
+  {{- else -}}
+    {{- $cfgProcessLow := lower (printf "%v" $cfgProcess) -}}
+    {{- $defaultProcess = or (eq $cfgProcessLow "true") (eq $cfgProcessLow "1") (eq $cfgProcessLow "yes") (eq $cfgProcessLow "on") -}}
+  {{- end -}}
+{{- end -}}
+{{- $wantProcess := $defaultProcess -}}
+{{- if isset .Params "process" -}}
+  {{- $processValue := .Get "process" -}}
+  {{- if eq (printf "%T" $processValue) "bool" -}}
+    {{- $wantProcess = $processValue -}}
+  {{- else -}}
+    {{- $processLow := lower (printf "%v" $processValue) -}}
+    {{- $wantProcess = or (eq $processLow "true") (eq $processLow "1") (eq $processLow "yes") (eq $processLow "on") -}}
   {{- end -}}
 {{- end -}}
 
@@ -136,6 +160,13 @@
       {{- $stem := strings.TrimSuffix $ext $base -}}
       {{- $dir := path.Dir $srcPath -}}
 
+      {{- $master := "" -}}
+      {{- if $wantProcess -}}
+        {{- with $page.Resources.GetMatch $srcPath -}}
+          {{- $master = . -}}
+        {{- end -}}
+      {{- end -}}
+
       {{- $srcsetParts := slice -}}
       {{- range $vKey, $wPx := $variantWidths -}}
         {{- $fileName := printf "%s%s%s%s" $stem $variantSep $vKey $ext -}}
@@ -145,6 +176,10 @@
         {{- $res := $page.Resources.GetMatch $fileName -}}
         {{- if $res -}}
           {{- $srcsetParts = $srcsetParts | append (dict "w" $wPx "url" $res.RelPermalink) -}}
+        {{- else if and $wantProcess (ne $master "") -}}
+          {{- with $master.Resize (printf "%dx" $wPx) -}}
+            {{- $srcsetParts = $srcsetParts | append (dict "w" $wPx "url" .RelPermalink) -}}
+          {{- end -}}
         {{- end -}}
       {{- end -}}
       {{- $srcsetAttr := "" -}}
