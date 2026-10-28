@@ -24,8 +24,8 @@
     process optional — true fills missing rwd_widths stubs via Hugo Resize
          (width-only; existing page-bundle stubs win). Default is
          settings.haz_img.config.process (ship child: true).
-         Per rung: format inherit unless a valid Hugo format overrides
-         (avif|bmp|gif|jpeg|png|tiff|webp; jpg→jpeg). q.{format} 1–100 on
+         Per rung: format inherit unless listed in config.formats_allow
+         (jpg→jpeg). Not allowed / empty → inherit. q.{format} 1–100 on
          Resize; -1/omit = Hugo imaging default for that format.
 
   Inner: author HTML. Stem from src= → .Page.Resources variants (rwd_widths keys). Sparse OK.
@@ -99,10 +99,11 @@
 
 {{- /* Preset rwd_widths layer on HAZ defaults (only fields set; format/q/px). */ -}}
 {{- $presetRungs := index $preset "rwd_widths" | default dict -}}
+{{- $formatsAllow := index $config "formats_allow" | default slice -}}
 {{- $rwdWidths := dict -}}
 {{- range $vKey, $base := $rwdWidthsBase -}}
   {{- $px := int (index $base "px" | default 0) -}}
-  {{- $format := partial "haz/helpers/fn/fn_haz_img_format.html" (dict "value" (index $base "format")) -}}
+  {{- $format := partial "haz/helpers/fn/fn_haz_img_format.html" (dict "value" (index $base "format") "formats_allow" $formatsAllow) -}}
   {{- $qMerged := index $base "q" | default dict -}}
   {{- if not (reflect.IsMap $qMerged) -}}
     {{- $qMerged = dict -}}
@@ -113,7 +114,7 @@
       {{- $px = int (index $over "px") -}}
     {{- end -}}
     {{- if isset $over "format" -}}
-      {{- $format = partial "haz/helpers/fn/fn_haz_img_format.html" (dict "value" (index $over "format")) -}}
+      {{- $format = partial "haz/helpers/fn/fn_haz_img_format.html" (dict "value" (index $over "format") "formats_allow" $formatsAllow) -}}
     {{- end -}}
     {{- if isset $over "q" -}}
       {{- $overQ := index $over "q" -}}
@@ -215,7 +216,7 @@
         {{- if not (reflect.IsMap $rungQ) -}}
           {{- $rungQ = dict -}}
         {{- end -}}
-        {{- $rungFmt := partial "haz/helpers/fn/fn_haz_img_format.html" (dict "value" (index $rung "format")) -}}
+        {{- $rungFmt := partial "haz/helpers/fn/fn_haz_img_format.html" (dict "value" (index $rung "format") "formats_allow" $formatsAllow) -}}
         {{- $fileName := printf "%s%s%s%s" $stem $variantSep $vKey $ext -}}
         {{- if and $dir (ne $dir ".") -}}
           {{- $fileName = printf "%s/%s" $dir $fileName -}}

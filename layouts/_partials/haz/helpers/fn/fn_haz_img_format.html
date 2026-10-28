@@ -1,20 +1,36 @@
 {{/*
   fn_haz_img_format.html
   Normalize a process format token for haz_img.
-  Valid: inherit + Hugo Resize formats (avif|bmp|gif|jpeg|png|tiff|webp).
-  Alias: jpg → jpeg. Empty / null / unknown → inherit.
   Args:
     - value (any) raw format from settings
+    - formats_allow (slice) optional; settings.haz_img.config.formats_allow
+  Valid = entries in formats_allow only (Hugo format tokens). jpg → jpeg before check.
+  Core fallback allowlist (web-facing): jpeg|webp|avif|png — not tiff/bmp/gif.
+  Child may widen (e.g. add tiff) via config.formats_allow.
+  inherit is never listed: empty / unknown / not allowed → inherit (same as master).
   Returns string.
 */}}
 {{- $cand := lower (strings.TrimSpace (printf "%v" (index . "value" | default ""))) -}}
 {{- if eq $cand "jpg" -}}
   {{- $cand = "jpeg" -}}
 {{- end -}}
-{{- /* Hugo imaging format tokens + HAZ inherit (same as master). */ -}}
-{{- $ok := slice "inherit" "avif" "bmp" "gif" "jpeg" "png" "tiff" "webp" -}}
+{{- $ok := index . "formats_allow" | default slice -}}
+{{- if eq (len $ok) 0 -}}
+  {{- $ok = slice "jpeg" "webp" "avif" "png" -}}
+{{- end -}}
+{{- /* Normalize allow entries (jpg → jpeg) once. */ -}}
+{{- $okNorm := slice -}}
+{{- range $ok -}}
+  {{- $e := lower (strings.TrimSpace (printf "%v" .)) -}}
+  {{- if eq $e "jpg" -}}
+    {{- $e = "jpeg" -}}
+  {{- end -}}
+  {{- if $e -}}
+    {{- $okNorm = $okNorm | append $e -}}
+  {{- end -}}
+{{- end -}}
 {{- $out := "inherit" -}}
-{{- if and $cand (in $ok $cand) -}}
+{{- if and $cand (ne $cand "inherit") (in $okNorm $cand) -}}
   {{- $out = $cand -}}
 {{- end -}}
 {{- return $out -}}

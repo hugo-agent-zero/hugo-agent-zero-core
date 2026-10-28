@@ -2,8 +2,8 @@
   fn_haz_img_rwd_widths.html
   Return config.rwd_widths as key → { px, format, q }.
   Bare int → { px: N, format: inherit, q: {} }.
-  format via fn_haz_img_format (inherit unless valid Hugo format / inherit).
-  q keys = Hugo format names (jpeg, webp, …); jpg → jpeg. Flat q: 75 → q.jpeg: 75.
+  format via fn_haz_img_format + config.formats_allow (not allowed → inherit).
+  q keys = format names (jpeg, webp, …); jpg → jpeg. Flat q: 75 → q.jpeg: 75.
   q.* -1/omit = Hugo imaging default (no qN on Resize).
   No ladder / gutter math — stamp only.
   Args:
@@ -12,6 +12,7 @@
 */}}
 {{- $config := index . "config" | default dict -}}
 {{- $raw := index $config "rwd_widths" | default dict -}}
+{{- $formatsAllow := index $config "formats_allow" | default slice -}}
 {{- $out := dict -}}
 {{- range $k, $v := $raw -}}
   {{- $px := 0 -}}
@@ -19,7 +20,7 @@
   {{- $qOut := dict -}}
   {{- if reflect.IsMap $v -}}
     {{- $px = int (index $v "px" | default 0) -}}
-    {{- $format = partial "haz/helpers/fn/fn_haz_img_format.html" (dict "value" (index $v "format")) -}}
+    {{- $format = partial "haz/helpers/fn/fn_haz_img_format.html" (dict "value" (index $v "format") "formats_allow" $formatsAllow) -}}
     {{- if isset $v "q" -}}
       {{- $qRaw := index $v "q" -}}
       {{- if reflect.IsMap $qRaw -}}
