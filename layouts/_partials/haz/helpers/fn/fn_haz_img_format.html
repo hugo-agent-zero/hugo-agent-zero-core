@@ -3,9 +3,11 @@
   Normalize a process format token for haz_img.
   Args:
     - value (any) raw format from settings
-  Baked-in allowlist (web-facing): jpeg|webp|avif|png. jpg → jpeg.
+    - allow (slice, optional) formats_allow override from config
+  Default allowlist (HAZ opinion): jpeg|webp|avif|png.
+  If allow is a non-empty list, that list wins (lower; jpg→jpeg; blanks dropped).
   Not allowed / empty → inherit (same as master). inherit is never “allowed”;
-  it is the fallback. Child `_formats_allow` is parked FYI only — nothing reads it yet.
+  it is the fallback.
   Returns string.
 */}}
 {{- $cand := lower (strings.TrimSpace (printf "%v" (index . "value" | default ""))) -}}
@@ -13,6 +15,22 @@
   {{- $cand = "jpeg" -}}
 {{- end -}}
 {{- $ok := slice "jpeg" "webp" "avif" "png" -}}
+{{- $rawAllow := index . "allow" | default slice -}}
+{{- if reflect.IsSlice $rawAllow -}}
+  {{- $norm := slice -}}
+  {{- range $rawAllow -}}
+    {{- $t := lower (strings.TrimSpace (printf "%v" .)) -}}
+    {{- if eq $t "jpg" -}}
+      {{- $t = "jpeg" -}}
+    {{- end -}}
+    {{- if and $t (ne $t "inherit") -}}
+      {{- $norm = $norm | append $t -}}
+    {{- end -}}
+  {{- end -}}
+  {{- if gt (len $norm) 0 -}}
+    {{- $ok = $norm -}}
+  {{- end -}}
+{{- end -}}
 {{- $out := "inherit" -}}
 {{- if and $cand (ne $cand "inherit") (in $ok $cand) -}}
   {{- $out = $cand -}}
