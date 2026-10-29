@@ -36,18 +36,8 @@
         {{- $cand = dict -}}
       {{- end -}}
 
-      {{- /* ASAP: only intentional false turns it off. */ -}}
-      {{- $enabled := true -}}
-      {{- if isset $cand "enabled" -}}
-        {{- $ev := index $cand "enabled" -}}
-        {{- if eq (printf "%T" $ev) "bool" -}}
-          {{- if eq $ev false -}}
-            {{- $enabled = false -}}
-          {{- end -}}
-        {{- else if eq (lower (printf "%v" $ev)) "false" -}}
-          {{- $enabled = false -}}
-        {{- end -}}
-      {{- end -}}
+      {{- /* ASAP: omit → on (default true); only false-ish turns it off. */ -}}
+      {{- $enabled := partial "haz/helpers/fn/fn_haz_bool.html" (dict "value" (index $cand "enabled") "default" true) -}}
 
       {{- if $enabled -}}
         {{- $preset = $cand -}}
