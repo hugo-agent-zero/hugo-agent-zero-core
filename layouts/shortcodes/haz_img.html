@@ -17,7 +17,8 @@
         (e.g. name="full_widescreen").
       - Leave it off, or type a key that does not resolve → we try
         settings.haz_img.config.preset_default instead.
-      - If that fails too → HTML comment only (no enrich).
+      - If that fails too → always an HTML comment; whether Inner
+        still prints is config.name_not_in_presets.prod (ship: true).
 
       What the preset controls (in settings, not on this shortcode):
       - Layout bands m / t / d: width % (w), align, crop ratio.
@@ -42,6 +43,12 @@
       - Per size: format, quality (q), and whether that size is on
         live in settings (rwd_widths / preset overrides) — not here.
 
+  Fail knobs (settings.haz_img.config — each is { prod: bool } for now):
+    src_404.prod — src= not a page resource. true = still emit the tag;
+      false = HTML comment only (ship: false).
+    name_not_in_presets.prod — name + preset_default missed. Comment
+      always; true = also emit Inner as-is (ship: true).
+
   Inner: the author's <img>. We read src=, then look for sized siblings
   next to the page (photo_xs.jpg, …). Sparse sets are fine.
 */}}
@@ -58,46 +65,25 @@
 {{- $config := index $hazImg "config" | default dict -}}
 {{- $helpers := index $config "helpers" | default dict -}}
 
-{{- $defaultLazy := true -}}
-{{- if isset $config "lazy_default" -}}
-  {{- $cfgLazy := index $config "lazy_default" -}}
-  {{- if eq (printf "%T" $cfgLazy) "bool" -}}
-    {{- $defaultLazy = $cfgLazy -}}
-  {{- else -}}
-    {{- $cfgLow := lower (printf "%v" $cfgLazy) -}}
-    {{- $defaultLazy = or (eq $cfgLow "true") (eq $cfgLow "1") (eq $cfgLow "yes") (eq $cfgLow "on") -}}
-  {{- end -}}
+{{- $src404Obj := index $config "src_404" | default dict -}}
+{{- if not (reflect.IsMap $src404Obj) -}}
+  {{- $src404Obj = dict -}}
 {{- end -}}
-{{- $wantLazy := $defaultLazy -}}
+{{- $src404 := partial "haz/helpers/fn/fn_haz_bool.html" (dict "value" (index $src404Obj "prod") "default" false) -}}
+{{- $nameMissObj := index $config "name_not_in_presets" | default dict -}}
+{{- if not (reflect.IsMap $nameMissObj) -}}
+  {{- $nameMissObj = dict -}}
+{{- end -}}
+{{- $nameMissEmit := partial "haz/helpers/fn/fn_haz_bool.html" (dict "value" (index $nameMissObj "prod") "default" true) -}}
+
+{{- $wantLazy := partial "haz/helpers/fn/fn_haz_bool.html" (dict "value" (index $config "lazy_default") "default" true) -}}
 {{- if isset .Params "lazy" -}}
-  {{- $lazyValue := .Get "lazy" -}}
-  {{- if eq (printf "%T" $lazyValue) "bool" -}}
-    {{- $wantLazy = $lazyValue -}}
-  {{- else -}}
-    {{- $lazyLow := lower (printf "%v" $lazyValue) -}}
-    {{- $wantLazy = or (eq $lazyLow "true") (eq $lazyLow "1") (eq $lazyLow "yes") (eq $lazyLow "on") -}}
-  {{- end -}}
+  {{- $wantLazy = partial "haz/helpers/fn/fn_haz_bool.html" (dict "value" (.Get "lazy") "default" $wantLazy) -}}
 {{- end -}}
 
-{{- $defaultProcess := false -}}
-{{- if isset $config "process" -}}
-  {{- $cfgProcess := index $config "process" -}}
-  {{- if eq (printf "%T" $cfgProcess) "bool" -}}
-    {{- $defaultProcess = $cfgProcess -}}
-  {{- else -}}
-    {{- $cfgProcessLow := lower (printf "%v" $cfgProcess) -}}
-    {{- $defaultProcess = or (eq $cfgProcessLow "true") (eq $cfgProcessLow "1") (eq $cfgProcessLow "yes") (eq $cfgProcessLow "on") -}}
-  {{- end -}}
-{{- end -}}
-{{- $wantProcess := $defaultProcess -}}
+{{- $wantProcess := partial "haz/helpers/fn/fn_haz_bool.html" (dict "value" (index $config "process") "default" false) -}}
 {{- if isset .Params "process" -}}
-  {{- $processValue := .Get "process" -}}
-  {{- if eq (printf "%T" $processValue) "bool" -}}
-    {{- $wantProcess = $processValue -}}
-  {{- else -}}
-    {{- $processLow := lower (printf "%v" $processValue) -}}
-    {{- $wantProcess = or (eq $processLow "true") (eq $processLow "1") (eq $processLow "yes") (eq $processLow "on") -}}
-  {{- end -}}
+  {{- $wantProcess = partial "haz/helpers/fn/fn_haz_bool.html" (dict "value" (.Get "process") "default" $wantProcess) -}}
 {{- end -}}
 
 {{- $variantSep := index $config "variant_sep" | default "_" -}}
@@ -240,8 +226,15 @@
 {{- $inner := .Inner | strings.TrimSpace -}}
 {{- $imgMatches := findRE `(?i)<img\b[^>]*>` $inner -}}
 
-{{- if or (not $presetKey) (not $resolved) (eq (len $imgMatches) 0) -}}
-<!-- haz_img: bad/missing name (and preset_default), or no img in Inner -->
+{{- if eq (len $imgMatches) 0 -}}
+<!-- haz_img: no img in Inner -->
+{{- else if not $presetOk -}}
+<!-- haz_img: name not in presets (and preset_default) -->
+  {{- if $nameMissEmit -}}
+{{ $inner | safeHTML }}
+  {{- end -}}
+{{- else if not $resolved -}}
+<!-- haz_img: preset did not resolve layout -->
 {{- else -}}
   {{- range $imgMatches -}}
     {{- $original := . -}}
@@ -269,12 +262,17 @@
       {{- $dir := path.Dir $srcPath -}}
 
       {{- $master := "" -}}
-      {{- if $wantProcess -}}
-        {{- with $page.Resources.GetMatch $srcPath -}}
+      {{- $srcFound := false -}}
+      {{- with $page.Resources.GetMatch $srcPath -}}
+        {{- $srcFound = true -}}
+        {{- if $wantProcess -}}
           {{- $master = . -}}
         {{- end -}}
       {{- end -}}
 
+      {{- if and (not $srcFound) (not $src404) -}}
+        {{- $inner = strings.Replace $inner $original "<!-- haz_img: src not found (src_404.prod false) -->" 1 -}}
+      {{- else -}}
       {{- $srcsetParts := slice -}}
       {{- range $vKey, $rung := $rwdWidths -}}
         {{- $rungOn := true -}}
@@ -371,6 +369,7 @@
       {{- end -}}
 
       {{- $inner = strings.Replace $inner $original $imgTag 1 -}}
+      {{- end -}}
     {{- end -}}
   {{- end -}}
 
