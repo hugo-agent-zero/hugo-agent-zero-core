@@ -30,6 +30,8 @@
          Per rung: format inherit unless in core baked allowlist
          (jpeg|webp|avif|png; jpg→jpeg). Not allowed / empty → inherit.
          q.{format} 1–100 on Resize; -1/omit = Hugo imaging default.
+         rwd_widths.*.enabled — omit/true = on; false skips that rung
+         (no process, no srcset). Presets often kill large sizes.
 
   Inner: author HTML. Stem from src= → .Page.Resources variants (rwd_widths keys). Sparse OK.
 */}}
@@ -107,7 +109,7 @@
   {{- $preset = dict -}}
 {{- end -}}
 
-{{- /* Preset rwd_widths layer on HAZ defaults (only fields set; format/q/px). */ -}}
+{{- /* Preset rwd_widths layer on HAZ defaults (only fields set; format/q/px/enabled). */ -}}
 {{- $presetRungs := index $preset "rwd_widths" | default dict -}}
 {{- $rwdWidths := dict -}}
 {{- range $vKey, $base := $rwdWidthsBase -}}
@@ -116,6 +118,17 @@
   {{- $qMerged := index $base "q" | default dict -}}
   {{- if not (reflect.IsMap $qMerged) -}}
     {{- $qMerged = dict -}}
+  {{- end -}}
+  {{- $enabled := true -}}
+  {{- if isset $base "enabled" -}}
+    {{- $bev := index $base "enabled" -}}
+    {{- if eq (printf "%T" $bev) "bool" -}}
+      {{- if eq $bev false -}}
+        {{- $enabled = false -}}
+      {{- end -}}
+    {{- else if eq (lower (printf "%v" $bev)) "false" -}}
+      {{- $enabled = false -}}
+    {{- end -}}
   {{- end -}}
   {{- $over := index $presetRungs $vKey | default dict -}}
   {{- if reflect.IsMap $over -}}
@@ -141,8 +154,22 @@
         {{- $qMerged = merge $qMerged (dict "jpeg" (int $overQ)) -}}
       {{- end -}}
     {{- end -}}
+    {{- if isset $over "enabled" -}}
+      {{- $ev := index $over "enabled" -}}
+      {{- if eq (printf "%T" $ev) "bool" -}}
+        {{- if eq $ev false -}}
+          {{- $enabled = false -}}
+        {{- else -}}
+          {{- $enabled = true -}}
+        {{- end -}}
+      {{- else if eq (lower (printf "%v" $ev)) "false" -}}
+        {{- $enabled = false -}}
+      {{- else -}}
+        {{- $enabled = true -}}
+      {{- end -}}
+    {{- end -}}
   {{- end -}}
-  {{- $rwdWidths = merge $rwdWidths (dict $vKey (dict "px" $px "format" $format "q" $qMerged)) -}}
+  {{- $rwdWidths = merge $rwdWidths (dict $vKey (dict "px" $px "format" $format "q" $qMerged "enabled" $enabled)) -}}
 {{- end -}}
 
 {{- $rwd := partial $rwdResolveFn (dict "config" $config "context" $page "preset" $preset "rwd_widths" $rwdWidths) -}}
@@ -220,32 +247,45 @@
 
       {{- $srcsetParts := slice -}}
       {{- range $vKey, $rung := $rwdWidths -}}
-        {{- $wPx := int (index $rung "px" | default 0) -}}
-        {{- $rungQ := index $rung "q" | default dict -}}
-        {{- if not (reflect.IsMap $rungQ) -}}
-          {{- $rungQ = dict -}}
-        {{- end -}}
-        {{- $rungFmt := partial "haz/helpers/fn/fn_haz_img_format.html" (dict "value" (index $rung "format")) -}}
-        {{- $fileName := printf "%s%s%s%s" $stem $variantSep $vKey $ext -}}
-        {{- if and $dir (ne $dir ".") -}}
-          {{- $fileName = printf "%s/%s" $dir $fileName -}}
-        {{- end -}}
-        {{- $res := $page.Resources.GetMatch $fileName -}}
-        {{- if $res -}}
-          {{- $srcsetParts = $srcsetParts | append (dict "w" $wPx "url" $res.RelPermalink) -}}
-        {{- else if and $wantProcess (ne $master "") (gt $wPx 0) -}}
-          {{- $spec := printf "%dx" $wPx -}}
-          {{- $qKey := "jpeg" -}}
-          {{- if ne $rungFmt "inherit" -}}
-            {{- $spec = printf "%dx %s" $wPx $rungFmt -}}
-            {{- $qKey = $rungFmt -}}
+        {{- $rungOn := true -}}
+        {{- if isset $rung "enabled" -}}
+          {{- $rev := index $rung "enabled" -}}
+          {{- if eq (printf "%T" $rev) "bool" -}}
+            {{- if eq $rev false -}}
+              {{- $rungOn = false -}}
+            {{- end -}}
+          {{- else if eq (lower (printf "%v" $rev)) "false" -}}
+            {{- $rungOn = false -}}
           {{- end -}}
-          {{- $qN := int (index $rungQ $qKey | default -1) -}}
-          {{- if and (ge $qN 1) (le $qN 100) -}}
-            {{- $spec = printf "%s q%d" $spec $qN -}}
+        {{- end -}}
+        {{- if $rungOn -}}
+          {{- $wPx := int (index $rung "px" | default 0) -}}
+          {{- $rungQ := index $rung "q" | default dict -}}
+          {{- if not (reflect.IsMap $rungQ) -}}
+            {{- $rungQ = dict -}}
           {{- end -}}
-          {{- with $master.Resize $spec -}}
-            {{- $srcsetParts = $srcsetParts | append (dict "w" $wPx "url" .RelPermalink) -}}
+          {{- $rungFmt := partial "haz/helpers/fn/fn_haz_img_format.html" (dict "value" (index $rung "format")) -}}
+          {{- $fileName := printf "%s%s%s%s" $stem $variantSep $vKey $ext -}}
+          {{- if and $dir (ne $dir ".") -}}
+            {{- $fileName = printf "%s/%s" $dir $fileName -}}
+          {{- end -}}
+          {{- $res := $page.Resources.GetMatch $fileName -}}
+          {{- if $res -}}
+            {{- $srcsetParts = $srcsetParts | append (dict "w" $wPx "url" $res.RelPermalink) -}}
+          {{- else if and $wantProcess (ne $master "") (gt $wPx 0) -}}
+            {{- $spec := printf "%dx" $wPx -}}
+            {{- $qKey := "jpeg" -}}
+            {{- if ne $rungFmt "inherit" -}}
+              {{- $spec = printf "%dx %s" $wPx $rungFmt -}}
+              {{- $qKey = $rungFmt -}}
+            {{- end -}}
+            {{- $qN := int (index $rungQ $qKey | default -1) -}}
+            {{- if and (ge $qN 1) (le $qN 100) -}}
+              {{- $spec = printf "%s q%d" $spec $qN -}}
+            {{- end -}}
+            {{- with $master.Resize $spec -}}
+              {{- $srcsetParts = $srcsetParts | append (dict "w" $wPx "url" .RelPermalink) -}}
+            {{- end -}}
           {{- end -}}
         {{- end -}}
       {{- end -}}
