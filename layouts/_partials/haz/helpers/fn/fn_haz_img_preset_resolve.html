@@ -1,13 +1,14 @@
 {{/*
   fn_haz_img_preset_resolve.html
   Resolve presets[name] with enabled + enabled_false redirect.
-  enabled: omit / anything except false = on. Only intentional false disables
-  (YAML bool false or string "false").
-  When disabled, follow enabled_false (preset key) as if Mom called that name.
-  Cycle guard on visited keys. Missing target / no landing → ok false.
-  Args:
-    - presets (dict)
-    - key (string) requested preset name
+
+  Flow per hop:
+    1. Look up key in presets (empty / missing / cycle → fail).
+    2. Enabled? omit or anything except false = on → use this preset.
+    3. Off → take enabled_false as the next key and hop again.
+       No redirect key → fail (same as no match).
+
+  Args: presets (dict), key (string)
   Return: dict key, preset, ok (bool)
 */}}
 {{- $presets := index . "presets" | default dict -}}
@@ -18,53 +19,59 @@
 {{- $visited := dict -}}
 {{- $preset := dict -}}
 {{- $ok := false -}}
+
 {{- range seq 1 32 -}}
   {{- if $ok -}}
-  {{- else if or (eq $key "") (isset $visited $key) -}}
-    {{- $key = "" -}}
-    {{- $preset = dict -}}
-    {{- $ok = true -}}
-  {{- else if not (isset $presets $key) -}}
-    {{- $key = "" -}}
-    {{- $preset = dict -}}
-    {{- $ok = true -}}
   {{- else -}}
-    {{- $visited = merge $visited (dict $key true) -}}
-    {{- $cand := index $presets $key -}}
-    {{- if not (reflect.IsMap $cand) -}}
-      {{- $cand = dict -}}
-    {{- end -}}
-    {{- $enabled := true -}}
-    {{- if isset $cand "enabled" -}}
-      {{- $ev := index $cand "enabled" -}}
-      {{- if eq (printf "%T" $ev) "bool" -}}
-        {{- if eq $ev false -}}
-          {{- $enabled = false -}}
-        {{- end -}}
-      {{- else if eq (lower (printf "%v" $ev)) "false" -}}
-        {{- $enabled = false -}}
-      {{- end -}}
-    {{- end -}}
-    {{- if $enabled -}}
-      {{- $preset = $cand -}}
+
+    {{- /* Fail gates before we touch enabled. */ -}}
+    {{- if or (eq $key "") (isset $visited $key) (not (isset $presets $key)) -}}
+      {{- $key = "" -}}
+      {{- $preset = dict -}}
       {{- $ok = true -}}
     {{- else -}}
-      {{- $redir := "" -}}
-      {{- with index $cand "enabled_false" -}}
-        {{- $redir = strings.TrimSpace (printf "%v" .) -}}
+      {{- $visited = merge $visited (dict $key true) -}}
+      {{- $cand := index $presets $key -}}
+      {{- if not (reflect.IsMap $cand) -}}
+        {{- $cand = dict -}}
       {{- end -}}
-      {{- if eq $redir "" -}}
-        {{- $key = "" -}}
-        {{- $preset = dict -}}
+
+      {{- /* ASAP: only intentional false turns it off. */ -}}
+      {{- $enabled := true -}}
+      {{- if isset $cand "enabled" -}}
+        {{- $ev := index $cand "enabled" -}}
+        {{- if eq (printf "%T" $ev) "bool" -}}
+          {{- if eq $ev false -}}
+            {{- $enabled = false -}}
+          {{- end -}}
+        {{- else if eq (lower (printf "%v" $ev)) "false" -}}
+          {{- $enabled = false -}}
+        {{- end -}}
+      {{- end -}}
+
+      {{- if $enabled -}}
+        {{- $preset = $cand -}}
         {{- $ok = true -}}
       {{- else -}}
-        {{- $key = $redir -}}
+        {{- $redir := "" -}}
+        {{- if isset $cand "enabled_false" -}}
+          {{- $redir = strings.TrimSpace (printf "%v" (index $cand "enabled_false")) -}}
+        {{- end -}}
+        {{- if eq $redir "" -}}
+          {{- $key = "" -}}
+          {{- $preset = dict -}}
+          {{- $ok = true -}}
+        {{- else -}}
+          {{- $key = $redir -}}
+        {{- end -}}
       {{- end -}}
     {{- end -}}
+
   {{- end -}}
 {{- end -}}
+
 {{- if not $ok -}}
   {{- $key = "" -}}
   {{- $preset = dict -}}
 {{- end -}}
-{{- return (dict "key" $key "preset" $preset "ok" (and $ok (ne $key "") (reflect.IsMap $preset))) -}}
+{{- return (dict "key" $key "preset" $preset "ok" (and $ok (ne $key ""))) -}}
