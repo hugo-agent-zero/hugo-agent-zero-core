@@ -11,30 +11,39 @@
     {{< /haz_img >}}
 
   Params:
-    name required — settings.haz_img.presets name (a helpful string).
-         Preset owns rwd.m|t|d: w (25|33|50|67|75|100 % of column),
-         align (left|right|center|none), ratio (e.g. "16/9").
-         Omit band/field → inherit above. ratio → --haz_img_ratio_m|t|d;
-         CSS picks by settings.breakpoints. presets.*.fit → object-fit class
-         when any ratio (omit → cover). scale-down → haz_img_scale_down.
-         sizes= px from rwd_widths.sm|md|lg.px × w%; when from breakpoints.
-         No ratio on any band = as-is (no frame / cover) and no auto prefix
-         (auto without a frame pins height at 150).
-         presets.*.enabled — omit/true = on; only false turns the preset off.
-         presets.*.enabled_false — when off, resolve that preset key instead
-         (as if Mom called it). Missing target / cycle → same as no match.
-    lazy optional — false skips loading=lazy (heroes). true forces it.
-         Default is settings.haz_img.config.lazy_default (true).
-    process optional — true fills missing rwd_widths stubs via Hugo Resize
-         (width-only; existing page-bundle stubs win). Default is
-         settings.haz_img.config.process (ship child: true).
-         Per rung: format inherit unless in formats_allow (config override;
-         else HAZ default jpeg|webp|avif|png; jpg→jpeg). Else → inherit.
-         q.{format} 1–100 on Resize; -1/omit = Hugo imaging default.
-         rwd_widths.*.enabled — omit/true = on; false skips that rung
-         (no process, no srcset). Presets often kill large sizes.
 
-  Inner: author HTML. Stem from src= → .Page.Resources variants (rwd_widths keys). Sparse OK.
+    name (optional)
+      - Which preset to use: a key under settings.haz_img.presets
+        (e.g. name="full_widescreen").
+      - Leave it off, or type a key that does not resolve → we try
+        settings.haz_img.config.preset_default instead.
+      - If that fails too → HTML comment only (no enrich).
+
+      What the preset controls (in settings, not on this shortcode):
+      - Layout bands m / t / d: width % (w), align, crop ratio.
+      - Missing band or field inherits from the band above.
+      - Any ratio → framed image (CSS vars + fit class).
+        No ratio on any band → as-is (no frame).
+      - fit: how the picture sits in the frame (default cover).
+      - enabled: omit/true = on; false = off.
+      - enabled_false: when off, use that other preset key instead.
+        Bad redirect → same as unresolved name.
+
+    lazy (optional)
+      - false = do not use loading="lazy" (heroes / above the fold).
+      - true = force lazy.
+      - Omit → settings.haz_img.config.lazy_default (ship: true).
+
+    process (optional)
+      - true = Hugo builds missing size files from one master
+        (Resize, width only). Files Mom already put in the bundle win.
+      - false = only use files that are already there.
+      - Omit → settings.haz_img.config.process (ship: true).
+      - Per size: format, quality (q), and whether that size is on
+        live in settings (rwd_widths / preset overrides) — not here.
+
+  Inner: the author's <img>. We read src=, then look for sized siblings
+  next to the page (photo_xs.jpg, …). Sparse sets are fine.
 */}}
 {{- $page := .Page -}}
 {{- $presetKey := "" -}}
@@ -99,13 +108,21 @@
 {{- $rwdWidthsBase := partial $rwdWidthsFn (dict "config" $config) -}}
 
 {{- $presets := index $hazImg "presets" | default dict -}}
-{{- $presetResolve := partial "haz/helpers/fn/fn_haz_img_preset_resolve.html" (dict "presets" $presets "key" $presetKey) -}}
+{{- $requestedKey := $presetKey -}}
+{{- $presetResolve := partial "haz/helpers/fn/fn_haz_img_preset_resolve.html" (dict "presets" $presets "key" $requestedKey) -}}
+{{- $presetOk := index $presetResolve "ok" | default false -}}
+{{- if not $presetOk -}}
+  {{- $fallbackKey := strings.TrimSpace (printf "%v" (index $config "preset_default" | default "")) -}}
+  {{- if and $fallbackKey (ne $fallbackKey $requestedKey) -}}
+    {{- $presetResolve = partial "haz/helpers/fn/fn_haz_img_preset_resolve.html" (dict "presets" $presets "key" $fallbackKey) -}}
+    {{- $presetOk = index $presetResolve "ok" | default false -}}
+  {{- end -}}
+{{- end -}}
 {{- $presetKey = index $presetResolve "key" | default "" -}}
 {{- $preset := index $presetResolve "preset" | default dict -}}
 {{- if not (reflect.IsMap $preset) -}}
   {{- $preset = dict -}}
 {{- end -}}
-{{- $presetOk := index $presetResolve "ok" | default false -}}
 {{- if not $presetOk -}}
   {{- $presetKey = "" -}}
   {{- $preset = dict -}}
@@ -224,7 +241,7 @@
 {{- $imgMatches := findRE `(?i)<img\b[^>]*>` $inner -}}
 
 {{- if or (not $presetKey) (not $resolved) (eq (len $imgMatches) 0) -}}
-<!-- haz_img: bad/missing name (need a settings.haz_img.presets name), or no img in Inner -->
+<!-- haz_img: bad/missing name (and preset_default), or no img in Inner -->
 {{- else -}}
   {{- range $imgMatches -}}
     {{- $original := . -}}
