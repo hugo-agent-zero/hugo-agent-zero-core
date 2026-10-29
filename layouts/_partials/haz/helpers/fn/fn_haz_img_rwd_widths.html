@@ -1,8 +1,10 @@
 {{/*
   fn_haz_img_rwd_widths.html
-  Return config.rwd_widths as key → { px, q: { jpeg } } (file menu for srcset w + process quality).
-  Bare int → { px: N, q: { jpeg: -1 } }. Flat q: 75 → q.jpeg: 75.
-  q.jpeg -1 or omitted = Hugo imaging default (no qN on Resize).
+  Return config.rwd_widths as key → { px, format, q }.
+  Bare int → { px: N, format: inherit, q: {} }.
+  format via fn_haz_img_format (baked-in allowlist; not allowed → inherit).
+  q keys = format names (jpeg, webp, …); jpg → jpeg. Flat q: 75 → q.jpeg: 75.
+  q.* -1/omit = Hugo imaging default (no qN on Resize).
   No ladder / gutter math — stamp only.
   Args:
     - config (dict) settings.haz_img.config
@@ -13,33 +15,39 @@
 {{- $out := dict -}}
 {{- range $k, $v := $raw -}}
   {{- $px := 0 -}}
-  {{- $qJpeg := -1 -}}
+  {{- $format := "inherit" -}}
+  {{- $qOut := dict -}}
   {{- if reflect.IsMap $v -}}
     {{- $px = int (index $v "px" | default 0) -}}
+    {{- $format = partial "haz/helpers/fn/fn_haz_img_format.html" (dict "value" (index $v "format")) -}}
     {{- if isset $v "q" -}}
       {{- $qRaw := index $v "q" -}}
       {{- if reflect.IsMap $qRaw -}}
-        {{- if isset $qRaw "jpeg" -}}
-          {{- $qJpeg = int (index $qRaw "jpeg") -}}
+        {{- range $qk, $qv := $qRaw -}}
+          {{- $qKey := lower (printf "%v" $qk) -}}
+          {{- if eq $qKey "jpg" -}}
+            {{- $qKey = "jpeg" -}}
+          {{- end -}}
+          {{- $qOut = merge $qOut (dict $qKey (int $qv)) -}}
         {{- end -}}
       {{- else -}}
-        {{- $qJpeg = int $qRaw -}}
+        {{- $qOut = dict "jpeg" (int $qRaw) -}}
       {{- end -}}
     {{- end -}}
   {{- else -}}
     {{- $px = int $v -}}
   {{- end -}}
-  {{- $out = merge $out (dict $k (dict "px" $px "q" (dict "jpeg" $qJpeg))) -}}
+  {{- $out = merge $out (dict $k (dict "px" $px "format" $format "q" $qOut)) -}}
 {{- end -}}
 {{- /* OP dogfood fallbacks if rwd_widths missing. */ -}}
 {{- if eq (len $out) 0 -}}
   {{- $out = dict
-    "xs" (dict "px" 240 "q" (dict "jpeg" -1))
-    "sm" (dict "px" 479 "q" (dict "jpeg" -1))
-    "md" (dict "px" 767 "q" (dict "jpeg" -1))
-    "lg" (dict "px" 1024 "q" (dict "jpeg" -1))
-    "xl" (dict "px" 1536 "q" (dict "jpeg" -1))
-    "xxl" (dict "px" 2048 "q" (dict "jpeg" -1))
+    "xs" (dict "px" 240 "format" "inherit" "q" (dict))
+    "sm" (dict "px" 479 "format" "inherit" "q" (dict))
+    "md" (dict "px" 767 "format" "inherit" "q" (dict))
+    "lg" (dict "px" 1024 "format" "inherit" "q" (dict))
+    "xl" (dict "px" 1536 "format" "inherit" "q" (dict))
+    "xxl" (dict "px" 2048 "format" "inherit" "q" (dict))
   -}}
 {{- end -}}
 {{- return $out -}}

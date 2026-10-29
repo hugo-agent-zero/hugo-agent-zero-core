@@ -1,0 +1,20 @@
+{{/*
+  fn_haz_img_format.html
+  Normalize a process format token for haz_img.
+  Args:
+    - value (any) raw format from settings
+  Baked-in allowlist (web-facing): jpeg|webp|avif|png. jpg → jpeg.
+  Not allowed / empty → inherit (same as master). inherit is never “allowed”;
+  it is the fallback. Child `_formats_allow` is parked FYI only — nothing reads it yet.
+  Returns string.
+*/}}
+{{- $cand := lower (strings.TrimSpace (printf "%v" (index . "value" | default ""))) -}}
+{{- if eq $cand "jpg" -}}
+  {{- $cand = "jpeg" -}}
+{{- end -}}
+{{- $ok := slice "jpeg" "webp" "avif" "png" -}}
+{{- $out := "inherit" -}}
+{{- if and $cand (ne $cand "inherit") (in $ok $cand) -}}
+  {{- $out = $cand -}}
+{{- end -}}
+{{- return $out -}}
