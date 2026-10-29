@@ -227,14 +227,16 @@
 {{- $imgMatches := findRE `(?i)<img\b[^>]*>` $inner -}}
 
 {{- if eq (len $imgMatches) 0 -}}
-<!-- haz_img: no img in Inner -->
+{{- print "<!-- haz_img: no img in Inner -->" | safeHTML -}}
 {{- else if not $presetOk -}}
-<!-- haz_img: name not in presets (and preset_default) -->
-  {{- if $nameMissEmit -}}
-{{ $inner | safeHTML }}
-  {{- end -}}
+{{- /* Comment via print|safeHTML — literal <!-- next to {{- if was dropped in Pages output. */ -}}
+{{- $nameMissOut := "<!-- haz_img: name not in presets (and preset_default) -->" -}}
+{{- if $nameMissEmit -}}
+  {{- $nameMissOut = printf "%s%s" $nameMissOut $inner -}}
+{{- end -}}
+{{- $nameMissOut | safeHTML -}}
 {{- else if not $resolved -}}
-<!-- haz_img: preset did not resolve layout -->
+{{- print "<!-- haz_img: preset did not resolve layout -->" | safeHTML -}}
 {{- else -}}
   {{- range $imgMatches -}}
     {{- $original := . -}}
