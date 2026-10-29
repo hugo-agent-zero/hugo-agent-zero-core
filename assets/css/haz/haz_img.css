@@ -57,6 +57,23 @@
   object-fit: cover;
 }
 
+.haz_img_contain {
+  object-fit: contain;
+}
+
+.haz_img_fill {
+  object-fit: fill;
+}
+
+.haz_img_none {
+  object-fit: none;
+}
+
+/* presets.*.fit: scale-down → class haz_img_scale_down */
+.haz_img_scale_down {
+  object-fit: scale-down;
+}
+
 .haz_img_m_left { float: left; margin-inline-end: 1rem; margin-block-end: 0.5rem; }
 .haz_img_m_right { float: right; margin-inline-start: 1rem; margin-block-end: 0.5rem; }
 .haz_img_m_center { display: block; float: none; margin-inline: auto; }

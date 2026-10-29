@@ -15,7 +15,8 @@
          Preset owns rwd.m|t|d: w (25|33|50|67|75|100 % of column),
          align (left|right|center|none), ratio (e.g. "16/9").
          Omit band/field → inherit above. ratio → --haz_img_ratio_m|t|d;
-         CSS picks by settings.breakpoints. fit cover for v1 when any ratio.
+         CSS picks by settings.breakpoints. presets.*.fit → object-fit class
+         when any ratio (omit → cover). scale-down → haz_img_scale_down.
          sizes= px from rwd_widths.sm|md|lg.px × w%; when from breakpoints.
          No ratio on any band = as-is (no frame / cover) and no auto prefix
          (auto without a frame pins height at 150).
@@ -201,7 +202,18 @@
   {{- $layoutClasses = printf "%s haz_img_d_%s" $layoutClasses $dAlign -}}
 {{- end -}}
 {{- if $hasFrame -}}
-  {{- $layoutClasses = printf "%s haz_img_frame haz_img_cover" $layoutClasses -}}
+  {{- $fit := "cover" -}}
+  {{- with index $preset "fit" -}}
+    {{- $fitRaw := strings.TrimSpace (printf "%v" .) -}}
+    {{- if ne $fitRaw "" -}}
+      {{- $fit = $fitRaw -}}
+    {{- end -}}
+  {{- end -}}
+  {{- $fitClass := $fit -}}
+  {{- if eq $fit "scale-down" -}}
+    {{- $fitClass = "scale_down" -}}
+  {{- end -}}
+  {{- $layoutClasses = printf "%s haz_img_frame haz_img_%s" $layoutClasses $fitClass -}}
 {{- end -}}
 {{- if $extraClass -}}
   {{- $layoutClasses = printf "%s %s" $layoutClasses $extraClass -}}
