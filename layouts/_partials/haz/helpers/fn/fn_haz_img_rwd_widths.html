@@ -1,10 +1,11 @@
 {{/*
   fn_haz_img_rwd_widths.html
-  Return config.rwd_widths as key → { px, format, q }.
-  Bare int → { px: N, format: inherit, q: {} }.
+  Return config.rwd_widths as key → { px, format, q, enabled }.
+  Bare int → { px: N, format: inherit, q: {}, enabled: true }.
   format via fn_haz_img_format (baked-in allowlist; not allowed → inherit).
   q keys = format names (jpeg, webp, …); jpg → jpeg. Flat q: 75 → q.jpeg: 75.
   q.* -1/omit = Hugo imaging default (no qN on Resize).
+  enabled: omit/true = on; only false turns the rung off (no process / srcset).
   No ladder / gutter math — stamp only.
   Args:
     - config (dict) settings.haz_img.config
@@ -17,6 +18,7 @@
   {{- $px := 0 -}}
   {{- $format := "inherit" -}}
   {{- $qOut := dict -}}
+  {{- $enabled := true -}}
   {{- if reflect.IsMap $v -}}
     {{- $px = int (index $v "px" | default 0) -}}
     {{- $format = partial "haz/helpers/fn/fn_haz_img_format.html" (dict "value" (index $v "format")) -}}
@@ -34,20 +36,30 @@
         {{- $qOut = dict "jpeg" (int $qRaw) -}}
       {{- end -}}
     {{- end -}}
+    {{- if isset $v "enabled" -}}
+      {{- $ev := index $v "enabled" -}}
+      {{- if eq (printf "%T" $ev) "bool" -}}
+        {{- if eq $ev false -}}
+          {{- $enabled = false -}}
+        {{- end -}}
+      {{- else if eq (lower (printf "%v" $ev)) "false" -}}
+        {{- $enabled = false -}}
+      {{- end -}}
+    {{- end -}}
   {{- else -}}
     {{- $px = int $v -}}
   {{- end -}}
-  {{- $out = merge $out (dict $k (dict "px" $px "format" $format "q" $qOut)) -}}
+  {{- $out = merge $out (dict $k (dict "px" $px "format" $format "q" $qOut "enabled" $enabled)) -}}
 {{- end -}}
 {{- /* OP dogfood fallbacks if rwd_widths missing. */ -}}
 {{- if eq (len $out) 0 -}}
   {{- $out = dict
-    "xs" (dict "px" 240 "format" "inherit" "q" (dict))
-    "sm" (dict "px" 479 "format" "inherit" "q" (dict))
-    "md" (dict "px" 767 "format" "inherit" "q" (dict))
-    "lg" (dict "px" 1024 "format" "inherit" "q" (dict))
-    "xl" (dict "px" 1536 "format" "inherit" "q" (dict))
-    "xxl" (dict "px" 2048 "format" "inherit" "q" (dict))
+    "xs" (dict "px" 240 "format" "inherit" "q" (dict) "enabled" true)
+    "sm" (dict "px" 479 "format" "inherit" "q" (dict) "enabled" true)
+    "md" (dict "px" 767 "format" "inherit" "q" (dict) "enabled" true)
+    "lg" (dict "px" 1024 "format" "inherit" "q" (dict) "enabled" true)
+    "xl" (dict "px" 1536 "format" "inherit" "q" (dict) "enabled" true)
+    "xxl" (dict "px" 2048 "format" "inherit" "q" (dict) "enabled" true)
   -}}
 {{- end -}}
 {{- return $out -}}
