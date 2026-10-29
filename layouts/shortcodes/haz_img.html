@@ -24,7 +24,7 @@
          presets.*.enabled_false — when off, resolve that preset key instead
          (as if Mom called it). Missing target / cycle → same as no match.
     lazy optional — false skips loading=lazy (heroes). true forces it.
-         Default is settings.haz_img.config.default_lazy (true).
+         Default is settings.haz_img.config.lazy_default (true).
     process optional — true fills missing rwd_widths stubs via Hugo Resize
          (width-only; existing page-bundle stubs win). Default is
          settings.haz_img.config.process (ship child: true).
@@ -50,8 +50,8 @@
 {{- $helpers := index $config "helpers" | default dict -}}
 
 {{- $defaultLazy := true -}}
-{{- if isset $config "default_lazy" -}}
-  {{- $cfgLazy := index $config "default_lazy" -}}
+{{- if isset $config "lazy_default" -}}
+  {{- $cfgLazy := index $config "lazy_default" -}}
   {{- if eq (printf "%T" $cfgLazy) "bool" -}}
     {{- $defaultLazy = $cfgLazy -}}
   {{- else -}}
