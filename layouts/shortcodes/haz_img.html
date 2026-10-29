@@ -19,6 +19,9 @@
          sizes= px from rwd_widths.sm|md|lg.px × w%; when from breakpoints.
          No ratio on any band = as-is (no frame / cover) and no auto prefix
          (auto without a frame pins height at 150).
+         presets.*.enabled — omit/true = on; only false turns the preset off.
+         presets.*.enabled_false — when off, resolve that preset key instead
+         (as if Mom called it). Missing target / cycle → same as no match.
     lazy optional — false skips loading=lazy (heroes). true forces it.
          Default is settings.haz_img.config.default_lazy (true).
     process optional — true fills missing rwd_widths stubs via Hugo Resize
@@ -92,9 +95,16 @@
 {{- $rwdWidthsBase := partial $rwdWidthsFn (dict "config" $config) -}}
 
 {{- $presets := index $hazImg "presets" | default dict -}}
-{{- $preset := dict -}}
-{{- if and $presetKey (isset $presets $presetKey) -}}
-  {{- $preset = index $presets $presetKey -}}
+{{- $presetResolve := partial "haz/helpers/fn/fn_haz_img_preset_resolve.html" (dict "presets" $presets "key" $presetKey) -}}
+{{- $presetKey = index $presetResolve "key" | default "" -}}
+{{- $preset := index $presetResolve "preset" | default dict -}}
+{{- if not (reflect.IsMap $preset) -}}
+  {{- $preset = dict -}}
+{{- end -}}
+{{- $presetOk := index $presetResolve "ok" | default false -}}
+{{- if not $presetOk -}}
+  {{- $presetKey = "" -}}
+  {{- $preset = dict -}}
 {{- end -}}
 
 {{- /* Preset rwd_widths layer on HAZ defaults (only fields set; format/q/px). */ -}}
