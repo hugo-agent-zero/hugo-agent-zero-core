@@ -129,17 +129,7 @@
   {{- if not (reflect.IsMap $qMerged) -}}
     {{- $qMerged = dict -}}
   {{- end -}}
-  {{- $enabled := true -}}
-  {{- if isset $base "enabled" -}}
-    {{- $bev := index $base "enabled" -}}
-    {{- if eq (printf "%T" $bev) "bool" -}}
-      {{- if eq $bev false -}}
-        {{- $enabled = false -}}
-      {{- end -}}
-    {{- else if eq (lower (printf "%v" $bev)) "false" -}}
-      {{- $enabled = false -}}
-    {{- end -}}
-  {{- end -}}
+  {{- $enabled := partial "haz/helpers/fn/fn_haz_bool.html" (dict "value" (index $base "enabled") "default" true) -}}
   {{- $over := index $presetRungs $vKey | default dict -}}
   {{- if reflect.IsMap $over -}}
     {{- if isset $over "px" -}}
@@ -164,20 +154,7 @@
         {{- $qMerged = merge $qMerged (dict "jpeg" (int $overQ)) -}}
       {{- end -}}
     {{- end -}}
-    {{- if isset $over "enabled" -}}
-      {{- $ev := index $over "enabled" -}}
-      {{- if eq (printf "%T" $ev) "bool" -}}
-        {{- if eq $ev false -}}
-          {{- $enabled = false -}}
-        {{- else -}}
-          {{- $enabled = true -}}
-        {{- end -}}
-      {{- else if eq (lower (printf "%v" $ev)) "false" -}}
-        {{- $enabled = false -}}
-      {{- else -}}
-        {{- $enabled = true -}}
-      {{- end -}}
-    {{- end -}}
+    {{- $enabled = partial "haz/helpers/fn/fn_haz_bool.html" (dict "value" (index $over "enabled") "default" $enabled) -}}
   {{- end -}}
   {{- $rwdWidths = merge $rwdWidths (dict $vKey (dict "px" $px "format" $format "q" $qMerged "enabled" $enabled)) -}}
 {{- end -}}
@@ -282,17 +259,7 @@
       {{- else -}}
       {{- $srcsetParts := slice -}}
       {{- range $vKey, $rung := $rwdWidths -}}
-        {{- $rungOn := true -}}
-        {{- if isset $rung "enabled" -}}
-          {{- $rev := index $rung "enabled" -}}
-          {{- if eq (printf "%T" $rev) "bool" -}}
-            {{- if eq $rev false -}}
-              {{- $rungOn = false -}}
-            {{- end -}}
-          {{- else if eq (lower (printf "%v" $rev)) "false" -}}
-            {{- $rungOn = false -}}
-          {{- end -}}
-        {{- end -}}
+        {{- $rungOn := partial "haz/helpers/fn/fn_haz_bool.html" (dict "value" (index $rung "enabled") "default" true) -}}
         {{- if $rungOn -}}
           {{- $wPx := int (index $rung "px" | default 0) -}}
           {{- $rungQ := index $rung "q" | default dict -}}
