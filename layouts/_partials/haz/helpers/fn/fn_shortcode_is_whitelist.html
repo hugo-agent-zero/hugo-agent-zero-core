@@ -1,8 +1,9 @@
 {{/*
   fn_shortcode_is_whitelist — settings.shortcodes.whitelist membership.
 
-  Listed = allowed. Omit whitelist (or settings.shortcodes) → allow all.
-  Off switch: _-park the list entry (lookup misses).
+  Listed = allowed. Intentional: no/missing/parked/malformed whitelist → deny.
+  Off switches: _-park whitelist (or shortcodes) → all off; _-park one
+  list entry → that name misses.
 
   Args:
     - context (page)
@@ -15,15 +16,15 @@
 
 {{- $shortcodes := partial "haz/helpers/fn/fn_get_sys_manifest_prop.html" (dict "context" $ctx "path" (slice "settings" "shortcodes")) -}}
 {{- if not (reflect.IsMap $shortcodes) -}}
-  {{- return true -}}
+  {{- return false -}}
 {{- end -}}
 {{- if not (isset $shortcodes "whitelist") -}}
-  {{- return true -}}
+  {{- return false -}}
 {{- end -}}
 
 {{- $wl := index $shortcodes "whitelist" -}}
 {{- if not (reflect.IsSlice $wl) -}}
-  {{- return true -}}
+  {{- return false -}}
 {{- end -}}
 
 {{- $allowed := false -}}
