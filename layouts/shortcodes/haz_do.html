@@ -65,11 +65,11 @@
 
 {{- $allowed := partial "haz/helpers/fn/fn_shortcode_is_whitelist.html" (dict "context" .Page "name" "haz_do" "add" $add) -}}
 {{- if not $allowed -}}
-{{- printf "<!-- %s add=%q: not in settings.shortcodes.whitelist -->" $source $add | safeHTML -}}
+{{- printf "<!-- %s: not in settings.shortcodes.whitelist -->" $source | safeHTML -}}
 {{- else -}}
 {{- $allowedAdds := slice "spacer" "callout" "list" "tabs" "tab" "grid" -}}
 {{- if not (in $allowedAdds $add) -}}
-{{- printf "<!-- %s: need add (spacer, callout, list, tabs, tab, grid) -->" $source | safeHTML -}}
+{{- printf "<!-- %s: not in settings.shortcodes.whitelist -->" $source | safeHTML -}}
 {{- else if eq $add "spacer" -}}
   {{- partial "haz/shortcodes/haz_do/haz_do_spacer.html" . -}}
 {{- else if eq $add "callout" -}}
