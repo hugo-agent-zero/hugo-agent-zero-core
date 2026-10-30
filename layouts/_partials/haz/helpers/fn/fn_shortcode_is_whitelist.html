@@ -13,40 +13,29 @@
 {{- $name := strings.TrimSpace (printf "%v" (index . "name" | default "")) -}}
 {{- $add := lower (strings.TrimSpace (printf "%v" (index . "add" | default ""))) -}}
 {{- $ctx := index . "context" | default . -}}
+{{- $allowed := false -}}
 
 {{- $shortcodes := partial "haz/helpers/fn/fn_get_sys_manifest_prop.html" (dict "context" $ctx "path" (slice "settings" "shortcodes")) -}}
-{{- if not (reflect.IsMap $shortcodes) -}}
-  {{- return false -}}
-{{- end -}}
-{{- if not (isset $shortcodes "whitelist") -}}
-  {{- return false -}}
-{{- end -}}
-
-{{- $wl := index $shortcodes "whitelist" -}}
-{{- if not (reflect.IsSlice $wl) -}}
-  {{- return false -}}
-{{- end -}}
-
-{{- $allowed := false -}}
-{{- range $item := $wl -}}
-  {{- if $allowed -}}
-  {{- else if reflect.IsMap $item -}}
-    {{- if isset $item $name -}}
-      {{- $verbs := index $item $name -}}
-      {{- if reflect.IsSlice $verbs -}}
-        {{- if eq $add "" -}}
-          {{- $allowed = false -}}
-        {{- else if in $verbs $add -}}
-          {{- $allowed = true -}}
+{{- if and (reflect.IsMap $shortcodes) (isset $shortcodes "whitelist") -}}
+  {{- $wl := index $shortcodes "whitelist" -}}
+  {{- if reflect.IsSlice $wl -}}
+    {{- range $item := $wl -}}
+      {{- if $allowed -}}
+      {{- else if reflect.IsMap $item -}}
+        {{- if isset $item $name -}}
+          {{- $verbs := index $item $name -}}
+          {{- if reflect.IsSlice $verbs -}}
+            {{- if and (ne $add "") (in $verbs $add) -}}
+              {{- $allowed = true -}}
+            {{- end -}}
+          {{- else -}}
+            {{- /* map entry with no verb list → SC allowed as a whole */ -}}
+            {{- $allowed = true -}}
+          {{- end -}}
         {{- end -}}
-      {{- else -}}
-        {{- /* map entry with no verb list → SC allowed as a whole */ -}}
+      {{- else if eq (printf "%v" $item) $name -}}
         {{- $allowed = true -}}
       {{- end -}}
-    {{- end -}}
-  {{- else -}}
-    {{- if eq (printf "%v" $item) $name -}}
-      {{- $allowed = true -}}
     {{- end -}}
   {{- end -}}
 {{- end -}}
