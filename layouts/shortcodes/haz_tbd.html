@@ -11,7 +11,7 @@
              Any present non-bool or false value disables.
 */}}
 {{- $source := "shortcode|haz_tbd" -}}
-{{- $allowed := partial "haz/helpers/fn/fn_shortcode_is_allowed.html" (dict "context" .Page "name" "haz_tbd") -}}
+{{- $allowed := partial "haz/helpers/fn/fn_shortcode_is_whitelist.html" (dict "context" .Page "name" "haz_tbd") -}}
 {{- if not $allowed -}}
 {{- printf "<!-- %s: not in settings.shortcodes.whitelist -->" $source | safeHTML -}}
 {{- else -}}

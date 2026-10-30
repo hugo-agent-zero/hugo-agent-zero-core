@@ -63,7 +63,7 @@
   {{- $add = lower (strings.TrimSpace .) -}}
 {{- end -}}
 
-{{- $allowed := partial "haz/helpers/fn/fn_shortcode_is_allowed.html" (dict "context" .Page "name" "haz_do" "add" $add) -}}
+{{- $allowed := partial "haz/helpers/fn/fn_shortcode_is_whitelist.html" (dict "context" .Page "name" "haz_do" "add" $add) -}}
 {{- if not $allowed -}}
 {{- printf "<!-- %s add=%q: not in settings.shortcodes.whitelist -->" $source $add | safeHTML -}}
 {{- else -}}
