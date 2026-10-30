@@ -56,15 +56,20 @@
   .Inner is read here, not only in a blade. Hugo then requires every call to
   be closed or self-closed. Blades with no body use />. Callout, list, tabs, tab, and grid use a closing tag.
 */}}
+{{- $source := "shortcode|haz_do" -}}
 {{- $inner := .Inner -}}
 {{- $add := "" -}}
 {{- with .Get "add" -}}
   {{- $add = lower (strings.TrimSpace .) -}}
 {{- end -}}
 
+{{- $allowed := partial "haz/helpers/fn/fn_shortcode_is_allowed.html" (dict "context" .Page "name" "haz_do" "add" $add) -}}
+{{- if not $allowed -}}
+{{- printf "<!-- %s add=%q: not in settings.shortcodes.whitelist -->" $source $add | safeHTML -}}
+{{- else -}}
 {{- $allowedAdds := slice "spacer" "callout" "list" "tabs" "tab" "grid" -}}
 {{- if not (in $allowedAdds $add) -}}
-<!-- haz_do: need add (spacer, callout, list, tabs, tab, grid) -->
+{{- printf "<!-- %s: need add (spacer, callout, list, tabs, tab, grid) -->" $source | safeHTML -}}
 {{- else if eq $add "spacer" -}}
   {{- partial "haz/shortcodes/haz_do/haz_do_spacer.html" . -}}
 {{- else if eq $add "callout" -}}
@@ -77,4 +82,5 @@
   {{- partial "haz/shortcodes/haz_do/haz_do_tab.html" . -}}
 {{- else if eq $add "grid" -}}
   {{- partial "haz/shortcodes/haz_do/haz_do_grid.html" . -}}
+{{- end -}}
 {{- end -}}

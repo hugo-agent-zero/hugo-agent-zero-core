@@ -10,6 +10,11 @@
     enabled  bool, optional; omitted or literal true enables.
              Any present non-bool or false value disables.
 */}}
+{{- $source := "shortcode|haz_tbd" -}}
+{{- $allowed := partial "haz/helpers/fn/fn_shortcode_is_allowed.html" (dict "context" .Page "name" "haz_tbd") -}}
+{{- if not $allowed -}}
+{{- printf "<!-- %s: not in settings.shortcodes.whitelist -->" $source | safeHTML -}}
+{{- else -}}
 {{- $enabled := true -}}
 {{- if isset .Params "enabled" -}}
   {{- $enabledValue := .Get "enabled" -}}
@@ -30,8 +35,9 @@
   {{- $sysManifest := partial "haz/helpers/fn/fn_get_sys_manifest.html" .Page -}}
   {{- partial "haz/helpers/parents/shortcode_parent.html" (dict
     "key" $key
-    "source" "shortcode|haz_tbd"
+    "source" $source
     "sysManifest" $sysManifest
     "context" .Page
   ) -}}
+{{- end -}}
 {{- end -}}

@@ -52,7 +52,12 @@
   Inner: the author's <img>. We read src=, then look for sized siblings
   next to the page (photo_xs.jpg, …). Sparse sets are fine.
 */}}
+{{- $source := "shortcode|haz_img" -}}
 {{- $page := .Page -}}
+{{- $allowed := partial "haz/helpers/fn/fn_shortcode_is_allowed.html" (dict "context" $page "name" "haz_img") -}}
+{{- if not $allowed -}}
+{{- printf "<!-- %s: not in settings.shortcodes.whitelist -->" $source | safeHTML -}}
+{{- else -}}
 {{- $presetKey := "" -}}
 {{- with .Get "name" -}}
   {{- $presetKey = . -}}
@@ -376,4 +381,5 @@
   {{- end -}}
 
   {{- $inner | safeHTML -}}
+{{- end -}}
 {{- end -}}
