@@ -443,15 +443,22 @@ html:has(dialog[open]) body {
   --haz_callout_caution: var(--yellow-7, var(--marked));
   --haz_callout_code: var(--code);
   --haz_callout_deadline: var(--text-light, var(--border));
+  --haz_callout_fast-forward: var(--green-7, #2f9e44);
+  --haz_callout_focus: var(--blue-6, var(--haz_site_primary, var(--accent)));
+  --haz_callout_go: var(--haz_site_primary, var(--pink-7));
   --haz_callout_happy: var(--yellow-7, var(--marked));
   --haz_callout_important: var(--blue-6, var(--haz_site_primary, var(--accent)));
   --haz_callout_info: var(--blue-6, var(--haz_site_primary, var(--accent)));
   --haz_callout_love: var(--red-7, var(--code));
   --haz_callout_note: var(--text-light, var(--border));
-  --haz_callout_peace: var(--blue-6, var(--haz_site_primary, var(--accent)));
+  --haz_callout_pause: var(--green-7, #2f9e44);
+  --haz_callout_peace: var(--green-7, #2f9e44);
+  --haz_callout_play: var(--green-7, #2f9e44);
+  --haz_callout_rewind: var(--green-7, #2f9e44);
   --haz_callout_sad: var(--yellow-7, var(--marked));
   --haz_callout_steps: var(--haz_site_primary, var(--pink-7));
   --haz_callout_tip: var(--yellow-7, var(--marked));
+  --haz_callout_understanding: var(--green-7, #2f9e44);
   --haz_callout_warning: var(--red-7, var(--code));
 }
 
@@ -600,6 +607,41 @@ html:has(dialog[open]) body {
 .haz_do_callout--deadline {
   --haz_callout_accent: var(--haz_callout_deadline);
   --haz_callout_icon: url("{{ "third_party/fontawesome-free/svgs/solid/alarm-clock.svg" | relURL }}");
+}
+
+.haz_do_callout--focus {
+  --haz_callout_accent: var(--haz_callout_focus);
+  --haz_callout_icon: url("{{ "third_party/fontawesome-free/svgs/solid/eye.svg" | relURL }}");
+}
+
+.haz_do_callout--understanding {
+  --haz_callout_accent: var(--haz_callout_understanding);
+  --haz_callout_icon: url("{{ "third_party/fontawesome-free/svgs/solid/yin-yang.svg" | relURL }}");
+}
+
+.haz_do_callout--go {
+  --haz_callout_accent: var(--haz_callout_go);
+  --haz_callout_icon: url("{{ "third_party/fontawesome-free/svgs/solid/rocket.svg" | relURL }}");
+}
+
+.haz_do_callout--play {
+  --haz_callout_accent: var(--haz_callout_play);
+  --haz_callout_icon: url("{{ "third_party/fontawesome-free/svgs/solid/circle-play.svg" | relURL }}");
+}
+
+.haz_do_callout--pause {
+  --haz_callout_accent: var(--haz_callout_pause);
+  --haz_callout_icon: url("{{ "third_party/fontawesome-free/svgs/solid/circle-pause.svg" | relURL }}");
+}
+
+.haz_do_callout--fast-forward {
+  --haz_callout_accent: var(--haz_callout_fast-forward);
+  --haz_callout_icon: url("{{ "third_party/fontawesome-free/svgs/solid/forward-fast.svg" | relURL }}");
+}
+
+.haz_do_callout--rewind {
+  --haz_callout_accent: var(--haz_callout_rewind);
+  --haz_callout_icon: url("{{ "third_party/fontawesome-free/svgs/solid/backward-fast.svg" | relURL }}");
 }
 
 /* haz_do list. Chrome around a Markdown ul or ol. A plain list is untouched. */
