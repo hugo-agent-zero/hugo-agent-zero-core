@@ -476,7 +476,7 @@ html:has(dialog[open]) body {
 
 .haz_do_callout {
   --haz_callout_accent: var(--haz_callout_note);
-  --haz_callout_icon: url("{{ "third_party/fontawesome-free/svgs/solid/pen-to-square.svg" | relURL }}");
+  --haz_callout_icon: url("{{ "third_party/fontawesome-free/svgs-full/solid/pen-to-square.svg" | relURL }}");
   display: grid;
   grid-template-columns: auto 1fr;
   column-gap: 1rem;
@@ -528,22 +528,22 @@ html:has(dialog[open]) body {
 
 .haz_do_callout--note {
   --haz_callout_accent: var(--haz_callout_note);
-  --haz_callout_icon: url("{{ "third_party/fontawesome-free/svgs/solid/pen-to-square.svg" | relURL }}");
+  --haz_callout_icon: url("{{ "third_party/fontawesome-free/svgs-full/solid/pen-to-square.svg" | relURL }}");
 }
 
 .haz_do_callout--tip {
   --haz_callout_accent: var(--haz_callout_tip);
-  --haz_callout_icon: url("{{ "third_party/fontawesome-free/svgs/solid/lightbulb.svg" | relURL }}");
+  --haz_callout_icon: url("{{ "third_party/fontawesome-free/svgs-full/solid/lightbulb.svg" | relURL }}");
 }
 
 .haz_do_callout--info {
   --haz_callout_accent: var(--haz_callout_info);
-  --haz_callout_icon: url("{{ "third_party/fontawesome-free/svgs/solid/circle-info.svg" | relURL }}");
+  --haz_callout_icon: url("{{ "third_party/fontawesome-free/svgs-full/solid/circle-info.svg" | relURL }}");
 }
 
 .haz_do_callout--code {
   --haz_callout_accent: var(--haz_callout_code);
-  --haz_callout_icon: url("{{ "third_party/fontawesome-free/svgs/solid/code.svg" | relURL }}");
+  --haz_callout_icon: url("{{ "third_party/fontawesome-free/svgs-full/solid/code.svg" | relURL }}");
 }
 
 .haz_do_callout--steps {
@@ -572,138 +572,138 @@ html:has(dialog[open]) body {
 
 .haz_do_callout--warning {
   --haz_callout_accent: var(--haz_callout_warning);
-  --haz_callout_icon: url("{{ "third_party/fontawesome-free/svgs/solid/triangle-exclamation.svg" | relURL }}");
+  --haz_callout_icon: url("{{ "third_party/fontawesome-free/svgs-full/solid/triangle-exclamation.svg" | relURL }}");
 }
 
 .haz_do_callout--caution {
   --haz_callout_accent: var(--haz_callout_caution);
-  --haz_callout_icon: url("{{ "third_party/fontawesome-free/svgs/solid/circle-exclamation.svg" | relURL }}");
+  --haz_callout_icon: url("{{ "third_party/fontawesome-free/svgs-full/solid/circle-exclamation.svg" | relURL }}");
 }
 
 .haz_do_callout--cancel {
   --haz_callout_accent: var(--haz_callout_cancel);
-  --haz_callout_icon: url("{{ "third_party/fontawesome-free/svgs/solid/cancel.svg" | relURL }}");
+  --haz_callout_icon: url("{{ "third_party/fontawesome-free/svgs-full/solid/cancel.svg" | relURL }}");
 }
 
 /* Placeholders. Colors are for the lineup comparison, not a locked palette. */
 .haz_do_callout--important {
   --haz_callout_accent: var(--haz_callout_important);
-  --haz_callout_icon: url("{{ "third_party/fontawesome-free/svgs/solid/star.svg" | relURL }}");
+  --haz_callout_icon: url("{{ "third_party/fontawesome-free/svgs-full/solid/star.svg" | relURL }}");
 }
 
 .haz_do_callout--happy {
   --haz_callout_accent: var(--haz_callout_happy);
-  --haz_callout_icon: url("{{ "third_party/fontawesome-free/svgs/solid/face-smile.svg" | relURL }}");
+  --haz_callout_icon: url("{{ "third_party/fontawesome-free/svgs-full/solid/face-smile.svg" | relURL }}");
 }
 
 .haz_do_callout--sad {
   --haz_callout_accent: var(--haz_callout_sad);
-  --haz_callout_icon: url("{{ "third_party/fontawesome-free/svgs/solid/face-frown.svg" | relURL }}");
+  --haz_callout_icon: url("{{ "third_party/fontawesome-free/svgs-full/solid/face-frown.svg" | relURL }}");
 }
 
 .haz_do_callout--love {
   --haz_callout_accent: var(--haz_callout_love);
-  --haz_callout_icon: url("{{ "third_party/fontawesome-free/svgs/solid/heart.svg" | relURL }}");
+  --haz_callout_icon: url("{{ "third_party/fontawesome-free/svgs-full/solid/heart.svg" | relURL }}");
 }
 
 .haz_do_callout--peace {
   --haz_callout_accent: var(--haz_callout_peace);
-  --haz_callout_icon: url("{{ "third_party/fontawesome-free/svgs/solid/peace.svg" | relURL }}");
+  --haz_callout_icon: url("{{ "third_party/fontawesome-free/svgs-full/solid/peace.svg" | relURL }}");
 }
 
 .haz_do_callout--calendar {
   --haz_callout_accent: var(--haz_callout_calendar);
-  --haz_callout_icon: url("{{ "third_party/fontawesome-free/svgs/solid/calendar-check.svg" | relURL }}");
+  --haz_callout_icon: url("{{ "third_party/fontawesome-free/svgs-full/solid/calendar-check.svg" | relURL }}");
 }
 
 .haz_do_callout--deadline {
   --haz_callout_accent: var(--haz_callout_deadline);
-  --haz_callout_icon: url("{{ "third_party/fontawesome-free/svgs/solid/alarm-clock.svg" | relURL }}");
+  --haz_callout_icon: url("{{ "third_party/fontawesome-free/svgs-full/solid/alarm-clock.svg" | relURL }}");
 }
 
 .haz_do_callout--focus {
   --haz_callout_accent: var(--haz_callout_focus);
-  --haz_callout_icon: url("{{ "third_party/fontawesome-free/svgs/solid/eye.svg" | relURL }}");
+  --haz_callout_icon: url("{{ "third_party/fontawesome-free/svgs-full/solid/eye.svg" | relURL }}");
 }
 
 .haz_do_callout--understanding {
   --haz_callout_accent: var(--haz_callout_understanding);
-  --haz_callout_icon: url("{{ "third_party/fontawesome-free/svgs/solid/yin-yang.svg" | relURL }}");
+  --haz_callout_icon: url("{{ "third_party/fontawesome-free/svgs-full/solid/yin-yang.svg" | relURL }}");
 }
 
 .haz_do_callout--go {
   --haz_callout_accent: var(--haz_callout_go);
-  --haz_callout_icon: url("{{ "third_party/fontawesome-free/svgs/solid/rocket.svg" | relURL }}");
+  --haz_callout_icon: url("{{ "third_party/fontawesome-free/svgs-full/solid/rocket.svg" | relURL }}");
 }
 
 .haz_do_callout--play {
   --haz_callout_accent: var(--haz_callout_play);
-  --haz_callout_icon: url("{{ "third_party/fontawesome-free/svgs/solid/circle-play.svg" | relURL }}");
+  --haz_callout_icon: url("{{ "third_party/fontawesome-free/svgs-full/solid/circle-play.svg" | relURL }}");
 }
 
 .haz_do_callout--pause {
   --haz_callout_accent: var(--haz_callout_pause);
-  --haz_callout_icon: url("{{ "third_party/fontawesome-free/svgs/solid/circle-pause.svg" | relURL }}");
+  --haz_callout_icon: url("{{ "third_party/fontawesome-free/svgs-full/solid/circle-pause.svg" | relURL }}");
 }
 
 .haz_do_callout--fast-forward {
   --haz_callout_accent: var(--haz_callout_fast-forward);
-  --haz_callout_icon: url("{{ "third_party/fontawesome-free/svgs/solid/forward-fast.svg" | relURL }}");
+  --haz_callout_icon: url("{{ "third_party/fontawesome-free/svgs-full/solid/forward-fast.svg" | relURL }}");
 }
 
 .haz_do_callout--rewind {
   --haz_callout_accent: var(--haz_callout_rewind);
-  --haz_callout_icon: url("{{ "third_party/fontawesome-free/svgs/solid/backward-fast.svg" | relURL }}");
+  --haz_callout_icon: url("{{ "third_party/fontawesome-free/svgs-full/solid/backward-fast.svg" | relURL }}");
 }
 
 .haz_do_callout--earth-africa {
   --haz_callout_accent: var(--haz_callout_earth-africa);
-  --haz_callout_icon: url("{{ "third_party/fontawesome-free/svgs/solid/earth-africa.svg" | relURL }}");
+  --haz_callout_icon: url("{{ "third_party/fontawesome-free/svgs-full/solid/earth-africa.svg" | relURL }}");
 }
 
 .haz_do_callout--earth-americas {
   --haz_callout_accent: var(--haz_callout_earth-americas);
-  --haz_callout_icon: url("{{ "third_party/fontawesome-free/svgs/solid/earth-americas.svg" | relURL }}");
+  --haz_callout_icon: url("{{ "third_party/fontawesome-free/svgs-full/solid/earth-americas.svg" | relURL }}");
 }
 
 .haz_do_callout--earth-asia {
   --haz_callout_accent: var(--haz_callout_earth-asia);
-  --haz_callout_icon: url("{{ "third_party/fontawesome-free/svgs/solid/earth-asia.svg" | relURL }}");
+  --haz_callout_icon: url("{{ "third_party/fontawesome-free/svgs-full/solid/earth-asia.svg" | relURL }}");
 }
 
 .haz_do_callout--earth-europe {
   --haz_callout_accent: var(--haz_callout_earth-europe);
-  --haz_callout_icon: url("{{ "third_party/fontawesome-free/svgs/solid/earth-europe.svg" | relURL }}");
+  --haz_callout_icon: url("{{ "third_party/fontawesome-free/svgs-full/solid/earth-europe.svg" | relURL }}");
 }
 
 .haz_do_callout--earth-oceania {
   --haz_callout_accent: var(--haz_callout_earth-oceania);
-  --haz_callout_icon: url("{{ "third_party/fontawesome-free/svgs/solid/earth-oceania.svg" | relURL }}");
+  --haz_callout_icon: url("{{ "third_party/fontawesome-free/svgs-full/solid/earth-oceania.svg" | relURL }}");
 }
 
 .haz_do_callout--person-dress {
   --haz_callout_accent: var(--haz_callout_person-dress);
-  --haz_callout_icon: url("{{ "third_party/fontawesome-free/svgs/solid/person-dress.svg" | relURL }}");
+  --haz_callout_icon: url("{{ "third_party/fontawesome-free/svgs-full/solid/person-dress.svg" | relURL }}");
 }
 
 .haz_do_callout--person-trousers {
   --haz_callout_accent: var(--haz_callout_person-trousers);
-  --haz_callout_icon: url("{{ "haz/icons/person-trousers.svg" | relURL }}");
+  --haz_callout_icon: url("{{ "third_party/fontawesome-free/svgs-full/solid/person.svg" | relURL }}");
 }
 
 .haz_do_callout--human-xx {
   --haz_callout_accent: var(--haz_callout_human-xx);
-  --haz_callout_icon: url("{{ "third_party/fontawesome-free/svgs/solid/venus.svg" | relURL }}");
+  --haz_callout_icon: url("{{ "third_party/fontawesome-free/svgs-full/solid/venus.svg" | relURL }}");
 }
 
 .haz_do_callout--human-xy {
   --haz_callout_accent: var(--haz_callout_human-xy);
-  --haz_callout_icon: url("{{ "third_party/fontawesome-free/svgs/solid/mars.svg" | relURL }}");
+  --haz_callout_icon: url("{{ "third_party/fontawesome-free/svgs-full/solid/mars.svg" | relURL }}");
 }
 
 .haz_do_callout--user-circle {
   --haz_callout_accent: var(--haz_callout_user-circle);
-  --haz_callout_icon: url("{{ "third_party/fontawesome-free/svgs/solid/user-circle.svg" | relURL }}");
+  --haz_callout_icon: url("{{ "third_party/fontawesome-free/svgs-full/solid/user-circle.svg" | relURL }}");
 }
 
 /* haz_do list. Chrome around a Markdown ul or ol. A plain list is untouched. */
