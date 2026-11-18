@@ -460,6 +460,18 @@ html:has(dialog[open]) body {
   --haz_callout_tip: var(--yellow-7, var(--marked));
   --haz_callout_understanding: var(--green-7, #2f9e44);
   --haz_callout_warning: var(--red-7, var(--code));
+  /* Regional earth. Default blue. No plain earth or globe default. */
+  --haz_callout_earth-africa: var(--blue-6, var(--accent));
+  --haz_callout_earth-americas: var(--blue-6, var(--accent));
+  --haz_callout_earth-asia: var(--blue-6, var(--accent));
+  --haz_callout_earth-europe: var(--blue-6, var(--accent));
+  --haz_callout_earth-oceania: var(--blue-6, var(--accent));
+  /* Silhouette and gene symbols. Default purple. Clothing names, not gender. */
+  --haz_callout_person-dress: var(--purple-6, var(--accent));
+  --haz_callout_person-trousers: var(--purple-6, var(--accent));
+  --haz_callout_human-xx: var(--purple-6, var(--accent));
+  --haz_callout_human-xy: var(--purple-6, var(--accent));
+  --haz_callout_user-circle: var(--purple-6, var(--accent));
 }
 
 .haz_do_callout {
@@ -642,6 +654,56 @@ html:has(dialog[open]) body {
 .haz_do_callout--rewind {
   --haz_callout_accent: var(--haz_callout_rewind);
   --haz_callout_icon: url("{{ "third_party/fontawesome-free/svgs/solid/backward-fast.svg" | relURL }}");
+}
+
+.haz_do_callout--earth-africa {
+  --haz_callout_accent: var(--haz_callout_earth-africa);
+  --haz_callout_icon: url("{{ "third_party/fontawesome-free/svgs/solid/earth-africa.svg" | relURL }}");
+}
+
+.haz_do_callout--earth-americas {
+  --haz_callout_accent: var(--haz_callout_earth-americas);
+  --haz_callout_icon: url("{{ "third_party/fontawesome-free/svgs/solid/earth-americas.svg" | relURL }}");
+}
+
+.haz_do_callout--earth-asia {
+  --haz_callout_accent: var(--haz_callout_earth-asia);
+  --haz_callout_icon: url("{{ "third_party/fontawesome-free/svgs/solid/earth-asia.svg" | relURL }}");
+}
+
+.haz_do_callout--earth-europe {
+  --haz_callout_accent: var(--haz_callout_earth-europe);
+  --haz_callout_icon: url("{{ "third_party/fontawesome-free/svgs/solid/earth-europe.svg" | relURL }}");
+}
+
+.haz_do_callout--earth-oceania {
+  --haz_callout_accent: var(--haz_callout_earth-oceania);
+  --haz_callout_icon: url("{{ "third_party/fontawesome-free/svgs/solid/earth-oceania.svg" | relURL }}");
+}
+
+.haz_do_callout--person-dress {
+  --haz_callout_accent: var(--haz_callout_person-dress);
+  --haz_callout_icon: url("{{ "third_party/fontawesome-free/svgs/solid/person-dress.svg" | relURL }}");
+}
+
+.haz_do_callout--person-trousers {
+  --haz_callout_accent: var(--haz_callout_person-trousers);
+  --haz_callout_icon: url("{{ "haz/icons/person-trousers.svg" | relURL }}");
+}
+
+.haz_do_callout--human-xx {
+  --haz_callout_accent: var(--haz_callout_human-xx);
+  --haz_callout_icon: url("{{ "third_party/fontawesome-free/svgs/solid/venus.svg" | relURL }}");
+}
+
+.haz_do_callout--human-xy {
+  --haz_callout_accent: var(--haz_callout_human-xy);
+  --haz_callout_icon: url("{{ "third_party/fontawesome-free/svgs/solid/mars.svg" | relURL }}");
+}
+
+.haz_do_callout--user-circle {
+  --haz_callout_accent: var(--haz_callout_user-circle);
+  --haz_callout_icon: url("{{ "third_party/fontawesome-free/svgs/solid/user-circle.svg" | relURL }}");
 }
 
 /* haz_do list. Chrome around a Markdown ul or ol. A plain list is untouched. */
