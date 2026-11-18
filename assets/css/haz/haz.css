@@ -471,6 +471,7 @@ html:has(dialog[open]) body {
   --haz_callout_person-trousers: var(--purple-6, var(--accent));
   --haz_callout_human-xx: var(--purple-6, var(--accent));
   --haz_callout_human-xy: var(--purple-6, var(--accent));
+  --haz_callout_user-circle: var(--purple-6, var(--accent));
 }
 
 .haz_do_callout {
@@ -698,6 +699,11 @@ html:has(dialog[open]) body {
 .haz_do_callout--human-xy {
   --haz_callout_accent: var(--haz_callout_human-xy);
   --haz_callout_icon: url("{{ "third_party/fontawesome-free/svgs/solid/mars.svg" | relURL }}");
+}
+
+.haz_do_callout--user-circle {
+  --haz_callout_accent: var(--haz_callout_user-circle);
+  --haz_callout_icon: url("{{ "third_party/fontawesome-free/svgs/solid/user-circle.svg" | relURL }}");
 }
 
 /* haz_do list. Chrome around a Markdown ul or ol. A plain list is untouched. */
