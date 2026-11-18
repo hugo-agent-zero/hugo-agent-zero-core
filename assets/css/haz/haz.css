@@ -683,7 +683,7 @@ html:has(dialog[open]) body {
 
 .haz_do_callout--person-dress {
   --haz_callout_accent: var(--haz_callout_person-dress);
-  --haz_callout_icon: url("{{ "third_party/fontawesome-free/svgs/solid/person-dress.svg" | relURL }}");
+  --haz_callout_icon: url("{{ "haz/icons/person-dress.svg" | relURL }}");
 }
 
 .haz_do_callout--person-trousers {
@@ -693,7 +693,7 @@ html:has(dialog[open]) body {
 
 .haz_do_callout--human-xx {
   --haz_callout_accent: var(--haz_callout_human-xx);
-  --haz_callout_icon: url("{{ "third_party/fontawesome-free/svgs/solid/venus.svg" | relURL }}");
+  --haz_callout_icon: url("{{ "haz/icons/human-xx.svg" | relURL }}");
 }
 
 .haz_do_callout--human-xy {
