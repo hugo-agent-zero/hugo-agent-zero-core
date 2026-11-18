@@ -491,8 +491,8 @@ html:has(dialog[open]) body {
 .haz_do_callout::before {
   content: "";
   grid-column: 1;
-  width: 2.5rem;
-  height: 2.5rem;
+  width: 2.25rem;
+  height: 2.25rem;
   background-color: var(--haz_callout_accent);
   -webkit-mask: var(--haz_callout_icon) center / contain no-repeat;
   mask: var(--haz_callout_icon) center / contain no-repeat;
