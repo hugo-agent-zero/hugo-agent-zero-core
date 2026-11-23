@@ -28,6 +28,10 @@
 {{- with .Get "title" -}}
   {{- $title = strings.TrimSpace . -}}
 {{- end -}}
+{{- $titleTag := partial "haz/helpers/fn/fn_haz_do_title_tag.html" (dict
+  "tag" (.Get "title_tag")
+  "default" "p"
+) -}}
 {{- $raw := strings.TrimSpace .Inner -}}
 {{- if and (eq $type "code") $raw (eq (strings.Count "```" $raw) 0) -}}
   {{- $raw = printf "```\n%s\n```" $raw -}}
@@ -50,9 +54,9 @@
 {{- partial "haz/helpers/fn/fn_tag_tag_open.html" (dict "tag" "div" "attrs" $rootAttrs) -}}
   {{- partial "haz/helpers/fn/fn_tag_tag_open.html" (dict "tag" "div" "attrs" (dict "class" "haz_do_callout__copy")) -}}
     {{- with $title }}
-    {{- partial "haz/helpers/fn/fn_tag_tag_open.html" (dict "tag" "p" "attrs" (dict "class" "haz_do_callout__title")) -}}
+    {{- partial "haz/helpers/fn/fn_tag_tag_open.html" (dict "tag" $titleTag "attrs" (dict "class" "haz_do_callout__title")) -}}
     {{- . -}}
-    {{- print "</p>" | safeHTML -}}
+    {{- printf "</%s>" $titleTag | safeHTML -}}
     {{- end }}
     {{- with $body }}
     {{- partial "haz/helpers/fn/fn_tag_tag_open.html" (dict "tag" "div" "attrs" (dict "class" "haz_do_callout__body")) -}}

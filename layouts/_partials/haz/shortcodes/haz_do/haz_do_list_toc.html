@@ -1,0 +1,14 @@
+{{/*
+  haz_do list_toc blade. Thin entry → shared list renderer.
+  On-this-page / TOC list: <nav> landmark, aria-labelledby on the title.
+  title defaults to "Table of Contents". title_tag defaults to h2.
+  Override with title= / title_tag=. Hide the title with CSS when needed.
+*/}}
+{{- partial "haz/shortcodes/haz_do/haz_do_list_render.html" (dict
+  "sc" .
+  "root_tag" "nav"
+  "bem" "haz_do_list_toc"
+  "title_default" "Table of Contents"
+  "title_tag_default" "h2"
+  "labelledby" true
+) -}}

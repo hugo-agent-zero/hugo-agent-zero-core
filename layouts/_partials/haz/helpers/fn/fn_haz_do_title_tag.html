@@ -1,0 +1,24 @@
+{{/*
+  fn_haz_do_title_tag — resolve title_tag for haz_do blades with a title.
+
+  Args:
+    - tag (string, optional) raw title_tag from the shortcode
+    - default (string, optional) fallback when tag empty/invalid. Default p.
+
+  Allowlist: p, h1–h6. Empty or anything else → default (or p).
+*/}}
+{{- $fallback := "p" -}}
+{{- with index . "default" -}}
+  {{- $cand := lower (strings.TrimSpace (printf "%v" .)) -}}
+  {{- if in (slice "p" "h1" "h2" "h3" "h4" "h5" "h6") $cand -}}
+    {{- $fallback = $cand -}}
+  {{- end -}}
+{{- end -}}
+{{- $out := $fallback -}}
+{{- with index . "tag" -}}
+  {{- $cand := lower (strings.TrimSpace (printf "%v" .)) -}}
+  {{- if in (slice "p" "h1" "h2" "h3" "h4" "h5" "h6") $cand -}}
+    {{- $out = $cand -}}
+  {{- end -}}
+{{- end -}}
+{{- return $out -}}
