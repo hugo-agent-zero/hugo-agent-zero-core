@@ -1,6 +1,6 @@
 {{/*
   fn_body_attrs.html
-  Final <body> attrs: routes overlay + runtime path metadata.
+  Final <body> attrs: routes overlay + runtime path metadata + id=top.
   Args: sysManifest, context
   Returns: merged attrs dict
 */}}
@@ -15,4 +15,6 @@
 {{- $runtimeDynamic := partial "haz/helpers/fn/fn_body_attrs_dynamic.html" (dict
   "context" $context
 ) -}}
-{{- return partial "haz/helpers/fn/fn_merge_attrs_dict.html" (dict "base" $routesDynamic "overlay" $runtimeDynamic) -}}
+{{- $merged := partial "haz/helpers/fn/fn_merge_attrs_dict.html" (dict "base" $routesDynamic "overlay" $runtimeDynamic) -}}
+{{- /* #top target for back_to_top_000 (and Home-key peers). Always on <body>. */ -}}
+{{- return merge $merged (dict "id" "top") -}}

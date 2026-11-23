@@ -1141,3 +1141,19 @@ html:has(dialog[open]) body {
   background: linear-gradient(to left, transparent, var(--bg, #fff) 70%);
 }
 
+/* --- Back to top (#191) — position + scrolled gate; chrome via .haz_btn --- */
+
+.haz_back_to_top {
+  position: fixed;
+  inset-block-end: 1.25rem;
+  inset-inline-end: 1.25rem;
+  z-index: 900;
+  display: none;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+html[data-scrolled="true"] .haz_back_to_top {
+  display: inline-flex;
+}
+
