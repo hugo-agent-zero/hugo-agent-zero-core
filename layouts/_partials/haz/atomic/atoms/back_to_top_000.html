@@ -1,0 +1,57 @@
+{{- $source := index . "source" -}}
+{{- $child := index . "child" -}}
+{{- $thisObj := index . "thisObj" | default dict -}}
+{{- $sysManifest := index . "sysManifest" -}}
+{{- $context := index . "context" -}}
+{{- $thisObjProps := index $thisObj "props" | default dict -}}
+{{- $thisChildren := index $thisObj "children" | default dict -}}
+{{- $thisSource := "atoms|back_to_top_000" -}}
+{{- $props := index . "props" | default $thisObjProps -}}
+{{- $enabled := true -}}
+{{- if gt (len $thisObj) 0 -}}
+  {{- $enabled = index $thisObj "enabled" | default false -}}
+{{- end -}}
+{{- if $enabled -}}
+  {{- $settings := index $sysManifest "settings" | default dict -}}
+  {{- $bt := index $settings "back_to_top" | default dict -}}
+  {{- $settingsOn := partial "haz/helpers/fn/fn_haz_bool.html" (dict "value" (index $bt "enabled") "default" true) -}}
+  {{- $pageOn := partial "haz/helpers/fn/fn_haz_bool.html" (dict "value" (index $context.Params "haz_back_to_top") "default" $settingsOn) -}}
+  {{- if $pageOn -}}
+    {{- $anchorText := trim (printf "%s" (index $props "anchor_text" | default "Top")) " \t\n\r" -}}
+    {{- $ariaLabel := trim (printf "%s" (index $props "aria_label" | default "Back to Top")) " \t\n\r" -}}
+    {{- $attrs := index $props "attrs" | default dict -}}
+    {{- $href := index $attrs "href" | default "#top" -}}
+    {{- $attrs = merge $attrs (dict "href" $href) -}}
+    {{- if ne $ariaLabel "" -}}
+      {{- $attrs = merge $attrs (dict "aria-label" $ariaLabel) -}}
+    {{- end -}}
+    {{- if not (isset $attrs "class") -}}
+      {{- $attrs = merge $attrs (dict "class" "haz_back_to_top") -}}
+    {{- end -}}
+    {{- partial "haz/helpers/fn/fn_html_comment.html" (dict "text" $thisSource) -}}
+    {{- partial "haz/helpers/fn/fn_tag_tag_open.html" (dict "tag" "a" "attrs" $attrs) -}}
+    {{- if index $thisChildren "icon" "enabled" -}}
+      {{- partial "haz/helpers/fn/fn_partial.html" (dict
+        "source" $thisSource
+        "child" "icon"
+        "thisObj" $thisObj
+        "sysManifest" $sysManifest
+        "context" $context
+      ) -}}
+    {{- else -}}
+      {{- partial "haz/atomic/atoms/assets/svg/svg_arrow_up_000.html" -}}
+    {{- end -}}
+    {{- if ne $anchorText "" -}}
+      <span class="haz_back_to_top__label">{{- $anchorText -}}</span>
+    {{- end -}}
+    {{- print "</a>" | safeHTML -}}
+  {{- end -}}
+{{- else if index $thisChildren "enabled_false" "enabled" -}}
+{{- partial "haz/helpers/fn/fn_partial.html" (dict
+  "source" $thisSource
+  "child" (index $thisChildren "enabled_false" "child")
+  "thisObj" $thisObj
+  "sysManifest" $sysManifest
+  "context" $context
+) -}}
+{{- end -}}
