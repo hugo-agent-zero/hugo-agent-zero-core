@@ -26,7 +26,7 @@
       {{- $attrs = merge $attrs (dict "aria-label" $ariaLabel) -}}
     {{- end -}}
     {{- if not (isset $attrs "class") -}}
-      {{- $attrs = merge $attrs (dict "class" "haz_back_to_top") -}}
+      {{- $attrs = merge $attrs (dict "class" "haz_btn haz_back_to_top") -}}
     {{- end -}}
     {{- partial "haz/helpers/fn/fn_html_comment.html" (dict "text" $thisSource) -}}
     {{- partial "haz/helpers/fn/fn_tag_tag_open.html" (dict "tag" "a" "attrs" $attrs) -}}
@@ -42,7 +42,7 @@
       {{- partial "haz/atomic/atoms/assets/svg/svg_arrow_up_000.html" -}}
     {{- end -}}
     {{- if ne $anchorText "" -}}
-      <span class="haz_back_to_top__label">{{- $anchorText -}}</span>
+      <span>{{- $anchorText -}}</span>
     {{- end -}}
     {{- print "</a>" | safeHTML -}}
   {{- end -}}
