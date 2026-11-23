@@ -1151,6 +1151,7 @@ html:has(dialog[open]) body {
   display: none;
   align-items: center;
   gap: 0.4rem;
+  text-decoration: none;
 }
 
 html[data-scrolled="true"] .haz_back_to_top {
