@@ -1,0 +1,79 @@
+{{/*
+  Shared haz_do list renderer. Used by list and list_toc entry blades.
+
+  Args (dict):
+    - sc               shortcode context (.)
+    - root_tag         div | nav
+    - bem              BEM block, e.g. haz_do_list or haz_do_list_toc
+    - title_default    string; used when title= blank (list_toc: Table of Contents)
+    - title_tag_default  p | h1–h6 (list: p; list_toc: h2)
+    - labelledby       bool; when true, title always emits and root gets aria-labelledby
+*/}}
+{{- $sc := index . "sc" -}}
+{{- $rootTag := index . "root_tag" | default "div" -}}
+{{- $bem := index . "bem" | default "haz_do_list" -}}
+{{- $titleDefault := index . "title_default" | default "" -}}
+{{- $titleTagDefault := index . "title_tag_default" | default "p" -}}
+{{- $labelledby := index . "labelledby" | default false -}}
+
+{{- $class := printf "haz_do %s" $bem -}}
+{{- with $sc.Get "class" -}}
+  {{- $extra := strings.TrimSpace . -}}
+  {{- if $extra -}}
+    {{- $class = printf "%s %s" $class $extra -}}
+  {{- end -}}
+{{- end -}}
+
+{{- $title := "" -}}
+{{- with $sc.Get "title" -}}
+  {{- $title = strings.TrimSpace . -}}
+{{- end -}}
+{{- if and (eq $title "") (ne $titleDefault "") -}}
+  {{- $title = $titleDefault -}}
+{{- end -}}
+
+{{- $titleTag := partial "haz/helpers/fn/fn_haz_do_title_tag.html" (dict
+  "tag" ($sc.Get "title_tag")
+  "default" $titleTagDefault
+) -}}
+
+{{- $body := strings.TrimSpace $sc.Inner | markdownify -}}
+
+{{- $rootId := "" -}}
+{{- with $sc.Get "id" -}}
+  {{- $rootId = strings.TrimSpace . -}}
+{{- end -}}
+
+{{- $titleId := "" -}}
+{{- if and $labelledby $title -}}
+  {{- if $rootId -}}
+    {{- $titleId = printf "%s-title" $rootId -}}
+  {{- else -}}
+    {{- $titleId = printf "%s-title-%d" $bem $sc.Ordinal -}}
+  {{- end -}}
+{{- end -}}
+
+{{- $rootAttrs := dict "class" $class -}}
+{{- if $rootId -}}
+  {{- $rootAttrs = merge $rootAttrs (dict "id" $rootId) -}}
+{{- end -}}
+{{- if and $labelledby $titleId -}}
+  {{- $rootAttrs = merge $rootAttrs (dict "aria" (dict "labelledby" $titleId)) -}}
+{{- end -}}
+
+{{- partial "haz/helpers/fn/fn_tag_tag_open.html" (dict "tag" $rootTag "attrs" $rootAttrs) -}}
+  {{- if $title }}
+  {{- $titleAttrs := dict "class" (printf "%s__title" $bem) -}}
+  {{- if $titleId -}}
+    {{- $titleAttrs = merge $titleAttrs (dict "id" $titleId) -}}
+  {{- end -}}
+  {{- partial "haz/helpers/fn/fn_tag_tag_open.html" (dict "tag" $titleTag "attrs" $titleAttrs) -}}
+  {{- $title -}}
+  {{- printf "</%s>" $titleTag | safeHTML -}}
+  {{- end }}
+  {{- with $body }}
+  {{- partial "haz/helpers/fn/fn_tag_tag_open.html" (dict "tag" "div" "attrs" (dict "class" (printf "%s__body" $bem))) -}}
+  {{- . -}}
+  {{- print "</div>" | safeHTML -}}
+  {{- end }}
+{{- printf "</%s>" $rootTag | safeHTML -}}

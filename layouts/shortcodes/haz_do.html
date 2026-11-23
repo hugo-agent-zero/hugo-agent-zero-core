@@ -1,61 +1,67 @@
 {{/*
   haz_do — stream toolbox dispatcher. Not WordPress.
 
-  Usage (MD → markup):
+  Required:
+    add="…"   which blade to run. Value is one of:
+              spacer | callout | list | list_toc | tabs | tab | grid
+
+  Shared optional (any add=):
+    class=    appended after kit classes. Does not replace them.
+    id=       on the blade root. Blank omits it.
+
+  Optional for add="spacer":
+    height=        number. Omitted → CSS default (.haz_do_spacer).
+    height_unit=   rem (default) | em | px | vh | vw | %.
+    clear=         true (default) adds haz_clear; false skips it.
+    Self-close: {{< haz_do add="spacer" />}}
+
+  Optional for add="callout":
+    type=        CSS token (default note). Letters, digits, hyphen, underscore.
+                 Kit moods include note, tip, info, code, steps, important, warning,
+                 caution, cancel, happy, sad, love, peace, calendar, deadline, focus,
+                 understanding, go, play, pause, fast-forward, rewind.
+                 Other types still render; recolor --haz_callout_{type} in theme.css.
+    title=       optional. Inner is Markdown (markdownify). No raw pre/code tags.
+    title_tag=   p (default) | h1–h6. Invalid → p.
+    step=        only for type=steps (badge, not FA). e.g. step="1" / "A" / a short word.
+    type=code    trim body; if no ``` fence, wrap in one, then Markdown.
+
+  Optional for add="list":
+    title=       optional. Inner is a Markdown ul or ol (chrome only).
+    title_tag=   p (default) | h1–h6. Invalid → p.
+
+  Optional for add="list_toc":
+    title=       defaults to "Table of Contents" when omitted.
+    title_tag=   defaults to h2. Allowlist p | h1–h6; invalid → p.
+    Root is <nav> with aria-labelledby on the title. Same ul/ol body as list
+    (shared renderer). list_nav alias later if needed.
+
+  Optional for add="tabs":
+    swipe=       true prints the swipe library tag for the label row.
+    Nested add="tab" shortcodes. CSS radios switch panels.
+
+  Optional for add="tab" (nested in tabs):
+    title=       tab label (required for a useful label).
+    html=        true → Inner is markup (safeHTML); else Markdown.
+    Blank line between tab calls.
+
+  Optional for add="grid":
+    more_after=  how many cells show on a phone before Show All. Default 4. 0 = no button.
+    more_button= button label. Default "Show All". Does not turn the button on.
+    Inner is markup; each element is a cell. No html= attr.
+
+  Examples:
 
     {{< haz_do add="spacer" />}}
-    → <div class="haz_do haz_do_spacer haz_clear"></div>
-
     {{< haz_do add="spacer" height="2" />}}
-    → <div class="haz_do haz_do_spacer haz_clear" style="height: 2rem"></div>
-
-    {{< haz_do add="spacer" height="24" height_unit="px" />}}
-    → <div class="haz_do haz_do_spacer haz_clear" style="height: 24px"></div>
-
-    {{< haz_do add="spacer" clear=false />}}
-    → <div class="haz_do haz_do_spacer"></div>
-
-    {{< haz_do add="spacer" class="haz_my_gap" />}}
-    → <div class="haz_do haz_do_spacer haz_clear haz_my_gap"></div>
-
     {{< haz_do add="callout" type="tip" title="Pro tip" >}}
     One or two sentences.
     {{< /haz_do >}}
 
-  add          verb. Allowlist: spacer, callout, list, tabs, tab, grid.
-  callout      type is a CSS token (default note). Letters, digits, hyphen, underscore.
-               Kit CSS covers note, tip, info, code, steps, important, warning, caution, cancel, happy,
-               sad, love, peace, calendar, deadline, focus, understanding, go, play, pause,
-               fast-forward, rewind. Any other type still renders.
-               Recolor --haz_callout_{type} in theme.css. The type rule sets
-               --haz_callout_accent from that token and the icon.
-               steps     badge instead of FA. Pass step="1" / step="A" / a short word.
-               title optional. Inner is Markdown (markdownify). Do not write pre or code tags.
-               type=code Trim the body and count ```. Zero: add a fence pair, then Markdown.
-                         One or more: leave it. Prose around a pair stays prose.
-  list         optional title. Inner is Markdown, a ul or an ol.
-               Chrome only. A plain ul or ol outside haz_do stays plain.
-  tabs         wrapper. Nested tab shortcodes run. CSS radios switch panels.
-               The label row scrolls when the buttons do not fit.
-               swipe    optional. true prints the swipe library tag for that row.
-  tab          nested in tabs. title is the label. Blank line between tabs.
-               Inner is Markdown unless html=true, then Inner is markup (safeHTML).
-  grid         wrapper. Inner is markup. Each element is a cell. No html attr.
-               more_after   optional. Default 4. 0 prints no Show All button.
-                            1 through 12 is how many cells show on a phone before the button.
-               more_button  optional label. Default "Show All". Does not turn the button on.
-  height       spacer: number. Omitted → CSS default (.haz_do_spacer).
-  height_unit  spacer: CSS length unit. Default rem. Allowlist: rem em px vh vw %.
-  clear        spacer: default true. false skips haz_clear (float utility).
-  class        appended after kit classes. Escaped. Does not replace them.
-  id           optional. Trimmed, printed on the blade root. Blank omits it. Hugo escapes the attr.
-
   Blank line between stacked calls or Goldmark wraps the bunch in <p>.
-
   Blades: layouts/_partials/haz/shortcodes/haz_do/
-
-  .Inner is read here, not only in a blade. Hugo then requires every call to
-  be closed or self-closed. Blades with no body use />. Callout, list, tabs, tab, and grid use a closing tag.
+  .Inner is read here, so every call must be closed or self-closed.
+  Body blades (callout, list, list_toc, tabs, tab, grid) use a closing tag.
 */}}
 {{- $source := "shortcode|haz_do" -}}
 {{- $inner := .Inner -}}
@@ -68,7 +74,7 @@
 {{- if not $allowed -}}
 {{- printf "<!-- %s: not in settings.shortcodes.whitelist -->" $source | safeHTML -}}
 {{- else -}}
-{{- $allowedAdds := slice "spacer" "callout" "list" "tabs" "tab" "grid" -}}
+{{- $allowedAdds := slice "spacer" "callout" "list" "list_toc" "tabs" "tab" "grid" -}}
 {{- if not (in $allowedAdds $add) -}}
 {{- printf "<!-- %s: not in settings.shortcodes.whitelist -->" $source | safeHTML -}}
 {{- else if eq $add "spacer" -}}
@@ -77,6 +83,8 @@
   {{- partial "haz/shortcodes/haz_do/haz_do_callout.html" . -}}
 {{- else if eq $add "list" -}}
   {{- partial "haz/shortcodes/haz_do/haz_do_list.html" . -}}
+{{- else if eq $add "list_toc" -}}
+  {{- partial "haz/shortcodes/haz_do/haz_do_list_toc.html" . -}}
 {{- else if eq $add "tabs" -}}
   {{- partial "haz/shortcodes/haz_do/haz_do_tabs.html" . -}}
 {{- else if eq $add "tab" -}}

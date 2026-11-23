@@ -1,0 +1,19 @@
+{{/*
+  fn_haz_do_title_tag — resolve title_tag for haz_do blades with a title.
+
+  Args:
+    - tag (string, optional) raw title_tag from the shortcode
+    - default (string, optional) fallback when tag empty. Default p.
+
+  Prefer non-empty tag, else default. Allowlist p|h1–h6; anything else → p.
+*/}}
+{{- $allow := slice "p" "h1" "h2" "h3" "h4" "h5" "h6" -}}
+{{- $raw := strings.TrimSpace (printf "%v" (index . "tag" | default "")) -}}
+{{- if eq $raw "" -}}
+  {{- $raw = strings.TrimSpace (printf "%v" (index . "default" | default "")) -}}
+{{- end -}}
+{{- $cand := lower $raw -}}
+{{- if not (in $allow $cand) -}}
+  {{- $cand = "p" -}}
+{{- end -}}
+{{- return $cand -}}

@@ -1,36 +1,14 @@
 {{/*
-  haz_do list blade. Receives the shortcode context (.).
+  haz_do list blade. Thin entry → shared list renderer.
   Optional title. Inner is Markdown, meant to be a ul or an ol.
   Chrome only. A plain ul or ol outside this shortcode stays plain.
+  title_tag optional: p (default) or h1–h6. Invalid → p.
 */}}
-{{- $class := "haz_do haz_do_list" -}}
-{{- with .Get "class" -}}
-  {{- $extra := strings.TrimSpace . -}}
-  {{- if $extra -}}
-    {{- $class = printf "%s %s" $class $extra -}}
-  {{- end -}}
-{{- end -}}
-{{- $title := "" -}}
-{{- with .Get "title" -}}
-  {{- $title = strings.TrimSpace . -}}
-{{- end -}}
-{{- $body := strings.TrimSpace .Inner | markdownify -}}
-{{- $rootAttrs := dict "class" $class -}}
-{{- with .Get "id" -}}
-  {{- $id := strings.TrimSpace . -}}
-  {{- if $id -}}
-    {{- $rootAttrs = merge $rootAttrs (dict "id" $id) -}}
-  {{- end -}}
-{{- end -}}
-{{- partial "haz/helpers/fn/fn_tag_tag_open.html" (dict "tag" "div" "attrs" $rootAttrs) -}}
-  {{- with $title }}
-  {{- partial "haz/helpers/fn/fn_tag_tag_open.html" (dict "tag" "p" "attrs" (dict "class" "haz_do_list__title")) -}}
-  {{- . -}}
-  {{- print "</p>" | safeHTML -}}
-  {{- end }}
-  {{- with $body }}
-  {{- partial "haz/helpers/fn/fn_tag_tag_open.html" (dict "tag" "div" "attrs" (dict "class" "haz_do_list__body")) -}}
-  {{- . -}}
-  {{- print "</div>" | safeHTML -}}
-  {{- end }}
-{{- print "</div>" | safeHTML -}}
+{{- partial "haz/shortcodes/haz_do/haz_do_list_render.html" (dict
+  "sc" .
+  "root_tag" "div"
+  "bem" "haz_do_list"
+  "title_default" ""
+  "title_tag_default" "p"
+  "labelledby" false
+) -}}

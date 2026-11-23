@@ -505,6 +505,7 @@ html:has(dialog[open]) body {
 
 .haz_do_callout__title,
 .haz_do_list__title,
+.haz_do_list_toc__title,
 .haz_do_tab__label {
   font-weight: var(--haz_do_title_weight, 700);
 }
@@ -706,34 +707,41 @@ html:has(dialog[open]) body {
   --haz_callout_icon: url("{{ "third_party/fontawesome-free/svgs-full/solid/user-circle.svg" | relURL }}");
 }
 
-/* haz_do list. Chrome around a Markdown ul or ol. A plain list is untouched. */
-.haz_do_list {
+/* haz_do list / list_toc. Chrome around a Markdown ul or ol. A plain list is untouched.
+   list_toc is a nav landmark; shared chrome with list. */
+.haz_do_list,
+.haz_do_list_toc {
   margin-block: 1rem;
   padding: 0.7rem 1rem;
   border: 1px solid var(--haz_do_list_box_border, transparent);
   border-radius: var(--standard-border-radius, 5px);
 }
 
-.haz_do_list__title {
+.haz_do_list__title,
+.haz_do_list_toc__title {
   margin: 0 0 0.5rem;
 }
 
-.haz_do_list__body > :first-child {
+.haz_do_list__body > :first-child,
+.haz_do_list_toc__body > :first-child {
   margin-top: 0;
 }
 
-.haz_do_list__body > :last-child {
+.haz_do_list__body > :last-child,
+.haz_do_list_toc__body > :last-child {
   margin-bottom: 0;
 }
 
-.haz_do_list__body > :is(ol, ul) {
+.haz_do_list__body > :is(ol, ul),
+.haz_do_list_toc__body > :is(ol, ul) {
   margin: 0;
   margin-inline-start: 0.5rem;
   padding-inline-start: 1.75rem;
   border-inline-start: 2px solid var(--haz_do_list_border, var(--haz_site_primary, var(--accent)));
 }
 
-.haz_do_list__body li + li {
+.haz_do_list__body li + li,
+.haz_do_list_toc__body li + li {
   margin-top: 0.5rem;
 }
 
