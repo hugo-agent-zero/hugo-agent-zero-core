@@ -1,9 +1,9 @@
 {{/*
   cols_two_tag_wrapper_parent.html
-  Output only: landmark/tag + two cols + optional row_below.
+  Output only: landmark/tag + two cols + optional row_below + optional after_row.
   Caller (organism index) owns enabled / enabled_false / html comment boilerplate.
   Props: tag, attrs, brand_attrs, col_other_attrs, row_below_attrs
-  Children: col_brand, col_other, row_below
+  Children: col_brand, col_other, row_below, after_row (optional; still inside landmark)
 */}}
 {{- $thisObj := index . "thisObj" | default dict -}}
 {{- $sysManifest := index . "sysManifest" -}}
@@ -53,4 +53,11 @@
 </div>
 {{- end -}}
 </div>
+{{- partial "haz/helpers/fn/fn_partial.html" (dict
+  "source" $thisSource
+  "child" "after_row"
+  "thisObj" $thisObj
+  "sysManifest" $sysManifest
+  "context" $context
+) -}}
 {{- printf "</%s>" $tag | safeHTML -}}
