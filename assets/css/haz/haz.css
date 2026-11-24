@@ -736,8 +736,13 @@ html:has(dialog[open]) body {
 .haz_do_list_toc__body > :is(ol, ul) {
   margin: 0;
   margin-inline-start: 0.5rem;
-  padding-inline-start: 1.75rem;
+  padding-inline-start: 1.5rem;
   border-inline-start: 2px solid var(--haz_do_list_border, var(--haz_site_primary, var(--accent)));
+}
+
+.haz_do_list__body :is(ol, ul) :is(ol, ul),
+.haz_do_list_toc__body :is(ol, ul) :is(ol, ul) {
+  padding-inline-start: 1rem;
 }
 
 .haz_do_list__body li + li,
