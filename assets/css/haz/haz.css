@@ -1154,12 +1154,19 @@ html:has(dialog[open]) body {
   inset-inline-end: 1.25rem;
   z-index: 900;
   display: none;
+  flex-direction: column;
   align-items: center;
-  gap: 0.4rem;
+  gap: 0.05rem;
+  line-height: 1;
   text-decoration: none;
 }
 
 html[data-scrolled="true"] .haz_back_to_top {
   display: inline-flex;
+}
+
+.haz_back_to_top svg {
+  width: 0.85rem;
+  height: 0.85rem;
 }
 
